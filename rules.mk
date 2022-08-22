@@ -69,15 +69,18 @@ $(BDIR)/%.o: %.c
 	@mkdir -p $(dir $@)
 	$(Q)$(CC) $(TGT_CFLAGS) $(OPT) $(CFLAGS) $(TGT_INCFLAGS) -MT $@ -MMD -MP -MF $(BDIR)/$*.d -o $@ -c $< 
 
+# Compile asm to obj
 $(BDIR)/%.o: %.s
 	@printf "  AS\t$<\n"
 	@mkdir -p $(dir $@)
 	$(Q)$(CC) $(TGT_ASFLAGS) $(ASFLAGS) -o $@ -c $<
 
+# Link object files to elf
 $(BDIR)/$(PROJECT).elf: $(OBJS) $(TOP)/$(LDSCRIPT)
 	@printf "  LD\t$@\n"
 	$(Q)$(CC) $(OBJS) $(TGT_LDFLAGS) -T$(TOP)/$(LDSCRIPT) -o $@
 
+# Convert elf to bin
 %.bin: %.elf
 	@printf "  OBJCP\t$@\n"
 	$(Q)$(OBJCOPY) -I elf32-littlearm -O binary  $< $@
