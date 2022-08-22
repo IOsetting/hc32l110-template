@@ -79,12 +79,12 @@ extern "C"
 
 /**
  *******************************************************************************
- ** \brief GPIO输入输出方向
+ ** \brief GPIO Direction
  ******************************************************************************/
 typedef enum en_gpio_dir
 {
-    GpioDirOut,                 ///< GPIO 输出
-    GpioDirIn,                  ///< GPIO 输入
+    GpioDirOut,                 ///< GPIO Output
+    GpioDirIn,                  ///< GPIO Input
 }en_gpio_dir_t;
 
 
