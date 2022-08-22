@@ -444,9 +444,9 @@ en_result_t Rtc_CheckDateTimeFormat(uint8_t* pu8TimeDate,uint8_t u8Mode)
     uint8_t u8mon_max_day = 0x28;
     uint8_t u8date[3];
     en_result_t enRet=Error;
-    while(u8i<7)
+    while (u8i < 7)
     {
-        if(u8Mode&&(1<<u8i))
+        if (u8Mode & (1 << u8i))
         {
             switch(u8i)
             {
@@ -492,9 +492,9 @@ en_result_t Rtc_CheckDateTimeFormat(uint8_t* pu8TimeDate,uint8_t u8Mode)
         }
         u8i++;
     }
-       if((u8Mode&0x10)&&(u8Mode&0x20))
+    if ((u8Mode & 0x10) && (u8Mode & 0x20))
     {
-        if(u8Mode&0x40)
+        if (u8Mode & 0x40)
         {
           u8mon_max_day = Get_Month_Max_Day(Change_DateTimeFormat(u8date[1]), Change_DateTimeFormat(u8date[2]));
         }
@@ -502,14 +502,14 @@ en_result_t Rtc_CheckDateTimeFormat(uint8_t* pu8TimeDate,uint8_t u8Mode)
         {
             u8mon_max_day = Get_Month_Max_Day(Change_DateTimeFormat(u8date[1]), 1);
         }
-        if(u8date[0]>u8mon_max_day)
+        if (u8date[0] > u8mon_max_day)
         {
             return Error;
         }
     }
-    if((u8Mode&0x10)&&(!(u8Mode&0x20)))
+    if ((u8Mode & 0x10) && (!(u8Mode & 0x20)))
     {
-        if(u8date[0]>0x28)
+        if (u8date[0] > 0x28)
         {
             return Error;
         }
@@ -552,7 +552,7 @@ en_result_t Rtc_WriteDateTime(stc_rtc_time_t* pstcTimeDate,boolean_t bUpdateTime
     }
     if(TRUE == bUpdateTime)
     {
-        enRet = Rtc_CheckDateTimeFormat(pu8TimeDate,CkTime);
+        enRet = Rtc_CheckDateTimeFormat(pu8TimeDate, CkTime);
         if(enRet != Ok)
         {
             return enRet;
