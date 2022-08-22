@@ -26,38 +26,38 @@ void SVC_Handler(void) WEAK_ALIAS(Dummy_Handler);
 void PendSV_Handler(void) WEAK_ALIAS(Dummy_Handler);
 void SysTick_Handler(void) WEAK_ALIAS(Dummy_Handler);
 
-void IRQ00_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ01_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ02_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ03_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ04_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ05_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ06_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ07_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ08_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ09_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ10_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ11_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ12_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ13_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ14_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ15_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ16_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ17_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ18_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ19_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ20_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ21_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ22_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ23_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ24_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ25_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ26_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ27_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ28_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ29_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ30_Handler(void) WEAK_ALIAS(Dummy_Handler);
-void IRQ31_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ000_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ001_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ002_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ003_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ004_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ005_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ006_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ007_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ008_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ009_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ010_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ011_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ012_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ013_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ014_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ015_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ016_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ017_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ018_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ019_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ020_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ021_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ022_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ023_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ024_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ025_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ026_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ027_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ028_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ029_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ030_Handler(void) WEAK_ALIAS(Dummy_Handler);
+void IRQ031_Handler(void) WEAK_ALIAS(Dummy_Handler);
 
 __attribute__((section(".stack"), used)) uint32_t *__stack_init = &__stacktop;
 
@@ -78,38 +78,38 @@ __attribute__ ((section(".vectors"), used)) void *vector_table[] = {
     0,
     PendSV_Handler,
     SysTick_Handler,
-    IRQ00_Handler,
-    IRQ01_Handler,
-    IRQ02_Handler,
-    IRQ03_Handler,
-    IRQ04_Handler,
-    IRQ05_Handler,
-    IRQ06_Handler,
-    IRQ07_Handler,
-    IRQ08_Handler,
-    IRQ09_Handler,
-    IRQ10_Handler,
-    IRQ11_Handler,
-    IRQ12_Handler,
-    IRQ13_Handler,
-    IRQ14_Handler,
-    IRQ15_Handler,
-    IRQ16_Handler,
-    IRQ17_Handler,
-    IRQ18_Handler,
-    IRQ19_Handler,
-    IRQ20_Handler,
-    IRQ21_Handler,
-    IRQ22_Handler,
-    IRQ23_Handler,
-    IRQ24_Handler,
-    IRQ25_Handler,
-    IRQ26_Handler,
-    IRQ27_Handler,
-    IRQ28_Handler,
-    IRQ29_Handler,
-    IRQ30_Handler,
-    IRQ31_Handler};
+    IRQ000_Handler,
+    IRQ001_Handler,
+    IRQ002_Handler,
+    IRQ003_Handler,
+    IRQ004_Handler,
+    IRQ005_Handler,
+    IRQ006_Handler,
+    IRQ007_Handler,
+    IRQ008_Handler,
+    IRQ009_Handler,
+    IRQ010_Handler,
+    IRQ011_Handler,
+    IRQ012_Handler,
+    IRQ013_Handler,
+    IRQ014_Handler,
+    IRQ015_Handler,
+    IRQ016_Handler,
+    IRQ017_Handler,
+    IRQ018_Handler,
+    IRQ019_Handler,
+    IRQ020_Handler,
+    IRQ021_Handler,
+    IRQ022_Handler,
+    IRQ023_Handler,
+    IRQ024_Handler,
+    IRQ025_Handler,
+    IRQ026_Handler,
+    IRQ027_Handler,
+    IRQ028_Handler,
+    IRQ029_Handler,
+    IRQ030_Handler,
+    IRQ031_Handler};
 
 
 __attribute__((used)) void Reset_Handler(void)
