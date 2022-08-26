@@ -88,5 +88,5 @@ $(BDIR)/$(PROJECT).elf: $(OBJS) $(TOP)/$(LDSCRIPT)
 clean:
 	rm -rf $(BDIR)/*
 
-flash: flash.jlink
-	$(JLINKEXE) -device $(DEVICE) -if swd -speed 4000 -CommanderScript flash.jlink
+flash:
+	$(JLINKEXE) -device $(DEVICE) -if swd -speed 4000 -CommanderScript $(TOP)/Flash_Algorithms/flash.jlink

@@ -1,5 +1,7 @@
 #include <stdint.h>
 
+typedef void (*ptr_func_t)();
+
 extern uint32_t SystemCoreClock;
 extern uint32_t PeripheralCoreClock;
 
@@ -12,6 +14,9 @@ extern uint32_t __bss_end;
 
 extern uint32_t __heap_start;
 extern uint32_t __stacktop;
+
+extern ptr_func_t __init_array_start[];
+extern ptr_func_t __init_array_end[];
 
 extern int main(void);
 extern void SystemInit(void);
@@ -126,6 +131,12 @@ __attribute__((used)) void Reset_Handler(void)
     while (dst < &__bss_end) *dst++ = 0;
 
     SystemInit();
+
+    for (const ptr_func_t *f = __init_array_start; f < __init_array_end; f++)
+    {
+        (*f)();
+    }
+
     main();
 }
 
