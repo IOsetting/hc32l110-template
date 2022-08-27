@@ -19,16 +19,33 @@ void ErrIntCallback(void)
 
 int main(void)
 {
-    uint16_t timer = 0;
-    uint32_t pclk = 0;
+    uint16_t period;
+    uint32_t hclk, pclk;
 
     stc_uart_config_t stcConfig;
     stc_uart_irq_cb_t stcUartIrqCb;
     stc_uart_multimode_t stcMulti;
     stc_uart_baud_config_t stcBaud;
     stc_bt_config_t stcBtConfig;
+    stc_clk_config_t stcClkCfg;
 
-    DDL_ZERO_STRUCT(stcUartIrqCb);
+    /**
+     * Switch clock speed to 24MHz.
+     * Sugguested in User Manual
+     *   - option 1: change the frequency step by step without changing the clock source
+     *   - option 2: switch to low speed clock source, change the frequency, then switch back
+     */
+    Clk_SwitchTo(ClkRCL); // Switch to internal low speed clock source
+    Clk_SetRCHFreq(ClkFreq24Mhz);
+    Clk_SwitchTo(ClkRCH);
+    /**
+     * Set PCLK = HCLK = Clock source = 24MHz
+     */
+    stcClkCfg.enClkSrc = ClkRCH;
+    stcClkCfg.enHClkDiv = ClkDiv1;
+    stcClkCfg.enPClkDiv = ClkDiv1;
+    Clk_Init(&stcClkCfg);
+
     DDL_ZERO_STRUCT(stcMulti);
     DDL_ZERO_STRUCT(stcBaud);
     DDL_ZERO_STRUCT(stcBtConfig);
@@ -50,21 +67,22 @@ int main(void)
     stcConfig.pstcIrqCb = &stcUartIrqCb;
     stcConfig.bTouchNvic = TRUE;
 
-    stcConfig.enRunMode = UartMode3;    //测试项，更改此处来转换4种模式测试
-    stcMulti.enMulti_mode = UartNormal; //测试项，更改此处来转换多主机模式，mode2/3才有多主机模式
+    stcConfig.enRunMode = UartMode1;    // Mode 1, 10-bit frame (1 start + 8 data + 1 stop)
+    stcMulti.enMulti_mode = UartNormal; // Single host mode
     stcConfig.pstcMultiMode = &stcMulti;
 
-    stcBaud.bDbaud = 0u;        // 双倍波特率功能
-    stcBaud.u32Baud = 9600u;    // Baud
-    stcBaud.u8Mode = UartMode3; // 计算波特率需要模式参数
+    stcBaud.bDbaud = 1;        // Double baudrate, 0:off, 1:on
+    stcBaud.u32Baud = 115200;    // Baudrate
+    stcBaud.u8Mode = stcConfig.enRunMode;
+    hclk = Clk_GetHClkFreq();
     pclk = Clk_GetPClkFreq();
-    timer = Uart_SetBaudRate(UARTCH1, pclk, &stcBaud);
+    period = Uart_SetBaudRate(UARTCH1, pclk, &stcBaud);
 
     stcBtConfig.enMD = BtMode2;
     stcBtConfig.enCT = BtTimer;
-    Bt_Init(TIM1, &stcBtConfig); // 调用basetimer1设置函数产生波特率
-    Bt_ARRSet(TIM1, timer);
-    Bt_Cnt16Set(TIM1, timer);
+    Bt_Init(TIM1, &stcBtConfig); // Setup timer 1 for baudrate clock
+    Bt_ARRSet(TIM1, period);
+    Bt_Cnt16Set(TIM1, period);
     Bt_Run(TIM1);
 
     Uart_Init(UARTCH1, &stcConfig);
@@ -72,19 +90,19 @@ int main(void)
     Uart_ClrStatus(UARTCH1, UartRxFull);
     Uart_EnableFunc(UARTCH1, UartRx);
 
-    Uart_SendData(UARTCH1, 'S');
-    Uart_SendData(UARTCH1, 'T');
-    Uart_SendData(UARTCH1, 'A');
-    Uart_SendData(UARTCH1, 'R');
-    Uart_SendData(UARTCH1, 'T');
-    Uart_SendData(UARTCH1, ':');
+    delay1ms(1);
+    Uart1_TxString("HCLK:");
+    Uart1_TxHex((uint8_t *)&hclk, 4);
+    Uart1_TxChar(':');
+    Uart1_TxHex((uint8_t *)&pclk, 4);
+    Uart1_TxChar(':');
     while (1)
     {
         if (u8RxFlg)
         {
             u8RxFlg = 0;
-            Uart_SendData(UARTCH1, u8RxData[0]);
-            Uart_SendData(UARTCH1, u8RxData[1]);
+            Uart1_TxChar(u8RxData[0]);
+            Uart1_TxChar(u8RxData[1]);
         }
         // Avoid compiler optimization
         delay1ms(1);

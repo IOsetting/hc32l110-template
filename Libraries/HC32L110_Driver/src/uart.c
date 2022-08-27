@@ -455,7 +455,7 @@ uint16_t Uart_SetBaudRate(uint8_t u8Idx,uint32_t u32pclk,stc_uart_baud_config_t*
     if ((NULL == pstcData)||(NULL == pstcBaud))
     {
         return 0;//test
-    } 
+    }
     pstcData->pstcInstance->SCON_f.DBAUD = pstcBaud->bDbaud;
     switch(pstcBaud->u8Mode)
     {
@@ -737,5 +737,55 @@ en_result_t Uart_Init(uint8_t u8Idx,
     }
     enRet = Ok;
     return enRet;
+}
+
+en_result_t Uart0_TxChar(uint8_t u8Data)
+{
+    M0P_UART0->ICR_f.TICLR = 0;
+    M0P_UART0->SBUF = u8Data;
+
+    while (TRUE != M0P_UART0->ISR_f.TI);
+    M0P_UART0->ICR_f.TICLR = 0;
+    return Ok;
+}
+
+en_result_t Uart1_TxChar(uint8_t u8Data)
+{
+    M0P_UART1->ICR_f.TICLR = 0;
+    M0P_UART1->SBUF = u8Data;
+
+    while (TRUE != M0P_UART1->ISR_f.TI);
+    M0P_UART1->ICR_f.TICLR = 0;
+    return Ok;
+}
+
+extern uint8_t HEX_TABLE[16];
+
+void Uart0_TxHex(uint8_t *hex, uint8_t len)
+{
+    while (len--)
+    {
+        Uart0_TxChar(HEX_TABLE[*(hex + len) >> 4 & 0xF]);
+        Uart0_TxChar(HEX_TABLE[*(hex + len) & 0xF]);
+    }
+}
+
+void Uart1_TxHex(uint8_t *hex, uint8_t len)
+{
+    while (len--)
+    {
+        Uart1_TxChar(HEX_TABLE[*(hex + len) >> 4 & 0xF]);
+        Uart1_TxChar(HEX_TABLE[*(hex + len) & 0xF]);
+    }
+}
+
+void Uart0_TxString(char *str)
+{
+    while (*str) Uart0_TxChar(*str++);
+}
+
+void Uart1_TxString(char *str)
+{
+    while (*str) Uart1_TxChar(*str++);
 }
 //@} // UartGroup      

@@ -2118,7 +2118,7 @@ typedef struct
     __IO uint32_t SM2                       : 1;
     __IO uint32_t SM01                      : 2;
     uint32_t RESERVED8                      : 1;
-    __IO uint32_t DBAUD                     : 1;
+    __IO uint32_t DBAUD                     : 1; /* Double baudrate, 0:single, 1:double */
 } stc_uart_scon_field_t;
 
 typedef struct

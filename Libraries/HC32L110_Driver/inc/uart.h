@@ -146,8 +146,8 @@ typedef enum en_uart_mode
  ******************************************************************************/
 typedef enum en_uart_func
 {
-    UartTx = 0u, ///<mode0模式代表TX    
-    UartRx = 1u, ///<非mode0模式代表RX and TX ,mode0模式代表RX  
+    UartTx = 0u, ///< mode0: TX    
+    UartRx = 1u, ///< mode0: RX; mode1,mode2,mode3:RX & TX
 }en_uart_func_t;
 /**
  ******************************************************************************
@@ -248,6 +248,15 @@ en_result_t Uart_ClrStatus(uint8_t u8Idx,en_uart_status_t enStatus);
 //en_result_t  Uart_MultiSendFirstData(uint8_t U8Addr);
 en_result_t Uart_SendData(uint8_t u8Idx, uint8_t u8Data);
 uint8_t Uart_ReceiveData(uint8_t u8Idx);
+
+en_result_t Uart0_TxChar(uint8_t u8Data);
+en_result_t Uart1_TxChar(uint8_t u8Data);
+
+void Uart0_TxHex(uint8_t *hex, uint8_t len);
+void Uart1_TxHex(uint8_t *hex, uint8_t len);
+
+void Uart0_TxString(char *str);
+void Uart1_TxString(char *str);
 
 //@} // UartGroup
 

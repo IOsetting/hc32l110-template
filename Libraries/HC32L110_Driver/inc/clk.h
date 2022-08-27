@@ -92,10 +92,10 @@ extern "C"
  ******************************************************************************/
 typedef enum en_clk_source
 {
-    ClkRCH  = 0u,               ///< 内部高速时钟
-    ClkXTH  = 1u,               ///< 外部高速时钟
-    ClkRCL  = 2u,               ///< 内部低速时钟
-    ClkXTL  = 3u,               ///< 外部低速时钟
+    ClkRCH  = 0u,               ///< Internal High Speed
+    ClkXTH  = 1u,               ///< External High Speed
+    ClkRCL  = 2u,               ///< Internal Low Speed
+    ClkXTL  = 3u,               ///< External Low Speed
 }en_clk_source_t;
 
 /**
@@ -131,7 +131,7 @@ typedef enum en_clk_cycle
 
 /**
  *******************************************************************************
- ** \brief 时钟频率值枚举
+ ** \brief Clock Frequencies
  ******************************************************************************/
 typedef enum en_clk_freq
 {
