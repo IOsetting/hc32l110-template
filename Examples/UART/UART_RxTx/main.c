@@ -27,24 +27,11 @@ int main(void)
     stc_uart_multimode_t stcMulti;
     stc_uart_baud_config_t stcBaud;
     stc_bt_config_t stcBtConfig;
-    stc_clk_config_t stcClkCfg;
 
     /**
-     * Switch clock speed to 24MHz.
-     * Sugguested in User Manual
-     *   - option 1: change the frequency step by step without changing the clock source
-     *   - option 2: switch to low speed clock source, change the frequency, then switch back
+     * Set PCLK = HCLK = Clock source to 24MHz
      */
-    Clk_SwitchTo(ClkRCL); // Switch to internal low speed clock source
-    Clk_SetRCHFreq(ClkFreq24Mhz);
-    Clk_SwitchTo(ClkRCH);
-    /**
-     * Set PCLK = HCLK = Clock source = 24MHz
-     */
-    stcClkCfg.enClkSrc = ClkRCH;
-    stcClkCfg.enHClkDiv = ClkDiv1;
-    stcClkCfg.enPClkDiv = ClkDiv1;
-    Clk_Init(&stcClkCfg);
+    Clk_Init(ClkFreq24Mhz, ClkDiv1, ClkDiv1);
 
     DDL_ZERO_STRUCT(stcMulti);
     DDL_ZERO_STRUCT(stcBaud);

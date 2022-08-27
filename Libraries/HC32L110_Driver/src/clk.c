@@ -324,27 +324,32 @@ uint32_t Clk_GetPClkFreq(void)
     return u32Val;
 }
 
-
 /**
- *******************************************************************************
- ** \brief 时钟初始化函数
- ** \param [in]  pstcCfg    初始化配置参数   
- ** \retval      Ok         设定成功
- **             其他        设定失败
- ******************************************************************************/
-en_result_t Clk_Init(stc_clk_config_t *pstcCfg)
+ * @brief Switch clock speed and set hclk pclk divs
+ * 
+ * @param clkFreq 
+ * @param hclkDiv 
+ * @param pclkDiv 
+ * @return en_result_t 
+ */
+en_result_t Clk_Init(en_clk_freq_t clkFreq, en_clk_div_t hclkDiv, en_clk_div_t pclkDiv)
 {
-    ASSERT(NULL != pstcCfg);
-    ASSERT(pstcCfg->enHClkDiv <= ClkDiv128);
-    ASSERT(pstcCfg->enPClkDiv <= ClkDiv8);
-
-    Clk_SwitchTo(pstcCfg->enClkSrc);
-    Clk_SetHClkDiv(pstcCfg->enHClkDiv);
-    Clk_SetPClkDiv(pstcCfg->enPClkDiv);
-
+    ASSERT(hclkDiv <= ClkDiv128);
+    ASSERT(pclkDiv <= ClkDiv8);
+    /**
+     * Switch clock speed.
+     * - When power on, default clock source is internal high speed RC clock at 4MHz
+     * - Sugguested in User Manual
+     *   - option 1: change the frequency step by step without changing the clock source
+     *   - option 2: switch to low speed clock source, change the frequency, then switch back
+     */
+    Clk_SwitchTo(ClkRCL); // Switch to internal low speed clock source
+    Clk_SetRCHFreq(clkFreq);
+    Clk_SwitchTo(ClkRCH);
+    Clk_SetHClkDiv(ClkDiv1);
+    Clk_SetPClkDiv(ClkDiv1);
     return Ok;
 }
-
 
 /**
  *******************************************************************************

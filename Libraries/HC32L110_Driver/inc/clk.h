@@ -225,17 +225,6 @@ typedef struct
     uint32_t            u32LoadVal; ///< 计数周期值
 }stc_clk_systickcfg_t;
 
-/**
- *******************************************************************************
- ** \brief 时钟初始化配置
- ******************************************************************************/
-typedef struct
-{
-    en_clk_source_t enClkSrc;       ///< 时钟源选择
-    en_clk_div_t    enHClkDiv;      ///< 系统时钟分频系数
-    en_clk_div_t    enPClkDiv;      ///< 外设时钟分频系数
-}stc_clk_config_t;
-
 /******************************************************************************
  * Global variable declarations ('extern', definition in C source)
  ******************************************************************************/
@@ -243,8 +232,8 @@ typedef struct
 /******************************************************************************
  * Global function prototypes (definition in C source)
  ******************************************************************************/
-///< 时钟初始化 / 去初始化
-en_result_t Clk_Init(stc_clk_config_t *pstcCfg);
+///< Clock Initialize
+en_result_t Clk_Init(en_clk_freq_t clkFreq, en_clk_div_t hclkDiv, en_clk_div_t pclkDiv);
 en_result_t Clk_DeInit(void);
 
 ///< 时钟基本功能设置
