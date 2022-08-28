@@ -212,11 +212,28 @@ typedef struct stc_uart_config
     boolean_t           bTouchNvic;      ///<NVIC中断使能    
 } stc_uart_config_t;
 
+#define UART0_SetMode(__UART_MODE__)    (M0P_UART0->SCON_f.SM01 = __UART_MODE__)
+#define UART1_SetMode(__UART_MODE__)    (M0P_UART1->SCON_f.SM01 = __UART_MODE__)
+
 #define UART0_EnableTx()                (M0P_UART0->SCON_f.REN = 0)
 #define UART0_EnableRx()                (M0P_UART0->SCON_f.REN = 1)
 #define UART1_EnableTx()                (M0P_UART1->SCON_f.REN = 0)
 #define UART1_EnableRx()                (M0P_UART1->SCON_f.REN = 1)
 
+#define UART0_SetMultiModeOff()         (M0P_UART0->SCON_f.SM2 = 0)
+#define UART1_SetMultiModeOff()         (M0P_UART1->SCON_f.SM2 = 0)
+
+#define UART0_SetMultiMode(__U8_SLA_ADD__, __U8_ADD_MASK__)     do{         \
+                                        M0P_UART0->SCON_f.SM2 = 1;          \
+                                        M0P_UART0->SADDR = __U8_SLA_ADD__;  \
+                                        M0P_UART0->SADEN = __U8_ADD_MASK__; \
+                                    } while(0);
+
+#define UART1_SetMultiMode(__U8_SLA_ADD__, __U8_ADD_MASK__)     do{         \
+                                        M0P_UART1->SCON_f.SM2 = 1;          \
+                                        M0P_UART1->SADDR = __U8_SLA_ADD__;  \
+                                        M0P_UART1->SADEN = __U8_ADD_MASK__; \
+                                    } while(0);
 
 #define UART0_EnableTxSentIrq()         (M0P_UART0->SCON_f.TIEN = 1)
 #define UART0_EnableRxReceivedIrq()     (M0P_UART0->SCON_f.RIEN = 1)

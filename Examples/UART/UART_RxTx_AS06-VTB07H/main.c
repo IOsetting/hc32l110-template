@@ -1,17 +1,18 @@
 #include "uart.h"
 #include "base_timer.h"
 
-uint8_t u8RxData[2] = {0x55, 0x00};
-uint8_t u8RxFlg = 0;
+volatile uint8_t u8RxData[16] = {0x00}, u8RxFlg = 0, u8RxPos = 0;
 
 void RxIntCallback(void)
 {
-    u8RxData[1] = UART1_RxReceive();
+    u8RxData[u8RxPos++] = UART1_RxReceive();
+    u8RxPos = u8RxPos % 16;
     u8RxFlg = 1;
 }
 
 int main(void)
 {
+    uint8_t i;
     uint16_t period;
     uint32_t hclk, pclk;
 
@@ -34,8 +35,8 @@ int main(void)
     Gpio_InitIOExt(3, 6, GpioDirOut, TRUE, FALSE, FALSE, FALSE);
 
     // Set UART port
-    Gpio_SetFunc_UART1TX_P35();
-    Gpio_SetFunc_UART1RX_P36();
+    Gpio_SetFunc_UART1_TXD_P01();
+    Gpio_SetFunc_UART1_RXD_P02();
 
     // Enable peripheral clock
     CLK_EnablePeripheralClk(ClkPeripheralBaseTim);
@@ -82,10 +83,13 @@ int main(void)
         if (u8RxFlg)
         {
             u8RxFlg = 0;
-            Uart1_TxChar(u8RxData[0]);
-            Uart1_TxChar(u8RxData[1]);
+            for (i = 0; i < 16; i++)
+            {
+                Uart1_TxChar(u8RxData[i]);
+            }
+            Uart1_TxChar('\n');
         }
         // Avoid compiler optimization
-        delay1ms(1);
+        delay1ms(500);
     }
 }
