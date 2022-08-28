@@ -64,11 +64,6 @@ extern "C"
 {
 #endif
 
-//@{
-
-/******************************************************************************
- * Global type definitions
- *****************************************************************************/
 /**
  ******************************************************************************
  ** \brief SPI 功能使能设置
@@ -78,36 +73,40 @@ typedef enum en_spi_en
     SpiEnable     = 1u,  ///< SPI模块使能
     SpiDisable    = 0u,  ///< SPI模块禁止
 }en_spi_en_t;
+
 /**
  ******************************************************************************
- ** \brief SPI 模式配置
+ ** \brief SPI Mode
  ******************************************************************************/ 
 typedef enum en_spi_mode
 {
-    SpiMaster = 1u,  ///<主机
-    SpiSlave  = 0u,  ///<从机
+    SpiMaster = 1u,  // Master mode
+    SpiSlave  = 0u,  // Slave mode
 }en_spi_mode_t;
+
 /**
  ******************************************************************************
- ** \brief SPI 时钟极性设置
+ ** \brief SPI Clock Polarity
  ******************************************************************************/ 
 typedef enum en_spi_cpol
 {
-    Spicpollow   = 0u,  ///<极性为低
-    Spicpolhigh  = 1u,  ///<极性为高
+    SpiClockPolarityLow   = 0u,  // Clock low when idle
+    SpiClockPolarityHigh  = 1u,  // Clock high when idle
 }en_spi_cpol_t;
+
 /**
  ******************************************************************************
- ** \brief SPI 时钟相位设置
+ ** \brief SPI Clock Phase
  ******************************************************************************/ 
 typedef enum en_spi_cpha
 {
-    Spicphafirst   = 0u,  ///<第一边沿采样
-    Spicphasecond  = 1u,  ///<第二边沿采样
+    SpiClockPhaseFirst   = 0u,  // Transfer driven by leading edge of SCLK
+    SpiClockPhaseSecond  = 1u,  // Transfer driven by trailing edge of SCLK
 }en_spi_cpha_t;
+
 /**
  ******************************************************************************
- ** \brief SPI 时钟分频配置
+ ** \brief SPI Clock Divider
  *****************************************************************************/
 typedef enum en_spi_clk_div
 {
@@ -122,64 +121,40 @@ typedef enum en_spi_clk_div
 
 /**
  ******************************************************************************
- ** \brief SPI 片选脚电平选择
- *****************************************************************************/
-typedef enum en_spi_cspin
-{
-    SpiCsLow  = 0u,      ///<片选低电平         
-    SpiCsHigh = 1u,      ///<片选高电平            
-}en_spi_cspin_t;
-
-/**
- ******************************************************************************
- ** \brief SPI 状态
- *****************************************************************************/
-typedef enum en_spi_status
-{
-    SpiIf              = 0x80,   ///<传输结束中断标志    
-    SpiWcol            = 0x40,   ///<写冲突标志    
-    SpiSserr           = 0x20,   ///<从机模式错误标志    
-    SpiMdf             = 0x10,   ///<主机模式错误标志    
-}en_spi_status_t;
-/**
- ******************************************************************************
  ** \brief SPI 总体配置结构体
  *****************************************************************************/
 typedef struct stc_spi_config
 {
     boolean_t           bMasterMode;     ///< 主从模式选择
-    uint8_t             u8BaudRate;      ///< 波特率设置
+    uint8_t             u8ClkDiv;        ///< 波特率设置
     boolean_t           bCPOL;           ///< 时钟极性选择
     boolean_t           bCPHA;           ///< 时钟相位选择
     boolean_t           bIrqEn;          ///< 中断使能
     func_ptr_t          pfnIrqCb;        ///< 中断回调函数
 }stc_spi_config_t;
 
+#define SPI_SetCsLow()              (M0P_SPI->SSN = 0)
+#define SPI_SetCsHigh()             (M0P_SPI->SSN = 1)
+// Transfer finished flag
+#define SPI_GetFlagTxFinished()     (M0P_SPI->STAT_f.SPIF)
+// Write conflict flag
+#define SPI_GetFlagWriteConflict()  (M0P_SPI->STAT_f.WCOL)
+// Slave mode error flag
+#define SPI_GetFlagSlaveError()     (M0P_SPI->STAT_f.SSERR)
+// Master mode error flag
+#define SPI_GetFlagMasterError()    (M0P_SPI->STAT_f.MDF)
+
 //SPI 中断
-void Spi_IRQHandler(void);
-
-//SPI 获取状态      
-boolean_t Spi_GetStatus(en_spi_status_t enStatus);
-
+void Spi_IRQHandler(uint8_t u8Param);
 //SPI初始化函数
 en_result_t Spi_Init(stc_spi_config_t* pstcSpiConfig);
 //SPI关闭函数
 en_result_t Spi_DeInit(void);
-//SPI 配置主发送的电平
-void Spi_SetCS(boolean_t bFlag);
-//SPI 发送数据
-en_result_t Spi_SendData(uint8_t u8Data);
-//SPI 接收数据
-uint8_t Spi_ReceiveData(void);
-
-//@} // Spi Group
+// SPI exchange one byte
+uint8_t Spi_TxRx(uint8_t data);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif /* __SPI_H__ */
-/******************************************************************************
- * EOF (not truncated)
- *****************************************************************************/
-

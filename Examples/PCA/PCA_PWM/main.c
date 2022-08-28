@@ -39,7 +39,7 @@ int main(void)
     // CCPx Pin as PWM output
     pcaModConfig.enPWM  = PCAPWMEnable;
     Pca_CapModConfig(Module0, &pcaModConfig);
-
+    // High 8-bit will be loaded to low 8-bit when overflow
     Pca_CapDataLSet(Module0, period);
     Pca_CapDataHSet(Module0, period);
     Pca_Run();

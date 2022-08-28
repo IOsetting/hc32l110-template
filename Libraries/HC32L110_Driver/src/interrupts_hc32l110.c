@@ -60,9 +60,9 @@ __WEAKDEF void Uart_IRQHandler(uint8_t u8Param);
 __WEAKDEF void LpUart_IRQHandler(uint8_t u8Param);
 __WEAKDEF void Spi_IRQHandler(uint8_t u8Param);
 __WEAKDEF void I2c_IRQHandler(uint8_t u8Param);
-__WEAKDEF void BaseTim0_IRQHandler(void);
-__WEAKDEF void BaseTim1_IRQHandler(void);
-__WEAKDEF void BaseTim2_IRQHandler(void);
+__WEAKDEF void BaseTim0_IRQHandler(uint8_t u8Param);
+__WEAKDEF void BaseTim1_IRQHandler(uint8_t u8Param);
+__WEAKDEF void BaseTim2_IRQHandler(uint8_t u8Param);
 __WEAKDEF void Adt_IRQHandler(uint8_t u8Param);
 __WEAKDEF void LpTim_IRQHandler(uint8_t u8Param);
 __WEAKDEF void Pca_IRQHandler(uint8_t u8Param);
@@ -222,7 +222,7 @@ void I2C_IRQHandler(void)
  ******************************************************************************/
 void TIM0_IRQHandler(void)
 {
-    BaseTim0_IRQHandler();
+    BaseTim0_IRQHandler(0);
 }
 
 /**
@@ -233,7 +233,7 @@ void TIM0_IRQHandler(void)
  ******************************************************************************/
 void TIM1_IRQHandler(void)
 {
-    BaseTim1_IRQHandler();
+    BaseTim1_IRQHandler(0);
 }
 
 /**
@@ -244,7 +244,7 @@ void TIM1_IRQHandler(void)
  ******************************************************************************/
 void TIM2_IRQHandler(void)
 {
-    BaseTim2_IRQHandler();
+    BaseTim2_IRQHandler(0);
 }
 
 /**

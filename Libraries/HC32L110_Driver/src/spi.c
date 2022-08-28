@@ -88,44 +88,9 @@ static func_ptr_t pfnSpiCallback = NULL; ///< callback function pointer for SPI 
  ** \retval 无
  ** 
  ******************************************************************************/
-void Spi_IRQHandler(void)
+void Spi_IRQHandler(uint8_t u8Param)
 {
     pfnSpiCallback(); 
-}
-
-/**
- ******************************************************************************
- ** \brief  SPI 请求状态获取
- **
- ** \param [in] enStatus 获取请求
- **
- ** \retval 请求状态
- ** 
- ******************************************************************************/
-boolean_t Spi_GetStatus(en_spi_status_t enStatus)
-{
-    boolean_t bFlag = FALSE;
-    
-    ASSERT(IS_VALID_STAT(enStatus));
-
-    switch (enStatus)
-    {
-        case SpiIf:
-            bFlag = M0P_SPI->STAT_f.SPIF;
-            break;
-        case SpiWcol:
-            bFlag = M0P_SPI->STAT_f.WCOL;
-            break;
-        case SpiSserr:
-            bFlag = M0P_SPI->STAT_f.SSERR;
-            break;
-        case SpiMdf:
-            bFlag = M0P_SPI->STAT_f.MDF;
-            break;
-        default:
-            break;
-    }
-    return bFlag;
 }
 
 /**
@@ -147,11 +112,11 @@ en_result_t Spi_Init(stc_spi_config_t *pstcSpiConfig)
     M0P_SPI->CR_f.MSTR = pstcSpiConfig->bMasterMode;
     M0P_SPI->CR_f.CPOL = pstcSpiConfig->bCPOL;
     M0P_SPI->CR_f.CPHA = pstcSpiConfig->bCPHA;
-    if(pstcSpiConfig->u8BaudRate > SpiClkDiv16)
+    if(pstcSpiConfig->u8ClkDiv > SpiClkDiv16)
     {
         M0P_SPI->CR_f.SPR2 = 1;      
     }
-    M0P_SPI->CR |= (pstcSpiConfig->u8BaudRate&0x03u);    
+    M0P_SPI->CR |= (pstcSpiConfig->u8ClkDiv & 0x03u);    
     
     M0P_SPI->STAT = 0x00;
    
@@ -189,87 +154,11 @@ en_result_t Spi_DeInit(void)
     EnableNvic(SPI_IRQn,DDL_IRQ_LEVEL_DEFAULT,FALSE);
     return Ok;
 }
-/**
- ******************************************************************************
- ** \brief  SPI 配置主发送的电平
- **
- ** \param [in] 高低电平
- **
- ** \retval 无
- ** 
- ******************************************************************************/
-void Spi_SetCS(boolean_t bFlag) 
+
+uint8_t Spi_TxRx(uint8_t data)
 {
-    M0P_SPI->SSN  = bFlag;
-} 
-/**
- ******************************************************************************
- ** \brief  SPI 发送一字节函数
- **
- ** \param [in] 发送字节
- **
- ** \retval Ok发送成功
- ** 
- ******************************************************************************/
-en_result_t Spi_SendData(uint8_t u8Data)
-{
-    uint32_t u32TimeOut;
-    
-    u32TimeOut = 1000;
-    M0P_SPI->DATA = u8Data;
-    
-    while(u32TimeOut--)
-    {
-        if(TRUE == Spi_GetStatus(SpiIf))
-        {
-            break;
-        }
-    }
-    if(u32TimeOut == 0)
-    {
-        return ErrorTimeout;
-    }
-    u8Data  =  M0P_SPI->DATA;
-    return Ok;
+    uint16_t timeout = 1000;
+    M0P_SPI->DATA = data;
+    while(!SPI_GetFlagTxFinished() && timeout--);
+    return M0P_SPI->DATA;
 }
-
-/**
- ******************************************************************************
- ** \brief  SPI 接收一字节函数
- **
- ** \param [in] 无
- **
- ** \retval 接收一字节数据
- ** 
- ******************************************************************************/
-uint8_t Spi_ReceiveData(void)
-{
-    uint8_t temp;
-    uint32_t u32TimeOut;
-    
-    u32TimeOut = 1000;
-    
-    M0P_SPI->DATA = 0x00;
-    
-    while(u32TimeOut--)
-    {
-        if(TRUE == Spi_GetStatus(SpiIf))
-        {
-            break;
-        }
-    }
-    if(u32TimeOut == 0)
-    {
-        return ErrorTimeout;
-    }
-    temp = M0P_SPI->DATA;
-    
-    
-    return temp;
-}
-
-//@} // SpiGroup
-/******************************************************************************
- * EOF (not truncated)
- *****************************************************************************/
-
