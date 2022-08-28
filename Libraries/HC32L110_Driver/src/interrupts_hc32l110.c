@@ -60,7 +60,9 @@ __WEAKDEF void Uart_IRQHandler(uint8_t u8Param);
 __WEAKDEF void LpUart_IRQHandler(uint8_t u8Param);
 __WEAKDEF void Spi_IRQHandler(uint8_t u8Param);
 __WEAKDEF void I2c_IRQHandler(uint8_t u8Param);
-__WEAKDEF void Tim_IRQHandler(uint8_t u8Param);
+__WEAKDEF void BaseTim0_IRQHandler(void);
+__WEAKDEF void BaseTim1_IRQHandler(void);
+__WEAKDEF void BaseTim2_IRQHandler(void);
 __WEAKDEF void Adt_IRQHandler(uint8_t u8Param);
 __WEAKDEF void LpTim_IRQHandler(uint8_t u8Param);
 __WEAKDEF void Pca_IRQHandler(uint8_t u8Param);
@@ -214,35 +216,35 @@ void I2C_IRQHandler(void)
 
 /**
  *******************************************************************************
- ** \brief GPIO 基础时钟0 中断处理函数
+ ** \brief Base Timer0 Interrupt Handler
  ** 
  ** \retval
  ******************************************************************************/
 void TIM0_IRQHandler(void)
 {
-    Tim_IRQHandler(0);
+    BaseTim0_IRQHandler();
 }
 
 /**
  *******************************************************************************
- ** \brief GPIO 基础时钟1 中断处理函数
+ ** \brief Base Timer1 Interrupt Handler
  ** 
  ** \retval
  ******************************************************************************/
 void TIM1_IRQHandler(void)
 {
-    Tim_IRQHandler(1);
+    BaseTim1_IRQHandler();
 }
 
 /**
  *******************************************************************************
- ** \brief GPIO 基础时钟2 中断处理函数
+ ** \brief Base Timer2 Interrupt Handler
  ** 
  ** \retval
  ******************************************************************************/
 void TIM2_IRQHandler(void)
 {
-    Tim_IRQHandler(2);
+    BaseTim2_IRQHandler();
 }
 
 /**

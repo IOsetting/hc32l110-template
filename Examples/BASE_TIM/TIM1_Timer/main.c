@@ -2,11 +2,11 @@
 
 static volatile uint8_t ledState = 0;
 
-void Tim1Callback(void)
+void BaseTim1_IRQHandler(void)
 {
-    if (M0P_BT1->IFR_f.TF)
+    if (BASE_TIM1_GetIntFlag())
     {
-        M0P_BT1->ICLR_f.TFC = 0;
+        BASE_TIM1_ClearIntFlag();
         Gpio_SetIO(3, 4, ledState);
         ledState = 1 - ledState;
     }
@@ -23,7 +23,6 @@ int main(void)
 
     // Timer1 configuration
     stc_bt_config_t timerConfig;
-    timerConfig.pfnTim1Cb = Tim1Callback;
     // No gate control
     timerConfig.enGate  = BtGateDisable;
     // Clock source = PCLK / 16
@@ -34,7 +33,7 @@ int main(void)
     timerConfig.enCT    = BtTimer;
     // Mode2: 16-bit auto-reload
     timerConfig.enMD    = BtMode2;
-    Bt_Init(TIM1, &timerConfig);
+    BaseTim1_Init(&timerConfig);
 
     // Enable Timer1 interrupt
     BASE_TIM1_ClearIntFlag();

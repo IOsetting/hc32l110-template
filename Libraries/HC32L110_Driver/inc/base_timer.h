@@ -178,12 +178,11 @@ typedef struct stc_bt_config
     en_bt_toggle_t    enTog;            ///< 反转输出使能
     en_bt_function_t  enCT;             ///< 定时/计数功能选择
     en_bt_mode_t      enMD;             ///< 计数模式配置
-    
-    func_ptr_t        pfnTim0Cb;        ///< Timer0中断服务回调函数[void function(void)]
-    func_ptr_t        pfnTim1Cb;        ///< Timer1中断服务回调函数[void function(void)]
-    func_ptr_t        pfnTim2Cb;        ///< Timer2中断服务回调函数[void function(void)]
 }stc_bt_config_t;
 
+#define BASE_TIM0_GetIntFlag()          (M0P_BT0->IFR_f.TF)
+#define BASE_TIM1_GetIntFlag()          (M0P_BT1->IFR_f.TF)
+#define BASE_TIM2_GetIntFlag()          (M0P_BT2->IFR_f.TF)
 
 #define BASE_TIM0_ClearIntFlag()        (M0P_BT0->ICLR_f.TFC = 0)
 #define BASE_TIM1_ClearIntFlag()        (M0P_BT1->ICLR_f.TFC = 0)
@@ -193,45 +192,44 @@ typedef struct stc_bt_config
 #define BASE_TIM1_EnableIrq()           (M0P_BT1->CR_f.IE = 1)
 #define BASE_TIM2_EnableIrq()           (M0P_BT2->CR_f.IE = 1)
 
+#define BASE_TIM0_DisableIrq()          (M0P_BT0->CR_f.IE = 0)
+#define BASE_TIM1_DisableIrq()          (M0P_BT1->CR_f.IE = 0)
+#define BASE_TIM2_DisableIrq()          (M0P_BT2->CR_f.IE = 0)
+
 #define BASE_TIM0_SetARR(__U16_DATA__)  (M0P_BT0->ARR_f.ARR = __U16_DATA__)
 #define BASE_TIM1_SetARR(__U16_DATA__)  (M0P_BT1->ARR_f.ARR = __U16_DATA__)
 #define BASE_TIM2_SetARR(__U16_DATA__)  (M0P_BT2->ARR_f.ARR = __U16_DATA__)
+
+#define BASE_TIM0_GetARR()              (M0P_BT0->ARR_f.ARR)
+#define BASE_TIM1_GetARR()              (M0P_BT1->ARR_f.ARR)
+#define BASE_TIM2_GetARR()              (M0P_BT2->ARR_f.ARR)
 
 #define BASE_TIM0_SetCounter16(__U16_DATA__)    (M0P_BT0->CNT_f.CNT = __U16_DATA__)
 #define BASE_TIM1_SetCounter16(__U16_DATA__)    (M0P_BT1->CNT_f.CNT = __U16_DATA__)
 #define BASE_TIM2_SetCounter16(__U16_DATA__)    (M0P_BT2->CNT_f.CNT = __U16_DATA__)
 
+#define BASE_TIM0_GetCounter16()        (M0P_BT0->CNT_f.CNT)
+#define BASE_TIM1_GetCounter16()        (M0P_BT1->CNT_f.CNT)
+#define BASE_TIM2_GetCounter16()        (M0P_BT2->CNT_f.CNT)
+
+#define BASE_TIM0_SetCounter32(__U32_DATA__)    (M0P_BT0->CNT32_f.CNT32 = __U32_DATA__)
+#define BASE_TIM1_SetCounter32(__U32_DATA__)    (M0P_BT1->CNT32_f.CNT32 = __U32_DATA__)
+#define BASE_TIM2_SetCounter32(__U32_DATA__)    (M0P_BT2->CNT32_f.CNT32 = __U32_DATA__)
+
+#define BASE_TIM0_GetCounter32()        (M0P_BT0->CNT32_f.CNT32)
+#define BASE_TIM1_GetCounter32()        (M0P_BT1->CNT32_f.CNT32)
+#define BASE_TIM2_GetCounter32()        (M0P_BT2->CNT32_f.CNT32)
+
 #define BASE_TIM0_Run()                 (M0P_BT0->CR_f.TR = 1)
 #define BASE_TIM1_Run()                 (M0P_BT1->CR_f.TR = 1)
 #define BASE_TIM2_Run()                 (M0P_BT2->CR_f.TR = 1)
+#define BASE_TIM0_Stop()                (M0P_BT0->CR_f.TR = 0)
+#define BASE_TIM1_Stop()                (M0P_BT1->CR_f.TR = 0)
+#define BASE_TIM2_Stop()                (M0P_BT2->CR_f.TR = 0)
 
 /******************************************************************************
  * Global function prototypes (definition in C source)
  *****************************************************************************/
-//中断相关函数 
-//中断标志获取
-boolean_t Bt_GetIntFlag(en_bt_unit_t enUnit);
-//中断标志清除
-en_result_t Bt_ClearIntFlag(en_bt_unit_t enUnit);
-//中断使能/禁止
-en_result_t Bt_EnableIrq (en_bt_unit_t enUnit);
-en_result_t Bt_DisableIrq(en_bt_unit_t enUnit);
-
-//初始化及相关功能操作
-//timer配置及初始化
-en_result_t Bt_Init(en_bt_unit_t enUnit, stc_bt_config_t* pstcConfig);
-//Lptimer 启动/停止
-en_result_t Bt_Run(en_bt_unit_t enUnit);
-en_result_t Bt_Stop(en_bt_unit_t enUnit);
-//重载值设置
-en_result_t Bt_ARRSet(en_bt_unit_t enUnit, uint16_t u16Data);
-//16位计数值设置/获取
-en_result_t Bt_Cnt16Set(en_bt_unit_t enUnit, uint16_t u16Data);
-uint16_t Bt_Cnt16Get(en_bt_unit_t enUnit);
-//32位计数值设置/获取
-en_result_t Bt_Cnt32Set(en_bt_unit_t enUnit, uint32_t u32Data);
-uint32_t Bt_Cnt32Get(en_bt_unit_t enUnit);
-
 void BaseTim0_Init(stc_bt_config_t* baseTimerConfig);
 void BaseTim1_Init(stc_bt_config_t* baseTimerConfig);
 void BaseTim2_Init(stc_bt_config_t* baseTimerConfig);
