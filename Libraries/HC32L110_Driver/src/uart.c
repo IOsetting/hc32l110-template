@@ -557,7 +557,6 @@ static void UartDeInitNvic(uint8_t u8Idx)
     NVIC_ClearPendingIRQ(enIrqIndex);
     NVIC_SetPriority(enIrqIndex,DDL_IRQ_LEVEL_DEFAULT);
     NVIC_DisableIRQ(enIrqIndex);
-    
 }
 /**
  ******************************************************************************
@@ -568,8 +567,7 @@ static void UartDeInitNvic(uint8_t u8Idx)
  ** \retval OK配置成功
  **\retval ErrorInvalidParameter配置失败
  ******************************************************************************/
-en_result_t Uart_Init(uint8_t u8Idx, 
-                      stc_uart_config_t* pstcConfig)
+en_result_t Uart_Init(uint8_t u8Idx, stc_uart_config_t* pstcConfig)
 {
     en_result_t enRet = Error;
     stc_uart_instance_data_t *pstcData = NULL;
@@ -605,6 +603,38 @@ en_result_t Uart_Init(uint8_t u8Idx,
     }
     enRet = Ok;
     return enRet;
+}
+
+static void Uart0_InitNvic(void)
+{
+    NVIC_ClearPendingIRQ(UART0_IRQn);
+    NVIC_SetPriority(UART0_IRQn,DDL_IRQ_LEVEL_DEFAULT);
+    NVIC_EnableIRQ(UART0_IRQn);
+}
+
+static void Uart1_InitNvic(void)
+{
+    NVIC_ClearPendingIRQ(UART1_IRQn);
+    NVIC_SetPriority(UART1_IRQn,DDL_IRQ_LEVEL_DEFAULT);
+    NVIC_EnableIRQ(UART1_IRQn);
+}
+
+void Uart0_SetCallback(stc_uart_irq_cb_t *callbacks)
+{
+    stc_uart_instance_data_t *pstcData = &m_astcUartInstanceDataLut[0];
+    pstcData->stcUartInternIrqCb.pfnRxErrIrqCb = callbacks->pfnRxErrIrqCb;
+    pstcData->stcUartInternIrqCb.pfnRxIrqCb = callbacks->pfnRxIrqCb;
+    pstcData->stcUartInternIrqCb.pfnTxIrqCb = callbacks->pfnTxIrqCb;
+    Uart0_InitNvic();
+}
+
+void Uart1_SetCallback(stc_uart_irq_cb_t *callbacks)
+{
+    stc_uart_instance_data_t *pstcData = &m_astcUartInstanceDataLut[1];
+    pstcData->stcUartInternIrqCb.pfnRxErrIrqCb = callbacks->pfnRxErrIrqCb;
+    pstcData->stcUartInternIrqCb.pfnRxIrqCb = callbacks->pfnRxIrqCb;
+    pstcData->stcUartInternIrqCb.pfnTxIrqCb = callbacks->pfnTxIrqCb;
+    Uart1_InitNvic();
 }
 
 en_result_t Uart0_TxChar(uint8_t u8Data)

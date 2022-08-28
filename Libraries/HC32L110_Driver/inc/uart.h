@@ -215,6 +215,11 @@ typedef struct stc_uart_config
 #define UART0_SetMode(__UART_MODE__)    (M0P_UART0->SCON_f.SM01 = __UART_MODE__)
 #define UART1_SetMode(__UART_MODE__)    (M0P_UART1->SCON_f.SM01 = __UART_MODE__)
 
+#define UART0_SetDoubleBaud(__STATE__)    (M0P_UART0->SCON_f.DBAUD = __STATE__)
+#define UART1_SetDoubleBaud(__STATE__)    (M0P_UART1->SCON_f.DBAUD = __STATE__)
+// Calculate timer period, for UART mode1 and mode3 only
+#define UARTx_CalculatePeriod(__PCLK__, __DOUBLE_BAUD__, __BAUD__) (0x10000 - ((__PCLK__ * (__DOUBLE_BAUD__ + 1)) / (__BAUD__ * 32)))
+
 #define UART0_EnableTx()                (M0P_UART0->SCON_f.REN = 0)
 #define UART0_EnableRx()                (M0P_UART0->SCON_f.REN = 1)
 #define UART1_EnableTx()                (M0P_UART1->SCON_f.REN = 0)
@@ -256,11 +261,11 @@ typedef struct stc_uart_config
 // UART1: read one byte received
 #define UART1_RxReceive()               (M0P_UART1->SBUF)
 
+void Uart0_SetCallback(stc_uart_irq_cb_t *callbacks);
+void Uart1_SetCallback(stc_uart_irq_cb_t *callbacks);
 
 //void Uart_IrqHandler(uint8_t u8Idx);
-// 总初始化处理
-en_result_t Uart_Init(uint8_t u8Idx, 
-                      stc_uart_config_t* pstcConfig);
+
 en_result_t Uart_DeInit(uint8_t u8Idx, boolean_t bTouchNvic);
 //工作模式配置、多主机模式下从机地址和地址掩码设置
 en_result_t Uart_SetMode(uint8_t u8Idx,en_uart_mode_t enMode);

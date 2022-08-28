@@ -557,6 +557,39 @@ uint32_t Bt_Cnt32Get(en_bt_unit_t enUnit)
     return u32CntData;
 }
 
+void BaseTim0_Init(stc_bt_config_t* baseTimerConfig)
+{
+    M0P_BT0->CR_f.GATE_P = baseTimerConfig->enGateP;
+    M0P_BT0->CR_f.GATE   = baseTimerConfig->enGate;
+    M0P_BT0->CR_f.PRS    = baseTimerConfig->enPRS;
+    M0P_BT0->CR_f.TOG_EN = baseTimerConfig->enTog;
+    M0P_BT0->CR_f.CT     = baseTimerConfig->enCT;
+    M0P_BT0->CR_f.MD     = baseTimerConfig->enMD;
+    pfnTim1Callback      = baseTimerConfig->pfnTim1Cb;
+}
+
+void BaseTim1_Init(stc_bt_config_t* baseTimerConfig)
+{
+    M0P_BT1->CR_f.GATE_P = baseTimerConfig->enGateP;
+    M0P_BT1->CR_f.GATE   = baseTimerConfig->enGate;
+    M0P_BT1->CR_f.PRS    = baseTimerConfig->enPRS;
+    M0P_BT1->CR_f.TOG_EN = baseTimerConfig->enTog;
+    M0P_BT1->CR_f.CT     = baseTimerConfig->enCT;
+    M0P_BT1->CR_f.MD     = baseTimerConfig->enMD;
+    pfnTim1Callback      = baseTimerConfig->pfnTim1Cb;
+}
+
+void BaseTim2_Init(stc_bt_config_t* baseTimerConfig)
+{
+    M0P_BT2->CR_f.GATE_P = baseTimerConfig->enGateP;
+    M0P_BT2->CR_f.GATE   = baseTimerConfig->enGate;
+    M0P_BT2->CR_f.PRS    = baseTimerConfig->enPRS;
+    M0P_BT2->CR_f.TOG_EN = baseTimerConfig->enTog;
+    M0P_BT2->CR_f.CT     = baseTimerConfig->enCT;
+    M0P_BT2->CR_f.MD     = baseTimerConfig->enMD;
+    pfnTim1Callback      = baseTimerConfig->pfnTim1Cb;
+}
+
 //@} // BtGroup
 
 /*******************************************************************************

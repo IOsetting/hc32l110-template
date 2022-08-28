@@ -230,7 +230,11 @@ en_result_t Bt_Cnt16Set(en_bt_unit_t enUnit, uint16_t u16Data);
 uint16_t Bt_Cnt16Get(en_bt_unit_t enUnit);
 //32位计数值设置/获取
 en_result_t Bt_Cnt32Set(en_bt_unit_t enUnit, uint32_t u32Data);
-uint32_t Bt_Cnt32Get(en_bt_unit_t enUnit); 
+uint32_t Bt_Cnt32Get(en_bt_unit_t enUnit);
+
+void BaseTim0_Init(stc_bt_config_t* baseTimerConfig);
+void BaseTim1_Init(stc_bt_config_t* baseTimerConfig);
+void BaseTim2_Init(stc_bt_config_t* baseTimerConfig);
 
 //@} // BtGroup
 
