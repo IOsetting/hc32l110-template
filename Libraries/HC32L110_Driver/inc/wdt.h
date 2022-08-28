@@ -56,6 +56,11 @@
 #include "ddl.h"
 #include "interrupts_hc32l110.h"
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 /**
  ******************************************************************************
  ** \defgroup WdtGroup Watchdog Timer (WDT)
@@ -120,6 +125,7 @@ void Wdt_Feed(void);
 //@} // WdtGroup
 
 #ifdef __cplusplus
+}
 #endif
 
 #endif /* __WDT_H__ */

@@ -286,6 +286,7 @@ uint32_t Clk_SysTickStcalibGet(void);
 //@} // ClkGroup
 
 #ifdef __cplusplus
+}
 #endif
 
 

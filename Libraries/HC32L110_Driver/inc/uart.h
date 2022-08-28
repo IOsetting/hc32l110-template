@@ -301,6 +301,7 @@ void Uart1_TxString(char *str);
 //@} // UartGroup
 
 #ifdef __cplusplus
+}
 #endif
 
 #endif /* __UART_H__ */
