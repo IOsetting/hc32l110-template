@@ -225,9 +225,13 @@ typedef struct
     uint32_t            u32LoadVal; ///< 计数周期值
 }stc_clk_systickcfg_t;
 
-/******************************************************************************
- * Global variable declarations ('extern', definition in C source)
- ******************************************************************************/
+#define CLK_Unlock()                do {                                            \
+                                        M0P_CLOCK->SYSCTRL2 = 0x5A5A;               \
+                                        M0P_CLOCK->SYSCTRL2 = 0xA5A5;               \
+                                    } while(0)
+
+#define CLK_DummyWrite()            (M0P_CLOCK->SYSCTRL0_f.RESERVED11 = 0x0)
+
 
 /******************************************************************************
  * Global function prototypes (definition in C source)

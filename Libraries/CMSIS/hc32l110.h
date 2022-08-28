@@ -2133,9 +2133,9 @@ typedef struct
 
 typedef struct
 {
-    __IO uint32_t RI                        : 1;
-    __IO uint32_t TI                        : 1;
-    __IO uint32_t FE                        : 1;
+    __IO uint32_t RI                        : 1; // Rx Interrupt
+    __IO uint32_t TI                        : 1; // Tx Interrupt
+    __IO uint32_t FE                        : 1; // Frame Error Interrupt
     __IO uint32_t TE                        : 1;
 } stc_uart_isr_field_t;
 

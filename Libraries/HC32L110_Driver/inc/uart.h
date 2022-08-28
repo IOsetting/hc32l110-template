@@ -204,7 +204,6 @@ typedef struct stc_uart_baud_config
  ******************************************************************************
  ** \uart 总体配置
  ******************************************************************************/
-
 typedef struct stc_uart_config
 {
     en_uart_mode_t       enRunMode;      ///< 四种模式配置
@@ -212,11 +211,35 @@ typedef struct stc_uart_config
     stc_uart_irq_cb_t*  pstcIrqCb;       ///<中断服务函数          
     boolean_t           bTouchNvic;      ///<NVIC中断使能    
 } stc_uart_config_t;
-//中断相关设置函数
-en_result_t Uart_EnableIrq(uint8_t u8Idx,
-                           en_uart_irq_sel_t enIrqSel);
-en_result_t Uart_DisableIrq(uint8_t u8Idx,
-                            en_uart_irq_sel_t enIrqSel);
+
+#define UART0_EnableTx()                (M0P_UART0->SCON_f.REN = 0)
+#define UART0_EnableRx()                (M0P_UART0->SCON_f.REN = 1)
+#define UART1_EnableTx()                (M0P_UART1->SCON_f.REN = 0)
+#define UART1_EnableRx()                (M0P_UART1->SCON_f.REN = 1)
+
+
+#define UART0_EnableTxSentIrq()         (M0P_UART0->SCON_f.TIEN = 1)
+#define UART0_EnableRxReceivedIrq()     (M0P_UART0->SCON_f.RIEN = 1)
+#define UART1_EnableTxSentIrq()         (M0P_UART1->SCON_f.TIEN = 1)
+#define UART1_EnableRxReceivedIrq()     (M0P_UART1->SCON_f.RIEN = 1)
+
+#define UART0_DisableTxSentIrq()         (M0P_UART0->SCON_f.TIEN = 0)
+#define UART0_DisableRxReceivedIrq()     (M0P_UART0->SCON_f.RIEN = 0)
+#define UART1_DisableTxSentIrq()         (M0P_UART1->SCON_f.TIEN = 0)
+#define UART1_DisableRxReceivedIrq()     (M0P_UART1->SCON_f.RIEN = 0)
+
+#define UART0_ClearRxReceivedStatus()   (M0P_UART0->ICR_f.RICLR = 0)
+#define UART0_ClearTxSentStatus()       (M0P_UART0->ICR_f.TICLR = 0)
+#define UART0_ClearFrameErrroStatus()   (M0P_UART0->ICR_f.ICR_f.FECLR = 0)
+#define UART1_ClearRxReceivedStatus()   (M0P_UART1->ICR_f.RICLR = 0)
+#define UART1_ClearTxSentStatus()       (M0P_UART1->ICR_f.TICLR = 0)
+#define UART1_ClearFrameErrroStatus()   (M0P_UART1->ICR_f.ICR_f.FECLR = 0)
+// UART0: read one byte received
+#define UART0_RxReceive()               (M0P_UART0->SBUF)
+// UART1: read one byte received
+#define UART1_RxReceive()               (M0P_UART1->SBUF)
+
+
 //void Uart_IrqHandler(uint8_t u8Idx);
 // 总初始化处理
 en_result_t Uart_Init(uint8_t u8Idx, 
@@ -237,17 +260,12 @@ en_result_t Uart_CheckEvenOrOdd(uint8_t u8Idx,en_uart_check_t enCheck,uint8_t u8
 
 // 波特率设置
 uint16_t Uart_SetBaudRate(uint8_t u8Idx,uint32_t u32pclk,stc_uart_baud_config_t* pstcBaud);
-                             
-// 发送或接收使能和禁止
-en_result_t Uart_EnableFunc(uint8_t u8Idx, en_uart_func_t enFunc);
-en_result_t Uart_DisableFunc(uint8_t u8Idx, en_uart_func_t enFunc);
+
 //状态位的获取和清除
 boolean_t Uart_GetStatus(uint8_t u8Idx,en_uart_status_t enStatus);
 en_result_t Uart_ClrStatus(uint8_t u8Idx,en_uart_status_t enStatus);
 //数据查询方式的收发操作
 //en_result_t  Uart_MultiSendFirstData(uint8_t U8Addr);
-en_result_t Uart_SendData(uint8_t u8Idx, uint8_t u8Data);
-uint8_t Uart_ReceiveData(uint8_t u8Idx);
 
 en_result_t Uart0_TxChar(uint8_t u8Data);
 en_result_t Uart1_TxChar(uint8_t u8Data);

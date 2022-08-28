@@ -117,10 +117,9 @@ en_result_t Gpio_SetAnalog(uint8_t u8Port, uint8_t u8Pin, boolean_t bFlag)
  ** \retval Ok         设置成功
  **         其他值     设置失败
  ******************************************************************************/
-en_result_t Gpio_InitIO(uint8_t u8Port, uint8_t u8Pin,
-                        en_gpio_dir_t enDir)
+en_result_t Gpio_InitIO(uint8_t u8Port, uint8_t u8Pin, en_gpio_dir_t enDir)
 {
-    //force open clock
+    // Enable GPIO clock
     M0P_CLOCK->PERI_CLKEN_f.GPIO = 1;
     //force set mode, ignore result.
     Gpio_SetAnalog(u8Port, u8Pin, FALSE);
@@ -141,28 +140,25 @@ en_result_t Gpio_InitIO(uint8_t u8Port, uint8_t u8Pin,
 
 /**
  *******************************************************************************
- ** \brief   GPIO 初始化2 
+ ** \brief   GPIO Initialization Extended 
  ** 
- ** \param   [in]  u8Port             IO Port口
- ** \param   [in]  u8Pin              IO Pin脚
- ** \param   [in]  enDir              IO 方向（输入或输出）
- ** \param   [in]  bPullup            上拉开关
- ** \param   [in]  bPulldown          下拉开关
- ** \param   [in]  bOdr               开漏开关
- ** \param   [in]  bDrive             驱动能力 
- **                                   0 = 高
- **                                   1 = 低
- ** \retval     Ok         设置成功
- **             其他值     设置失败
+ ** \param   [in]  u8Port             IO Port
+ ** \param   [in]  u8Pin              IO Pin
+ ** \param   [in]  enDir              Direction, input or output
+ ** \param   [in]  bPullup            Pullup
+ ** \param   [in]  bPulldown          Pulldown
+ ** \param   [in]  bOdr               Open Drain
+ ** \param   [in]  bDrive             Driver capability, 0:high, 1:normal 
  ******************************************************************************/
-en_result_t Gpio_InitIOExt(uint8_t u8Port, uint8_t u8Pin,
+en_result_t Gpio_InitIOExt(uint8_t u8Port, 
+                           uint8_t u8Pin,
                            en_gpio_dir_t enDir,
                            boolean_t bPullup,
                            boolean_t bPulldown,
                            boolean_t bOdr,
                            boolean_t bDrive)
 {
-    //force open clock
+    // Enable GPIO clock
     M0P_CLOCK->PERI_CLKEN_f.GPIO = 1;
     //force set mode, ignore result.
     Gpio_SetAnalog(u8Port, u8Pin, FALSE);
@@ -171,9 +167,7 @@ en_result_t Gpio_InitIOExt(uint8_t u8Port, uint8_t u8Pin,
     *((volatile uint32_t *)((uint32_t)&M0P_GPIO->P01_SEL + u8Port * GPIO_GPSZ - 4 + u8Pin * 4)) = 0;
     //ADS
     //setBit((uint32_t)&M0P_GPIO->ADS0 + u8Port * GPIO_GPSZ, u8Pin, 0);
-    //dir
     setBit((uint32_t)&M0P_GPIO->P0DIR + u8Port * GPIO_GPSZ, u8Pin, enDir);
-    //dr
     setBit((uint32_t)&M0P_GPIO->P0DR + u8Port * GPIO_GPSZ, u8Pin, bDrive);
 
     setBit((uint32_t)&M0P_GPIO->P0PU + u8Port * GPIO_GPSZ, u8Pin, bPullup);

@@ -1,6 +1,5 @@
-#include "ddl.h"
 #include "uart.h"
-#include "bt.h"
+#include "base_timer.h"
 #include "lpm.h"
 #include "gpio.h"
 
@@ -9,7 +8,7 @@ uint8_t u8RxFlg = 0;
 
 void RxIntCallback(void)
 {
-    u8RxData[1] = M0P_UART1->SBUF;
+    u8RxData[1] = UART1_RxReceive();
     u8RxFlg = 1;
 }
 
@@ -45,7 +44,7 @@ int main(void)
     Gpio_SetFunc_UART1RX_P36();
 
     // Enable peripheral clock
-    Clk_SetPeripheralGate(ClkPeripheralBt, TRUE); //模式0/2可以不使能
+    Clk_SetPeripheralGate(ClkPeripheralBt, TRUE);
     Clk_SetPeripheralGate(ClkPeripheralUart1, TRUE);
 
     stcUartIrqCb.pfnRxIrqCb = RxIntCallback;
@@ -67,17 +66,18 @@ int main(void)
 
     stcBtConfig.enMD = BtMode2;
     stcBtConfig.enCT = BtTimer;
-    Bt_Init(TIM1, &stcBtConfig); // Setup timer 1 for baudrate clock
+    Bt_Init(TIM1, &stcBtConfig); // Setup timer 1 as baudrate source
     Bt_ARRSet(TIM1, period);
     Bt_Cnt16Set(TIM1, period);
     Bt_Run(TIM1);
 
     Uart_Init(UARTCH1, &stcConfig);
-    Uart_EnableIrq(UARTCH1, UartRxIrq);
-    Uart_ClrStatus(UARTCH1, UartRxFull);
-    Uart_EnableFunc(UARTCH1, UartRx);
+    UART1_EnableRxReceivedIrq();
+    UART1_ClearRxReceivedStatus();
+    UART1_ClearTxSentStatus();
+    UART1_EnableRx();
 
-    delay1ms(1);
+    delay1ms(100);
     Uart1_TxString("HCLK:");
     Uart1_TxHex((uint8_t *)&hclk, 4);
     Uart1_TxChar(':');

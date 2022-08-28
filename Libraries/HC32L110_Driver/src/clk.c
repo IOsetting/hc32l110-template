@@ -94,45 +94,6 @@
  * Global variable definitions (declared in header file with 'extern')
  ******************************************************************************/
 extern uint32_t SystemCoreClock;
-/*******************************************************************************
- * Local type definitions ('typedef')
- ******************************************************************************/
-
-/*******************************************************************************
- * Local variable definitions ('static')
- ******************************************************************************/
-
-/*******************************************************************************
- * Local function prototypes ('static')
- ******************************************************************************/
-
-
-/*******************************************************************************
- * Function implementation - global ('extern') and local ('static')
- ******************************************************************************/
-
-/**
- *******************************************************************************
- ** \brief 时钟解锁
- **
- ** \retval 
- ******************************************************************************/
-static void ClkUnlock(void)
-{
-    M0P_CLOCK->SYSCTRL2 = 0x5A5A;
-    M0P_CLOCK->SYSCTRL2 = 0xA5A5;
-}
-
-/**
- *******************************************************************************
- ** \brief 时钟SYSCTRL0寄存器空写 
- **
- ** \retval                                      
- ******************************************************************************/
-static void ClkWriteDummy(void)
-{
-    M0P_CLOCK->SYSCTRL0_f.RESERVED11 = 0x0;
-}
 
 /**
  *******************************************************************************
@@ -146,7 +107,7 @@ en_result_t Clk_SetFunc(en_clk_func_t enFunc, boolean_t bFlag)
 {
     en_result_t enRet = Ok;
 
-    ClkUnlock();
+    CLK_Unlock();
     bFlag = !!bFlag;
 
     switch (enFunc)
@@ -179,7 +140,7 @@ en_result_t Clk_SetFunc(en_clk_func_t enFunc, boolean_t bFlag)
             M0P_CLOCK->SYSCTRL1_f.SWD_UIO = bFlag;
             break;
         default:
-            ClkWriteDummy();
+            CLK_DummyWrite();
             enRet = ErrorInvalidParameter;
             break;
     }
@@ -381,7 +342,7 @@ en_result_t Clk_SetSource(en_clk_source_t enSource)
 {
     en_result_t enRet = Ok;
 
-    ClkUnlock();
+    CLK_Unlock();
 
     switch (enSource)
     {
@@ -392,7 +353,7 @@ en_result_t Clk_SetSource(en_clk_source_t enSource)
             M0P_CLOCK->SYSCTRL0_f.CLK_SW4_SEL = enSource;
             break;
         default:
-            ClkWriteDummy();
+            CLK_DummyWrite();
             enRet = ErrorInvalidParameter;
             break;
     }
@@ -515,7 +476,7 @@ en_result_t Clk_SetHClkDiv(uint8_t u8Div)
         case ClkDiv32:
         case ClkDiv64:
         case ClkDiv128:
-            ClkUnlock();
+            CLK_Unlock();
             u8Div = Log2(u8Div);
             M0P_CLOCK->SYSCTRL0_f.HCLK_PRS = u8Div;
             break;
@@ -543,7 +504,7 @@ en_result_t Clk_SetPClkDiv(uint8_t u8Div)
         case ClkDiv2:
         case ClkDiv4:
         case ClkDiv8:
-            ClkUnlock();
+            CLK_Unlock();
             u8Div = Log2(u8Div);
             M0P_CLOCK->SYSCTRL0_f.PCLK_PRS = u8Div;
             break;
@@ -693,7 +654,7 @@ en_result_t Clk_Enable(en_clk_source_t enSource, boolean_t bFlag)
     en_result_t enRet = Ok;
     uint32_t u32Temp;
     
-    ClkUnlock();
+    CLK_Unlock();
     //force to 0/1
     bFlag = !!bFlag;
 
@@ -725,7 +686,7 @@ en_result_t Clk_Enable(en_clk_source_t enSource, boolean_t bFlag)
             break;
 
         default:
-            ClkWriteDummy();
+            CLK_DummyWrite();
             enRet = ErrorInvalidParameter;
             break;
     }
@@ -777,7 +738,7 @@ en_result_t Clk_SetRTCAdjustClkFreq(uint32_t u32val)
 {
     //en_result_t enRet = Ok;
 
-    ClkUnlock();
+    CLK_Unlock();
 
     if (u32val >= (32 * 1000 * 1000))
     {
@@ -805,7 +766,7 @@ en_result_t Clk_SetRTCAdjustClkFreq(uint32_t u32val)
         M0P_CLOCK->SYSCTRL1_f.RTC_FREQ_ADJUST = 0;
     } else
     {
-        ClkWriteDummy();
+        CLK_DummyWrite();
         return ErrorInvalidParameter;
     }
 

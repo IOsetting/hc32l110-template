@@ -122,75 +122,7 @@ static stc_uart_instance_data_t* UartGetInternDataPtr(uint8_t u8Idx)
 
     return (pstcData);
 }
-/**
- ******************************************************************************
- ** \brief  UART通信中断使能函数设置
- **
- ** \param [in] u8Idx通道号，enIrqSel发送or接收中断使能
- **
- ** \retval OK配置成功
- **\retval ErrorInvalidParameter配置失败
- ******************************************************************************/
-en_result_t Uart_EnableIrq(uint8_t u8Idx,
-                           en_uart_irq_sel_t enIrqSel)
-{
-    stc_uart_instance_data_t* pstcData = NULL;
-    ASSERT(IS_VALID_CH(u8Idx));
-    ASSERT(IS_VALID_IRQSEL(enIrqSel));
-    pstcData = UartGetInternDataPtr(u8Idx);
-    if (NULL == pstcData)
-    {
-        return ErrorInvalidParameter;
-    }
-    switch(enIrqSel)
-    {
-        case  UartTxIrq:
-            pstcData->pstcInstance->SCON_f.TIEN = 1u;
-            break;
-        case  UartRxIrq:
-            pstcData->pstcInstance->SCON_f.RIEN = 1u;
-            break;
-        default:
-            return (ErrorInvalidParameter);       
-    }
-    return Ok;
-}
-/**
- ******************************************************************************
- ** \brief  UART通信中断禁止函数设置
- **
- ** \param [in] u8Idx通道号，enIrqSel发送or接收中断禁止
- **
- ** \retval OK配置成功
- **\retval ErrorInvalidParameter配置失败
- ******************************************************************************/
-en_result_t Uart_DisableIrq(uint8_t u8Idx, 
-                            en_uart_irq_sel_t enIrqSel)
-{
-    stc_uart_instance_data_t *pstcData = NULL;
 
-    ASSERT(IS_VALID_CH(u8Idx));
-    ASSERT(IS_VALID_IRQSEL(enIrqSel));
-        
-    pstcData = UartGetInternDataPtr(u8Idx);
-    if (NULL == pstcData)
-    {
-        return ErrorInvalidParameter;
-    }
-    switch(enIrqSel)
-    {
-        case  UartTxIrq:
-            pstcData->pstcInstance->SCON_f.TIEN = 0u;
-            break;
-        case  UartRxIrq:
-            pstcData->pstcInstance->SCON_f.RIEN = 0u;
-            break;
-        default:
-            return (ErrorInvalidParameter);       
-    }
-    
-    return Ok;
-}
 /**
  ******************************************************************************
  ** \brief  UART通道4种模式配置
@@ -471,27 +403,7 @@ uint16_t Uart_SetBaudRate(uint8_t u8Idx,uint32_t u32pclk,stc_uart_baud_config_t*
     }
     return u16tmload;
 }
-/**
- ******************************************************************************
- ** \brief  UART通道发送或接收使能设置
- **
- ** \param [in] u8Idx通道号，enFunc发送或接收
- **
- ** \retval OK配置成功
- **\retval ErrorInvalidParameter配置失败
- ******************************************************************************/
-en_result_t Uart_EnableFunc(uint8_t u8Idx, en_uart_func_t enFunc)
-{
-    stc_uart_instance_data_t *pstcData = NULL;
-    ASSERT(IS_VALID_CH(u8Idx));
-    pstcData = UartGetInternDataPtr(u8Idx);
-    if (NULL == pstcData)
-    {
-        return ErrorInvalidParameter;
-    } 
-    pstcData->pstcInstance->SCON_f.REN = enFunc;
-    return Ok;
-}
+
 /**
  ******************************************************************************
  ** \brief  UART通道通信状态获取
@@ -563,51 +475,7 @@ en_result_t Uart_ClrStatus(uint8_t u8Idx,en_uart_status_t enStatus)
     }
     return Ok;
 }
-/**
- ******************************************************************************
- ** \brief  UART通道发送数据函数,查询方式调用此函数，中断方式发送不适用
- **
- ** \param [in] u8Idx通道号，Data发送数据
- **
- ** \retval Ok发送成功
- **\retval ErrorInvalidParameter发送失败
- ******************************************************************************/
-en_result_t Uart_SendData(uint8_t u8Idx, uint8_t u8Data)
-{
-    stc_uart_instance_data_t *pstcData = NULL;
-    ASSERT(IS_VALID_CH(u8Idx));
-    pstcData = UartGetInternDataPtr(u8Idx);
-    if (NULL == pstcData)
-    {
-        return ErrorInvalidParameter;
-    }
-    Uart_ClrStatus(u8Idx,UartTxEmpty);   
-    pstcData->pstcInstance->SBUF =u8Data;
-    while(FALSE == Uart_GetStatus(u8Idx,UartTxEmpty))
-    {}
-    Uart_ClrStatus(u8Idx,UartTxEmpty);       
-    return Ok;
-}
-/**
- ******************************************************************************
- ** \brief  UART通道接收数据函数
- **
- ** \param [in] u8Idx通道号
- **
- ** \retval 接收数据
- **\retval ErrorInvalidParameter接收失败
- ******************************************************************************/
-uint8_t Uart_ReceiveData(uint8_t u8Idx)
-{
-    stc_uart_instance_data_t *pstcData = NULL;
-    ASSERT(IS_VALID_CH(u8Idx));
-    pstcData = UartGetInternDataPtr(u8Idx);
-    if (NULL == pstcData)
-    {
-        return ErrorInvalidParameter;
-    }
-    return (pstcData->pstcInstance->SBUF);
-}
+
 /**
  ******************************************************************************
  ** \brief  UART通道中断处理函数
