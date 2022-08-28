@@ -1,7 +1,4 @@
-#include "ddl.h"
 #include "base_timer.h"
-#include "lpm.h"
-#include "gpio.h"
 
 static volatile uint8_t ledState = 0;
 
@@ -25,30 +22,30 @@ int main(void)
     Gpio_InitIOExt(3, 4, GpioDirOut, TRUE, FALSE, FALSE, FALSE);
 
     // Timer1 configuration
-    stc_bt_config_t stcConfig;
-    stcConfig.pfnTim1Cb = Tim1Callback;
+    stc_bt_config_t timerConfig;
+    timerConfig.pfnTim1Cb = Tim1Callback;
     // No gate control
-    stcConfig.enGate  = BtGateDisable;
+    timerConfig.enGate  = BtGateDisable;
     // Clock source = PCLK / 16
-    stcConfig.enPRS   = BtPCLKDiv16;
+    timerConfig.enPRS   = BtPCLKDiv16;
     // No reverse output on TOGN
-    stcConfig.enTog   = BtTogDisable;
+    timerConfig.enTog   = BtTogDisable;
     // Run as timer
-    stcConfig.enCT    = BtTimer;
+    timerConfig.enCT    = BtTimer;
     // Mode2: 16-bit auto-reload
-    stcConfig.enMD    = BtMode2;
-    Bt_Init(TIM1, &stcConfig);
+    timerConfig.enMD    = BtMode2;
+    Bt_Init(TIM1, &timerConfig);
 
     // Enable Timer1 interrupt
-    Bt_ClearIntFlag(TIM1);
-    Bt_EnableIrq(TIM1);
+    BASE_TIM1_ClearIntFlag();
+    BASE_TIM1_EnableIrq();
     EnableNvic(TIM1_IRQn, 3, TRUE);
 
     // Set timer period
-    Bt_ARRSet(TIM1, 0x0);
-    Bt_Cnt16Set(TIM1, 0x0);
+    BASE_TIM1_SetARR(0x00);
+    BASE_TIM1_SetCounter16(0x00);
     // Start timer
-    Bt_Run(TIM1);
+    BASE_TIM1_Run();
 
     while (1);
 }

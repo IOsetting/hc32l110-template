@@ -185,9 +185,25 @@ typedef struct stc_bt_config
 }stc_bt_config_t;
 
 
-/******************************************************************************
- * Global variable declarations ('extern', definition in C source)
- *****************************************************************************/
+#define BASE_TIM0_ClearIntFlag()        (M0P_BT0->ICLR_f.TFC = 0)
+#define BASE_TIM1_ClearIntFlag()        (M0P_BT1->ICLR_f.TFC = 0)
+#define BASE_TIM2_ClearIntFlag()        (M0P_BT2->ICLR_f.TFC = 0)
+
+#define BASE_TIM0_EnableIrq()           (M0P_BT0->CR_f.IE = 1)
+#define BASE_TIM1_EnableIrq()           (M0P_BT1->CR_f.IE = 1)
+#define BASE_TIM2_EnableIrq()           (M0P_BT2->CR_f.IE = 1)
+
+#define BASE_TIM0_SetARR(__U16_DATA__)  (M0P_BT0->ARR_f.ARR = __U16_DATA__)
+#define BASE_TIM1_SetARR(__U16_DATA__)  (M0P_BT1->ARR_f.ARR = __U16_DATA__)
+#define BASE_TIM2_SetARR(__U16_DATA__)  (M0P_BT2->ARR_f.ARR = __U16_DATA__)
+
+#define BASE_TIM0_SetCounter16(__U16_DATA__)    (M0P_BT0->CNT_f.CNT = __U16_DATA__)
+#define BASE_TIM1_SetCounter16(__U16_DATA__)    (M0P_BT1->CNT_f.CNT = __U16_DATA__)
+#define BASE_TIM2_SetCounter16(__U16_DATA__)    (M0P_BT2->CNT_f.CNT = __U16_DATA__)
+
+#define BASE_TIM0_Run()                 (M0P_BT0->CR_f.TR = 1)
+#define BASE_TIM1_Run()                 (M0P_BT1->CR_f.TR = 1)
+#define BASE_TIM2_Run()                 (M0P_BT2->CR_f.TR = 1)
 
 /******************************************************************************
  * Global function prototypes (definition in C source)
