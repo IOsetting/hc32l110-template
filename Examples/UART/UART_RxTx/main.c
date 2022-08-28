@@ -12,10 +12,6 @@ void RxIntCallback(void)
     u8RxFlg = 1;
 }
 
-void ErrIntCallback(void)
-{
-}
-
 int main(void)
 {
     uint16_t period;
@@ -44,12 +40,12 @@ int main(void)
     Gpio_SetFunc_UART1RX_P36();
 
     // Enable peripheral clock
-    Clk_SetPeripheralGate(ClkPeripheralBt, TRUE);
-    Clk_SetPeripheralGate(ClkPeripheralUart1, TRUE);
+    CLK_EnablePeripheralClk(ClkPeripheralBaseTim);
+    CLK_EnablePeripheralClk(ClkPeripheralUart1);
 
     stcUartIrqCb.pfnRxIrqCb = RxIntCallback;
     stcUartIrqCb.pfnTxIrqCb = NULL;
-    stcUartIrqCb.pfnRxErrIrqCb = ErrIntCallback;
+    stcUartIrqCb.pfnRxErrIrqCb = NULL;
     stcConfig.pstcIrqCb = &stcUartIrqCb;
     stcConfig.bTouchNvic = TRUE;
 

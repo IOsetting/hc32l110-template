@@ -172,7 +172,7 @@ typedef enum en_clk_peripheral_gate
     ClkPeripheralLpUart     = 2u,       ///< 低功耗串口
     ClkPeripheralI2c        = 4u,       ///< I2C
     ClkPeripheralSpi        = 6u,       ///< SPI
-    ClkPeripheralBt         = 8u,       ///< 基础时钟
+    ClkPeripheralBaseTim    = 8u,       ///< 基础时钟
     ClkPeripheralLpTim      = 9u,       ///< 低功耗时钟
     ClkPeripheralAdt        = 10u,      ///< 高级时钟
     ClkPeripheralPca        = 14u,      ///< 可编程计数阵列
@@ -232,6 +232,9 @@ typedef struct
 
 #define CLK_DummyWrite()            (M0P_CLOCK->SYSCTRL0_f.RESERVED11 = 0x0)
 
+#define CLK_EnablePeripheralClk(__PERIPHERAL_GATE_T__)      setBit(&M0P_CLOCK->PERI_CLKEN, __PERIPHERAL_GATE_T__, 1)
+#define CLK_DisablePeripheralClk(__PERIPHERAL_GATE_T__)     setBit(&M0P_CLOCK->PERI_CLKEN, __PERIPHERAL_GATE_T__, 0)
+
 
 /******************************************************************************
  * Global function prototypes (definition in C source)
@@ -264,8 +267,6 @@ uint32_t Clk_GetHClkFreq(void);
 uint32_t Clk_GetPClkFreq(void);
 
 ///< 时钟外设门控开关
-en_result_t Clk_SetPeripheralGate(en_clk_peripheral_gate_t enPeripheral,
-                                  boolean_t bFlag);
 boolean_t Clk_GetPeripheralGate(en_clk_peripheral_gate_t enPeripheral);
 
 

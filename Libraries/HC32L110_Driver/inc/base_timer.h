@@ -96,18 +96,18 @@ typedef enum en_bt_unit
  *****************************************************************************/
 typedef enum en_bt_gatep
 {
-    BtPositive = 0u,            ///< 高电平有效
-    BtOpposite = 1u,            ///< 低电平有效
+    BtGateEnabledHigh = 0u,            // Triggered by high voltage level
+    BtGateEnabledLow  = 1u,            // Triggered by low voltage level
 }en_bt_gatep_t;
 
 /**
  ******************************************************************************
- ** \brief 定时器门控数据类型重定义 (GATE)
+ ** \brief Timer Gate Control (GATE)
  *****************************************************************************/
 typedef enum en_bt_gate
 {
-    BtGateDisable = 0u,            ///< 无门控
-    BtGateEnable  = 1u,            ///< 门控使能
+    BtGateDisable = 0u,            // Gate control is off
+    BtGateEnable  = 1u,            // Gate control is on, timer runs when TR=1 and gate is triggered
 }en_bt_gate_t;
 
 /**
@@ -128,33 +128,32 @@ typedef enum en_bt_timclkdiv
 
 /**
  ******************************************************************************
- ** \brief 翻转输出使能数据类型重定义 (TOG_EN)
+ ** \brief Reverse output (TOG_EN)
  *****************************************************************************/
 typedef enum en_bt_toggle
 {
-    BtTogDisable = 0u,            ///< 翻转输出禁止
-    BtTogEnable  = 1u,            ///< 翻转输出使能
+    BtTogDisable = 0u,            // TOG,TOGN output same level
+    BtTogEnable  = 1u,            // TOG,TOGN output reversed level
 }en_bt_toggle_t;
 
 /**
  ******************************************************************************
- ** \brief 计数/定时器功能选择数据类型重定义 (CT)
+ ** \brief Timer or counter function (CT)
  *****************************************************************************/
 typedef enum en_bt_function
 {
-    BtTimer   = 0u,            ///< 定时器功能
-    BtCounter = 1u,            ///< 计数器功能
+    BtTimer   = 0u,            // Timer function
+    BtCounter = 1u,            // Counter function
 }en_bt_function_t;
-
 
 /**
  ******************************************************************************
- ** \brief 定时器工作模式数据类型重定义 (MD)
+ ** \brief Timer Mode(MD)
  *****************************************************************************/
 typedef enum en_bt_mode
 {
-    BtMode1  = 0u,         ///< 32位计数器/定时器
-    BtMode2  = 1u,         ///< 自动重装载16位计数器/定时器
+    BtMode1  = 0u,         // 32-bit timer/counter, restart from 0 when overflow
+    BtMode2  = 1u,         // 16-bit auto-reload timer/counter
 }en_bt_mode_t;
 
 /**

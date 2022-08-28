@@ -195,8 +195,6 @@ void Gpio_SetIO(uint8_t u8Port, uint8_t u8Pin, boolean_t bVal)
     setBit((uint32_t)&M0P_GPIO->P0OUT + u8Port * GPIO_GPSZ, u8Pin, bVal);
 }
 
-
-
 /**
  *******************************************************************************
  ** \brief GPIO IO输入值获取

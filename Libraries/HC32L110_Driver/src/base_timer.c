@@ -40,7 +40,7 @@
 * at all times.
 */
 
-/** \file bt.c
+/** \file base_timer.c
  **
  ** Common API of base timer.
  ** @link btGroup Some description @endlink
@@ -143,10 +143,10 @@ en_result_t Bt_ClearIntFlag(en_bt_unit_t enUnit)
             M0P_BT0->ICLR_f.TFC = FALSE;
             break;
         case TIM1:
-            M0P_BT1->ICLR_f.TFC = FALSE;;
+            M0P_BT1->ICLR_f.TFC = FALSE;
             break;
         case TIM2:
-            M0P_BT2->ICLR_f.TFC = FALSE;;
+            M0P_BT2->ICLR_f.TFC = FALSE;
             break;
         default:
             enResult = Error;

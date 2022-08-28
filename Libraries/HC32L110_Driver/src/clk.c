@@ -694,26 +694,6 @@ en_result_t Clk_Enable(en_clk_source_t enSource, boolean_t bFlag)
     return enRet;
 }
 
-
-/**
- *******************************************************************************
- ** \brief 设置外设时钟门控开关
- ** \param [in]  enPeripheral   目标外设
- ** \param [in]  bFlag      使能开关
- ** \retval      Ok         设定成功
- **             其他        设定失败
- ******************************************************************************/
-en_result_t Clk_SetPeripheralGate(en_clk_peripheral_gate_t enPeripheral,
-                                  boolean_t bFlag)
-{
-    en_result_t enRet = Ok;
-
-    bFlag = !!bFlag;
-    setBit(&M0P_CLOCK->PERI_CLKEN, enPeripheral, bFlag);
-    return enRet;
-}
-
-
 /**
  *******************************************************************************
  ** \brief 获得外设时钟门控开关状态

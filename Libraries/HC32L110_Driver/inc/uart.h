@@ -135,10 +135,10 @@ typedef struct stc_uart_multimode
 
 typedef enum en_uart_mode
 {
-    UartMode0 = 0u, ///<模式0    
-    UartMode1 = 1u, ///<模式1
-    UartMode2 = 2u, ///<模式2
-    UartMode3 = 3u, ///<模式3
+    UartMode0 = 0u, // Mode0, 8-bit-width, sync, fixed baudrate = Fpclk / 12
+    UartMode1 = 1u, // Mode1, 10-bit-width, async, clocked by timer, baudrate = (DBAUD+1)*Fpclk / 32 / (65536 - Timer_Period)
+    UartMode2 = 2u, // Mode2, 11-bit-width, async, clocked by itself, baudrate = (DBAUD+1)*Fpclk / 64
+    UartMode3 = 3u, // Mode3, 11-bit-width, async, clocked by timer, baudrate = (DBAUD+1)*Fpclk / 32 / (65536 - Timer_Period)
 } en_uart_mode_t;
 /**
  ******************************************************************************
