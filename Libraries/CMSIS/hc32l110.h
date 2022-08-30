@@ -181,10 +181,10 @@ typedef struct
 
 typedef struct
 {
-    __IO uint32_t LLT_INTF                  : 1;
-    __IO uint32_t HHT_INTF                  : 1;
-    __IO uint32_t REG_INTF                  : 1;
-    __IO uint32_t CONT_INTF                 : 1;
+    __IO uint32_t LLT_INTF                  : 1; // Conversion result inside range [0，ADC_LT), 0:no, 1:yes
+    __IO uint32_t HHT_INTF                  : 1; // Conversion result inside range [ADC_HT，4095], 0:no, 1:yes
+    __IO uint32_t REG_INTF                  : 1; // Conversion result inside range flag, 0:no, 1:yes
+    __IO uint32_t CONT_INTF                 : 1; // Scan conversion finish flag: 0:no, 1:finished
 } stc_adc_ifr_field_t;
 
 typedef struct
