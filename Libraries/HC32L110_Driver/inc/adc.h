@@ -96,10 +96,9 @@ extern "C"
  *****************************************************************************/
 typedef enum en_adc_op_mode
 {
-    AdcNormalMode  = 0,        /*!< 单输入通道单次采样模式 */
-    AdcContMode    = 1,        /*!< 单输入通道连续采样模式 */
-    AdcScanMode    = 2,        /*!< 多输入通道扫描采样模式*/
-
+    AdcNormalMode  = 0,        // 1 channel 1 conversion
+    AdcContMode    = 1,        // 1 channel continuous conversion
+    AdcScanMode    = 2,        // multiple channels scan mode
 } en_adc_op_mode_t;
 
 /**
@@ -317,9 +316,19 @@ typedef struct stc_adc_irq_calbakfn_pt
 
 }stc_adc_irq_calbakfn_pt_t;
 
-/******************************************************************************
- * Global variable definitions ('extern')
- ******************************************************************************/
+#define ADC_Enable()                (M0P_ADC->CR0_f.ADCEN = 1)
+#define ADC_Disable()               (M0P_ADC->CR0_f.ADCEN = 0)
+
+#define ADC_Start()                 do {                                \
+                                        M0P_ADC->ICLR_f.CONT_INTC = 0;  \
+                                        M0P_ADC->CR0_f.STATERST = 1;    \
+                                        M0P_ADC->CR0_f.START = 1;       \
+                                    } while(0);
+
+#define ADC_Stop()                  (M0P_ADC->CR0_f.START = 0)
+
+
+#define ADC_GetScanResult(__CHANNEL__)  ((*(&(M0P_ADC->RESULT0_f) + __CHANNEL__)).RESULT)
 
 /******************************************************************************
  * Global function prototypes (definition in C source)
@@ -328,16 +337,6 @@ typedef struct stc_adc_irq_calbakfn_pt
 en_result_t Adc_Init(stc_adc_cfg_t* pstcAdcConfig);
 //ADC de-init
 void Adc_DeInit(void);
-
-//ADC conversion start
-void Adc_Start(void);
-//ADC conversion stop
-void Adc_Stop(void);
-
-//ADC conversion enable
-void Adc_Enable(void);
-//ADC conversion disable
-void Adc_Disable(void);
 
 //ADC normal mode configuration
 en_result_t Adc_ConfigNormMode(stc_adc_cfg_t* pstcAdcConfig, stc_adc_norm_cfg_t* pstcAdcNormCfg);
@@ -371,10 +370,6 @@ en_result_t Adc_GetResult(uint16_t* pu16AdcResult);
 en_result_t Adc_GetAccResult(uint32_t* pu32AdcAccResult);
 //clear ADC accumulated result
 void Adc_ClrAccResult(void);
-//get ADC scan channel result
-en_result_t Adc_GetScanResult(uint8_t u8Channel, uint16_t* pu16AdcResult);
-//获取通道8采样值
-en_result_t Adc_GetCH8Result(uint16_t* pu16AdcResult);
 
 en_result_t Adc_SetVref(en_adc_ref_vol_sel_t enAdcRefVolSel);
 
@@ -384,6 +379,3 @@ en_result_t Adc_SetVref(en_adc_ref_vol_sel_t enAdcRefVolSel);
 #endif
 
 #endif /* __ADC_H__ */
-/******************************************************************************/
-/* EOF (not truncated)                                                        */
-/******************************************************************************/

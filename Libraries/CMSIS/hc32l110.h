@@ -166,51 +166,6 @@ typedef struct
 
 typedef struct
 {
-    __IO uint32_t RESULT0                   :12;
-} stc_adc_result0_field_t;
-
-typedef struct
-{
-    __IO uint32_t RESULT1                   :12;
-} stc_adc_result1_field_t;
-
-typedef struct
-{
-    __IO uint32_t RESULT2                   :12;
-} stc_adc_result2_field_t;
-
-typedef struct
-{
-    __IO uint32_t RESULT3                   :12;
-} stc_adc_result3_field_t;
-
-typedef struct
-{
-    __IO uint32_t RESULT4                   :12;
-} stc_adc_result4_field_t;
-
-typedef struct
-{
-    __IO uint32_t RESULT5                   :12;
-} stc_adc_result5_field_t;
-
-typedef struct
-{
-    __IO uint32_t RESULT6                   :12;
-} stc_adc_result6_field_t;
-
-typedef struct
-{
-    __IO uint32_t RESULT7                   :12;
-} stc_adc_result7_field_t;
-
-typedef struct
-{
-    __IO uint32_t RESULT8                   :12;
-} stc_adc_result8_field_t;
-
-typedef struct
-{
     __IO uint32_t RESULT_ACC                :20;
 } stc_adc_result_acc_field_t;
 
@@ -2269,47 +2224,47 @@ typedef struct
     union
     {
         __IO uint32_t RESULT0;
-        stc_adc_result0_field_t RESULT0_f;
+        stc_adc_result_field_t RESULT0_f;
     };
     union
     {
         __IO uint32_t RESULT1;
-        stc_adc_result1_field_t RESULT1_f;
+        stc_adc_result_field_t RESULT1_f;
     };
     union
     {
         __IO uint32_t RESULT2;
-        stc_adc_result2_field_t RESULT2_f;
+        stc_adc_result_field_t RESULT2_f;
     };
     union
     {
         __IO uint32_t RESULT3;
-        stc_adc_result3_field_t RESULT3_f;
+        stc_adc_result_field_t RESULT3_f;
     };
     union
     {
         __IO uint32_t RESULT4;
-        stc_adc_result4_field_t RESULT4_f;
+        stc_adc_result_field_t RESULT4_f;
     };
     union
     {
         __IO uint32_t RESULT5;
-        stc_adc_result5_field_t RESULT5_f;
+        stc_adc_result_field_t RESULT5_f;
     };
     union
     {
         __IO uint32_t RESULT6;
-        stc_adc_result6_field_t RESULT6_f;
+        stc_adc_result_field_t RESULT6_f;
     };
     union
     {
         __IO uint32_t RESULT7;
-        stc_adc_result7_field_t RESULT7_f;
+        stc_adc_result_field_t RESULT7_f;
     };
     union
     {
         __IO uint32_t RESULT8;
-        stc_adc_result8_field_t RESULT8_f;
+        stc_adc_result_field_t RESULT8_f;
     };
     union
     {
