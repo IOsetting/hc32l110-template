@@ -144,8 +144,6 @@ typedef struct stc_spi_config
 // Master mode error flag
 #define SPI_GetFlagMasterError()    (M0P_SPI->STAT_f.MDF)
 
-//SPI 中断
-void Spi_IRQHandler(uint8_t u8Param);
 //SPI初始化函数
 en_result_t Spi_Init(stc_spi_config_t* pstcSpiConfig);
 //SPI关闭函数

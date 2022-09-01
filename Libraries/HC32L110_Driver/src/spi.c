@@ -88,7 +88,7 @@ static func_ptr_t pfnSpiCallback = NULL; ///< callback function pointer for SPI 
  ** \retval 无
  ** 
  ******************************************************************************/
-void Spi_IRQHandler(uint8_t u8Param)
+void SPI_IRQHandler(void)
 {
     pfnSpiCallback(); 
 }

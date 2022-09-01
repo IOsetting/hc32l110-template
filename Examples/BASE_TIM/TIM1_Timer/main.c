@@ -2,7 +2,7 @@
 
 static volatile uint8_t ledState = 0;
 
-void BaseTim1_IRQHandler(uint8_t u8Param)
+void TIM1_IRQHandler(void)
 {
     if (BASE_TIM1_GetIntFlag())
     {

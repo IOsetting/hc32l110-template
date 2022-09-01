@@ -111,13 +111,6 @@ extern "C"
  ** \brief IRQ name definition for all type MCUs
  ******************************************************************************/
     
-    #define SPI_IRQHandler(void)                IRQ010_Handler(void)
-//                                              IRQ011_Handler(void)
-    #define I2C_IRQHandler(void)                IRQ012_Handler(void)
-//                                              IRQ013_Handler(void)
-    #define TIM0_IRQHandler(void)               IRQ014_Handler(void)
-    #define TIM1_IRQHandler(void)               IRQ015_Handler(void)
-    #define TIM2_IRQHandler(void)               IRQ016_Handler(void)
     #define LPTIM_IRQHandler(void)              IRQ017_Handler(void)
     #define TIM4_IRQHandler(void)               IRQ018_Handler(void)
     #define TIM5_IRQHandler(void)               IRQ019_Handler(void)

@@ -41,13 +41,13 @@ void UART0_IRQHandler(void)     WEAK_ALIAS(Dummy_Handler);
 void UART1_IRQHandler(void)     WEAK_ALIAS(Dummy_Handler);
 void LPUART_IRQHandler(void)    WEAK_ALIAS(Dummy_Handler);
 void IRQ009_Handler(void)       WEAK_ALIAS(Dummy_Handler);
-void IRQ010_Handler(void)       WEAK_ALIAS(Dummy_Handler);
+void SPI_IRQHandler(void)       WEAK_ALIAS(Dummy_Handler);
 void IRQ011_Handler(void)       WEAK_ALIAS(Dummy_Handler);
-void IRQ012_Handler(void)       WEAK_ALIAS(Dummy_Handler);
+void I2C_IRQHandler(void)       WEAK_ALIAS(Dummy_Handler);
 void IRQ013_Handler(void)       WEAK_ALIAS(Dummy_Handler);
-void IRQ014_Handler(void)       WEAK_ALIAS(Dummy_Handler);
-void IRQ015_Handler(void)       WEAK_ALIAS(Dummy_Handler);
-void IRQ016_Handler(void)       WEAK_ALIAS(Dummy_Handler);
+void TIM0_IRQHandler(void)      WEAK_ALIAS(Dummy_Handler);
+void TIM1_IRQHandler(void)      WEAK_ALIAS(Dummy_Handler);
+void TIM2_IRQHandler(void)      WEAK_ALIAS(Dummy_Handler);
 void IRQ017_Handler(void)       WEAK_ALIAS(Dummy_Handler);
 void IRQ018_Handler(void)       WEAK_ALIAS(Dummy_Handler);
 void IRQ019_Handler(void)       WEAK_ALIAS(Dummy_Handler);
@@ -93,13 +93,13 @@ __attribute__ ((section(".vectors"), used)) void *vector_table[] = {
     UART1_IRQHandler,
     LPUART_IRQHandler,
     IRQ009_Handler,
-    IRQ010_Handler,
+    SPI_IRQHandler,
     IRQ011_Handler,
-    IRQ012_Handler,
+    I2C_IRQHandler,
     IRQ013_Handler,
-    IRQ014_Handler,
-    IRQ015_Handler,
-    IRQ016_Handler,
+    TIM0_IRQHandler,
+    TIM1_IRQHandler,
+    TIM2_IRQHandler,
     IRQ017_Handler,
     IRQ018_Handler,
     IRQ019_Handler,

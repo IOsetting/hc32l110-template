@@ -63,12 +63,12 @@ __attribute__((weak)) void PORT3_IRQHandler(void);
 __attribute__((weak)) void UART0_IRQHandler(void);
 __attribute__((weak)) void UART1_IRQHandler(void);
 __attribute__((weak)) void LPUART_IRQHandler(void);
+__attribute__((weak)) void SPI_IRQHandler(void);
+__attribute__((weak)) void I2C_IRQHandler(void);
+__attribute__((weak)) void TIM0_IRQHandler(void);
+__attribute__((weak)) void TIM1_IRQHandler(void);
+__attribute__((weak)) void TIM2_IRQHandler(void);
 
-__attribute__((weak)) void Spi_IRQHandler(uint8_t u8Param);
-__attribute__((weak)) void I2c_IRQHandler(uint8_t u8Param);
-__attribute__((weak)) void BaseTim0_IRQHandler(uint8_t u8Param);
-__attribute__((weak)) void BaseTim1_IRQHandler(uint8_t u8Param);
-__attribute__((weak)) void BaseTim2_IRQHandler(uint8_t u8Param);
 __attribute__((weak)) void Adt_IRQHandler(uint8_t u8Param);
 __attribute__((weak)) void LpTim_IRQHandler(uint8_t u8Param);
 __attribute__((weak)) void Pca_IRQHandler(uint8_t u8Param);
@@ -119,61 +119,6 @@ void HardFault_Handler(void)
     {
         ;
     }
-}
-
-/**
- *******************************************************************************
- ** \brief GPIO SPI 中断处理函数
- ** 
- ** \retval
- ******************************************************************************/
-void SPI_IRQHandler(void)
-{
-    Spi_IRQHandler(0);
-}
-
-/**
- *******************************************************************************
- ** \brief GPIO I2C 中断处理函数
- ** 
- ** \retval
- ******************************************************************************/
-void I2C_IRQHandler(void)
-{
-    I2c_IRQHandler(0);
-}
-
-/**
- *******************************************************************************
- ** \brief Base Timer0 Interrupt Handler
- ** 
- ** \retval
- ******************************************************************************/
-void TIM0_IRQHandler(void)
-{
-    BaseTim0_IRQHandler(0);
-}
-
-/**
- *******************************************************************************
- ** \brief Base Timer1 Interrupt Handler
- ** 
- ** \retval
- ******************************************************************************/
-void TIM1_IRQHandler(void)
-{
-    BaseTim1_IRQHandler(0);
-}
-
-/**
- *******************************************************************************
- ** \brief Base Timer2 Interrupt Handler
- ** 
- ** \retval
- ******************************************************************************/
-void TIM2_IRQHandler(void)
-{
-    BaseTim2_IRQHandler(0);
 }
 
 /**

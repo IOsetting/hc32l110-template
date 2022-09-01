@@ -300,7 +300,7 @@ en_result_t I2C_Init(stc_i2c_config_t* pstcI2CCfg)
  ** \retval  无
  **
  ******************************************************************************/
-void I2c_IRQHandler(uint8_t u8Param)
+void I2C_IRQHandler(void)
 {
     pfnI2ctCallback();
 }
