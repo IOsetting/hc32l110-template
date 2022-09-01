@@ -48,7 +48,7 @@ void IRQ013_Handler(void)       WEAK_ALIAS(Dummy_Handler);
 void TIM0_IRQHandler(void)      WEAK_ALIAS(Dummy_Handler);
 void TIM1_IRQHandler(void)      WEAK_ALIAS(Dummy_Handler);
 void TIM2_IRQHandler(void)      WEAK_ALIAS(Dummy_Handler);
-void IRQ017_Handler(void)       WEAK_ALIAS(Dummy_Handler);
+void LPTIM_IRQHandler(void)     WEAK_ALIAS(Dummy_Handler);
 void IRQ018_Handler(void)       WEAK_ALIAS(Dummy_Handler);
 void IRQ019_Handler(void)       WEAK_ALIAS(Dummy_Handler);
 void IRQ020_Handler(void)       WEAK_ALIAS(Dummy_Handler);
@@ -100,7 +100,7 @@ __attribute__ ((section(".vectors"), used)) void *vector_table[] = {
     TIM0_IRQHandler,
     TIM1_IRQHandler,
     TIM2_IRQHandler,
-    IRQ017_Handler,
+    LPTIM_IRQHandler,
     IRQ018_Handler,
     IRQ019_Handler,
     IRQ020_Handler,

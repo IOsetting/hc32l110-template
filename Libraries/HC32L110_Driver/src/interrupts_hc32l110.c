@@ -68,9 +68,10 @@ __attribute__((weak)) void I2C_IRQHandler(void);
 __attribute__((weak)) void TIM0_IRQHandler(void);
 __attribute__((weak)) void TIM1_IRQHandler(void);
 __attribute__((weak)) void TIM2_IRQHandler(void);
+__attribute__((weak)) void LPTIM_IRQHandler(void);
 
 __attribute__((weak)) void Adt_IRQHandler(uint8_t u8Param);
-__attribute__((weak)) void LpTim_IRQHandler(uint8_t u8Param);
+
 __attribute__((weak)) void Pca_IRQHandler(uint8_t u8Param);
 __attribute__((weak)) void Wdt_IRQHandler(uint8_t u8Param);
 __attribute__((weak)) void Vc_IRQHandler(uint8_t u8Param);
@@ -119,17 +120,6 @@ void HardFault_Handler(void)
     {
         ;
     }
-}
-
-/**
- *******************************************************************************
- ** \brief GPIO 低功耗时钟 中断处理函数
- ** 
- ** \retval
- ******************************************************************************/
-void LPTIM_IRQHandler(void)
-{
-    LpTim_IRQHandler(0);
 }
 
 /**

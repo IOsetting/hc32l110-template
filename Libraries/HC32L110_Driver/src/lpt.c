@@ -129,7 +129,7 @@ en_result_t Lpt_ClearIntFlag(void)
  ** \param [in] u8Param         == 0
  **                                      
  *****************************************************************************/
-void LpTim_IRQHandler(uint8_t u8Param)
+void LPTIM_IRQHandler(void)
 {   
     pfnLpTimCallback();
 }
