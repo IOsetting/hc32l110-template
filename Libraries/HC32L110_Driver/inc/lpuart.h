@@ -256,7 +256,6 @@ typedef struct stc_lpuart_config
 //中断相关函数
 en_result_t LPUart_EnableIrq(en_lpuart_irq_sel_t enIrqSel);
 en_result_t LPUart_DisableIrq(en_lpuart_irq_sel_t enIrqSel);
-//void LPUart_IrqHandler(void);
 
 // LPuart初始化总函数
 en_result_t LPUart_Init(stc_lpuart_config_t* pstcConfig);

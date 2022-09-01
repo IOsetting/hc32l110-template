@@ -8,7 +8,7 @@
 
 volatile uint8_t flag;
 
-void Gpio_IRQHandler(uint8_t u8Param)
+void PORT3_IRQHandler(void)
 {
     /** Clear interrupt flag before handling, otherwise it will be triggered twice */
     Gpio_ClearIrq(KEY_PORT, KEY_PIN); //M0P_GPIO->P3ICLR_f.P33 = 0U;

@@ -55,24 +55,30 @@
  ******************************************************************************/
 #include "ddl.h"
 #include "interrupts_hc32l110.h"
-__WEAKDEF void Gpio_IRQHandler(uint8_t u8Param);
-__WEAKDEF void Uart_IRQHandler(uint8_t u8Param);
-__WEAKDEF void LpUart_IRQHandler(uint8_t u8Param);
-__WEAKDEF void Spi_IRQHandler(uint8_t u8Param);
-__WEAKDEF void I2c_IRQHandler(uint8_t u8Param);
-__WEAKDEF void BaseTim0_IRQHandler(uint8_t u8Param);
-__WEAKDEF void BaseTim1_IRQHandler(uint8_t u8Param);
-__WEAKDEF void BaseTim2_IRQHandler(uint8_t u8Param);
-__WEAKDEF void Adt_IRQHandler(uint8_t u8Param);
-__WEAKDEF void LpTim_IRQHandler(uint8_t u8Param);
-__WEAKDEF void Pca_IRQHandler(uint8_t u8Param);
-__WEAKDEF void Wdt_IRQHandler(uint8_t u8Param);
-__WEAKDEF void Vc_IRQHandler(uint8_t u8Param);
-__WEAKDEF void Rtc_IRQHandler(uint8_t u8Param);
-__WEAKDEF void Adc_IRQHandler(uint8_t u8Param);
-__WEAKDEF void Lvd_IRQHandler(uint8_t u8Param);
-__WEAKDEF void EfRam_IRQHandler(uint8_t u8Param);
-__WEAKDEF void ClkTrim_IRQHandler(uint8_t u8Param);
+
+__attribute__((weak)) void PORT0_IRQHandler(void);
+__attribute__((weak)) void PORT1_IRQHandler(void);
+__attribute__((weak)) void PORT2_IRQHandler(void);
+__attribute__((weak)) void PORT3_IRQHandler(void);
+__attribute__((weak)) void UART0_IRQHandler(void);
+__attribute__((weak)) void UART1_IRQHandler(void);
+__attribute__((weak)) void LPUART_IRQHandler(void);
+
+__attribute__((weak)) void Spi_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void I2c_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void BaseTim0_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void BaseTim1_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void BaseTim2_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void Adt_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void LpTim_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void Pca_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void Wdt_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void Vc_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void Rtc_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void Adc_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void Lvd_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void EfRam_IRQHandler(uint8_t u8Param);
+__attribute__((weak)) void ClkTrim_IRQHandler(uint8_t u8Param);
 
 /**
  *******************************************************************************
@@ -113,83 +119,6 @@ void HardFault_Handler(void)
     {
         ;
     }
-}
-
-/**
- *******************************************************************************
- ** \brief GPIO Port0 中断处理函数
- ** 
- ** \retval
- ******************************************************************************/
-void PORT0_IRQHandler(void)
-{
-    Gpio_IRQHandler(0);
-}
-
-/**
- *******************************************************************************
- ** \brief GPIO Port1 中断处理函数
- ** 
- ** \retval
- ******************************************************************************/
-void PORT1_IRQHandler(void)
-{
-    Gpio_IRQHandler(1);
-}
-
-/**
- *******************************************************************************
- ** \brief GPIO Port2 中断处理函数
- ** 
- ** \retval
- ******************************************************************************/
-void PORT2_IRQHandler(void)
-{
-    Gpio_IRQHandler(2);
-}
-
-/**
- *******************************************************************************
- ** \brief GPIO Port3 中断处理函数
- ** 
- ** \retval
- ******************************************************************************/
-void PORT3_IRQHandler(void)
-{
-    Gpio_IRQHandler(3);
-}
-
-/**
- *******************************************************************************
- ** \brief GPIO 串口0 中断处理函数
- ** 
- ** \retval
- ******************************************************************************/
-void UART0_IRQHandler(void)
-{
-    Uart_IRQHandler(0);
-}
-
-/**
- *******************************************************************************
- ** \brief GPIO 串口1 中断处理函数
- ** 
- ** \retval
- ******************************************************************************/
-void UART1_IRQHandler(void)
-{
-    Uart_IRQHandler(1);
-}
-
-/**
- *******************************************************************************
- ** \brief GPIO 低功耗串口 中断处理函数
- ** 
- ** \retval
- ******************************************************************************/
-void LPUART_IRQHandler(void)
-{
-    LpUart_IRQHandler(0);
 }
 
 /**

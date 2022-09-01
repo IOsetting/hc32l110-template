@@ -613,32 +613,30 @@ static stc_lpuart_intern_cb_t* LPUartGetInternDataCb(void)
  ** \retval 无
  **
  ******************************************************************************/
-void LpUart_IRQHandler(void)
+void LPUART_IRQHandler(void)
 {
-    stc_lpuart_irq_cb_t* pstcLPUartInternCb;
-    pstcLPUartInternCb = LPUartGetInternDataCb();
     if(1 == M0P_LPUART->ISR_f.FE)
     {
         LPUart_ClrStatus(LPUartRFRAMEError);
-        if(NULL != pstcLPUartInternCb->pfnRxErrIrqCb)
+        if(NULL != stcLPUartIrqCb.pfnRxErrIrqCb)
         {
-            pstcLPUartInternCb->pfnRxErrIrqCb();
+            stcLPUartIrqCb.pfnRxErrIrqCb();
         }
     }
     if(1 == M0P_LPUART->ISR_f.RI)
     {
         LPUart_ClrStatus(LPUartRxFull);
-        if(NULL != pstcLPUartInternCb->pfnRxIrqCb)
+        if(NULL != stcLPUartIrqCb.pfnRxIrqCb)
         {
-            pstcLPUartInternCb->pfnRxIrqCb();
+            stcLPUartIrqCb.pfnRxIrqCb();
         }
     }
     if(1 == M0P_LPUART->ISR_f.TI)
     {
         LPUart_ClrStatus(LPUartTxEmpty);
-        if(NULL != pstcLPUartInternCb->pfnTxIrqCb)
+        if(NULL != stcLPUartIrqCb.pfnTxIrqCb)
         {
-            pstcLPUartInternCb->pfnTxIrqCb();
+            stcLPUartIrqCb.pfnTxIrqCb();
         }
     }
 }

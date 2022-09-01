@@ -75,8 +75,6 @@
   #define FALSE       ((boolean_t) 0u)
 #endif  
 
-#define __WEAKDEF __attribute__((weak))
-
 ///< \todo keil version
 
 /** Returns the minimum value out of two values */

@@ -252,10 +252,10 @@ typedef struct stc_uart_config
 
 #define UART0_ClearRxReceivedStatus()   (M0P_UART0->ICR_f.RICLR = 0)
 #define UART0_ClearTxSentStatus()       (M0P_UART0->ICR_f.TICLR = 0)
-#define UART0_ClearFrameErrroStatus()   (M0P_UART0->ICR_f.ICR_f.FECLR = 0)
+#define UART0_ClearFrameErrroStatus()   (M0P_UART0->ICR_f.FECLR = 0)
 #define UART1_ClearRxReceivedStatus()   (M0P_UART1->ICR_f.RICLR = 0)
 #define UART1_ClearTxSentStatus()       (M0P_UART1->ICR_f.TICLR = 0)
-#define UART1_ClearFrameErrroStatus()   (M0P_UART1->ICR_f.ICR_f.FECLR = 0)
+#define UART1_ClearFrameErrroStatus()   (M0P_UART1->ICR_f.FECLR = 0)
 // UART0: read one byte received
 #define UART0_RxReceive()               (M0P_UART0->SBUF)
 // UART1: read one byte received
@@ -263,8 +263,6 @@ typedef struct stc_uart_config
 
 void Uart0_SetCallback(stc_uart_irq_cb_t *callbacks);
 void Uart1_SetCallback(stc_uart_irq_cb_t *callbacks);
-
-//void Uart_IrqHandler(uint8_t u8Idx);
 
 en_result_t Uart_DeInit(uint8_t u8Idx, boolean_t bTouchNvic);
 //工作模式配置、多主机模式下从机地址和地址掩码设置
@@ -305,9 +303,3 @@ void Uart1_TxString(char *str);
 #endif
 
 #endif /* __UART_H__ */
-/******************************************************************************
- * EOF (not truncated)
- *****************************************************************************/
-
-
-

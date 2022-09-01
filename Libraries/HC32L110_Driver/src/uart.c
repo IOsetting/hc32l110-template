@@ -485,40 +485,64 @@ en_result_t Uart_ClrStatus(uint8_t u8Idx,en_uart_status_t enStatus)
  ** \retval 无
  **
  ******************************************************************************/
-void Uart_IRQHandler(uint8_t u8Param)
+void UART0_IRQHandler(void)
 {
-    stc_uart_instance_data_t *pstcData = NULL;
-    pstcData = UartGetInternDataPtr(u8Param);
-    if (NULL == pstcData)
+    if (1 == M0P_UART0->ISR_f.FE)
     {
+        UART0_ClearFrameErrroStatus();
+        if(NULL != m_astcUartInstanceDataLut[0].stcUartInternIrqCb.pfnRxErrIrqCb)
+        {
+            m_astcUartInstanceDataLut[0].stcUartInternIrqCb.pfnRxErrIrqCb();
+        }
         return;
     }
-    if(1 == pstcData->pstcInstance->ISR_f.FE)
+    if(1 == M0P_UART0->ISR_f.RI)
     {
-        Uart_ClrStatus(u8Param,UartRFRAMEError);
-        if(NULL != pstcData->stcUartInternIrqCb.pfnRxErrIrqCb)
+        UART0_ClearRxReceivedStatus();
+        if(NULL != m_astcUartInstanceDataLut[0].stcUartInternIrqCb.pfnRxIrqCb)
         {
-            pstcData->stcUartInternIrqCb.pfnRxErrIrqCb();
-        }
-        return;//若奇偶校验出错则不进行后续数据处理
-    }
-    if(1 == pstcData->pstcInstance->ISR_f.RI)
-    {
-        Uart_ClrStatus(u8Param,UartRxFull);
-        if(NULL != pstcData->stcUartInternIrqCb.pfnRxIrqCb)
-        {
-            pstcData->stcUartInternIrqCb.pfnRxIrqCb();
+            m_astcUartInstanceDataLut[0].stcUartInternIrqCb.pfnRxIrqCb();
         }
     }
-    if(1 == pstcData->pstcInstance->ISR_f.TI)
+    if(1 == M0P_UART0->ISR_f.TI)
     {
-        Uart_ClrStatus(u8Param,UartTxEmpty);
-        if(NULL != pstcData->stcUartInternIrqCb.pfnTxIrqCb)
+        UART0_ClearTxSentStatus();
+        if(NULL != m_astcUartInstanceDataLut[0].stcUartInternIrqCb.pfnTxIrqCb)
         {
-            pstcData->stcUartInternIrqCb.pfnTxIrqCb();
+            m_astcUartInstanceDataLut[0].stcUartInternIrqCb.pfnTxIrqCb();
         }
     }
 }
+
+void UART1_IRQHandler(void)
+{
+    if (1 == M0P_UART1->ISR_f.FE)
+    {
+        UART1_ClearFrameErrroStatus();
+        if(NULL != m_astcUartInstanceDataLut[1].stcUartInternIrqCb.pfnRxErrIrqCb)
+        {
+            m_astcUartInstanceDataLut[1].stcUartInternIrqCb.pfnRxErrIrqCb();
+        }
+        return;
+    }
+    if(1 == M0P_UART1->ISR_f.RI)
+    {
+        UART1_ClearRxReceivedStatus();
+        if(NULL != m_astcUartInstanceDataLut[1].stcUartInternIrqCb.pfnRxIrqCb)
+        {
+            m_astcUartInstanceDataLut[1].stcUartInternIrqCb.pfnRxIrqCb();
+        }
+    }
+    if(1 == M0P_UART1->ISR_f.TI)
+    {
+        UART1_ClearTxSentStatus();
+        if(NULL != m_astcUartInstanceDataLut[1].stcUartInternIrqCb.pfnTxIrqCb)
+        {
+            m_astcUartInstanceDataLut[1].stcUartInternIrqCb.pfnTxIrqCb();
+        }
+    }
+}
+
 /**
  ******************************************************************************
  ** \brief  UART通道使能内核NVIC中断
