@@ -111,20 +111,20 @@ git clone https://github.com/IOsetting/hc32l110-template.git
 
 ## 4. Edit Makefile
 
-Change the project configurations in Makefile, make sure ARM_TOOCHAIN and JLINKEXE points to the correct path
+Change the settings in Makefile, make sure ARM_TOOCHAIN and JLINKEXE points to the correct path
 
 ```makefile
-PROJECT 		?= app
+PROJECT 		  ?= app
 # path to gcc arm (or should be specified in PATH)
 ARM_TOOCHAIN 	?= /opt/gcc-arm/gcc-arm-11.2-2022.02-x86_64-arm-none-eabi/bin
 # path to JLinkExe (or should be specified in PATH)
-JLINKEXE		?= /opt/SEGGER/JLink/JLinkExe
+JLINKEXE		  ?= /opt/SEGGER/JLink/JLinkExe
 # MCU type, HC32L110x4 or HC32L110x6
-DEVICE			?= HC32L110x4
+DEVICE			  ?= HC32L110x4
 # The path for generated files
 BUILD_DIR 		= Build
 # Link descript file, hc32l110x4.ld or hc32l110x6.ld
-LDSCRIPT		= Libraries/LDScripts/hc32l110x4.ld
+LDSCRIPT		  = Libraries/LDScripts/hc32l110x4.ld
 ```
 ## 5. Compiling And Flashing
 
@@ -143,8 +143,13 @@ make flash
 
 Replace the source files of *User* folder with the source files from other example folder.
 
+# About The HC32L110 Driver
+
+This driver has been **heavily modified** from its original version(HC32L110_DDL_Rev1.1.4). The interrupt callbacks are associated will
+vector handler table directly and part of the peripheral functions were replaced by macros for efficiency.
+
 # Reference
 
 * HDSC Product Page: [https://www.hdsc.com.cn/Category82](https://www.hdsc.com.cn/Category82)
 * Jeroen Domburg's HC32L110 SDK working with GCC/GDB/OpenOCD: [https://github.com/Spritetm/hc32l110-gcc-sdk](https://github.com/Spritetm/hc32l110-gcc-sdk)
-* Jeffreyabecker's hc32l110 lib: [https://github.com/jeffreyabecker/hc32l110_lib](https://github.com/jeffreyabecker/hc32l110_lib)
+* Jeffreyabecker's hc32l110 lib (with translated user manuals): [https://github.com/jeffreyabecker/hc32l110_lib](https://github.com/jeffreyabecker/hc32l110_lib)
