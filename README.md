@@ -44,12 +44,11 @@ A build template for projects using HC32L110 series MCU and GNU Arm Embedded Too
 * SEGGER J-Link Software and Documentation pack [https://www.segger.com/downloads/jlink/](https://www.segger.com/downloads/jlink/)
 * GNU Arm Embedded Toolchain
 
-# Compiling AND Flashing
+# Building
 
 ## 1. Install GNU Arm Embedded Toolchain
 
-Download the toolchain from [Arm GNU Toolchain Downloads](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads). What we need is *AArch32 bare-metal target (arm-none-eabi)* under *x86_64 Linux hosted cross toolchains* (or *AArch64 Linux hosted cross toolchains*
- if you are using arm based PC), extract the file to somewhere e.g. /opt/gcc-arm/
+Download the toolchain from [Arm GNU Toolchain Downloads](https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads) according to your pc architecture, extract the files
 
 ```bash
 tar xvf gcc-arm-11.2-2022.02-x86_64-arm-none-eabi.tar.xz
@@ -59,16 +58,19 @@ sudo chown -R root:root gcc-arm-11.2-2022.02-x86_64-arm-none-eabi/
 ```
 ## 2. Install SEGGER J-Link
 
-Download SEGGER J-Link from [J-Link / J-Trace Downloads](https://www.segger.com/downloads/jlink/), download DEB/RPM or tar.gz according to your PC architecture. I am using Ubuntu, the installation commands
+Download and install JLink from [J-Link / J-Trace Downloads](https://www.segger.com/downloads/jlink/).
 
 ```bash
+# installation command for .deb
 sudo dpkg -i JLink_Linux_V770a_x86_64.deb
 ```
-JLink will be installed in /opt/SEGGER by default.
+The default installation directory is */opt/SEGGER*
 
 **Add HC32L110 Deivce Support**
 
-JLink (currently 7.70e) doesn't support HC32L110 out-of-box, this need to be added manually. Create a folder `HDSC` under /opt/SEGGER/JLink/Devices, and copy the flash algorithm files to this folder.
+JLink (currently 7.70e) doesn't provide out-of-box support for HC32L110, which need to be added manually. 
+
+Create a folder `HDSC` under /opt/SEGGER/JLink/Devices, and copy the flash algorithm files to it.
 
 ```
 Devices
@@ -100,7 +102,6 @@ Edit /opt/SEGGER/JLink/JLinkDevices.xml, add the following lines before `</DataB
   </Device>
 ```
 
-
 ## 3. Clone This Repository
 
 Clone this repository to local workspace
@@ -128,11 +129,11 @@ LDSCRIPT		= Libraries/LDScripts/hc32l110x4.ld
 ## 5. Compiling And Flashing
 
 ```bash
-# clean workspace
+# clean source code
 make clean
 # build
 make
-# build with full command lines
+# or make with verbose output
 V=1 make
 # flash
 make flash
@@ -144,6 +145,6 @@ Replace the source files of *User* folder with the source files from other examp
 
 # Reference
 
-* HDSC Low Power MCU Products [https://www.hdsc.com.cn/Category82](https://www.hdsc.com.cn/Category82)
-* HC32L110 SDK working with GCC/GDB/OpenOCD [https://github.com/Spritetm/hc32l110-gcc-sdk](https://github.com/Spritetm/hc32l110-gcc-sdk)
-* [https://github.com/jeffreyabecker/hc32l110_lib](https://github.com/jeffreyabecker/hc32l110_lib)
+* HDSC Product Page: [https://www.hdsc.com.cn/Category82](https://www.hdsc.com.cn/Category82)
+* Jeroen Domburg's HC32L110 SDK working with GCC/GDB/OpenOCD: [https://github.com/Spritetm/hc32l110-gcc-sdk](https://github.com/Spritetm/hc32l110-gcc-sdk)
+* Jeffreyabecker's hc32l110 lib: [https://github.com/jeffreyabecker/hc32l110_lib](https://github.com/jeffreyabecker/hc32l110_lib)
