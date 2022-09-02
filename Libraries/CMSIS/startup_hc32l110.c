@@ -2,9 +2,6 @@
 
 typedef void (*ptr_func_t)();
 
-extern uint32_t SystemCoreClock;
-extern uint32_t PeripheralCoreClock;
-
 extern uint32_t __data_start;
 extern uint32_t __data_end;
 extern uint32_t __data_load;
