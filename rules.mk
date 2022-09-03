@@ -29,8 +29,9 @@ OBJS += $(ASOURCES:$(TOP)/%.s=$(BDIR)/%.o)
 DEPS=$(CSOURCES:$(TOP)/%.c=$(BDIR)/%.d)
 
 # Global compile flags
-CFLAGS		= -Wall -ggdb -ffunction-sections -fdata-sections
-ASFLAGS		= -g -Wa,--warn
+CFLAGS		= -Wall -ffunction-sections -fdata-sections
+#CFLAGS     += -g -gdwarf-2 # For debug
+ASFLAGS		= -Wa,--warn
 
 # Arch and target specified flags
 OPT			?= -Os
@@ -91,4 +92,4 @@ clean:
 	rm -rf $(BDIR)/*
 
 flash:
-	$(JLINKEXE) -device $(DEVICE) -if swd -speed 4000 -CommanderScript $(TOP)/Flash_Algorithms/flash.jlink
+	$(JLINKEXE) -device $(DEVICE) -if swd -speed 4000 -CommanderScript $(TOP)/Misc/flash.jlink
