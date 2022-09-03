@@ -41,15 +41,16 @@ SECTIONS
     } >RAM AT >FLASH
 
     .bss ALIGN(4) (NOLOAD) : {
-        __bss_start = .;
+        __bss_start__ = .;
         *(.bss)
         *(.bss*)
         . = ALIGN(4);
-        __bss_end = .;
+        __bss_end__ = .;
         *(.noinit)
         *(.noinit*)
     } >RAM
 
     . = ALIGN(4);
-    __heap_start = .;
+    __heap_start__ = .;
+    end = __heap_start__;
 }

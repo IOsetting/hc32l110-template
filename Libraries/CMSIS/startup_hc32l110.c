@@ -6,10 +6,10 @@ extern uint32_t __data_start;
 extern uint32_t __data_end;
 extern uint32_t __data_load;
 
-extern uint32_t __bss_start;
-extern uint32_t __bss_end;
+extern uint32_t __bss_start__;
+extern uint32_t __bss_end__;
 
-extern uint32_t __heap_start;
+extern uint32_t __heap_start__;
 extern uint32_t __stacktop;
 
 extern ptr_func_t __init_array_start[];
@@ -124,8 +124,8 @@ __attribute__((used)) void Reset_Handler(void)
     while (dst < &__data_end) *dst++ = *src++;
 
     /* Clear the bss section */
-    dst = &__bss_start;
-    while (dst < &__bss_end) *dst++ = 0;
+    dst = &__bss_start__;
+    while (dst < &__bss_end__) *dst++ = 0;
 
     SystemInit();
 

@@ -287,7 +287,9 @@ en_result_t Uart_ClrStatus(uint8_t u8Idx,en_uart_status_t enStatus);
 //数据查询方式的收发操作
 //en_result_t  Uart_MultiSendFirstData(uint8_t U8Addr);
 
+void Uart0_Init(uint32_t baud);
 void Uart1_Init(uint32_t baud);
+void Uart0_TxRx_Init(uint32_t baud, func_ptr_t rxCallback);
 void Uart1_TxRx_Init(uint32_t baud, func_ptr_t rxCallback);
 
 en_result_t Uart0_TxChar(uint8_t u8Data);

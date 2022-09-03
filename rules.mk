@@ -42,7 +42,9 @@ TGT_CFLAGS 	+= $(ARCH_FLAGS) $(addprefix -D, $(LIB_FLAGS))
 # asm flags
 TGT_ASFLAGS += $(ARCH_FLAGS)
 # ld flags
-TGT_LDFLAGS += --specs=nano.specs -mcpu=cortex-m0plus -mthumb -nostartfiles -Wl,--gc-sections -Wl,-Map=$(BDIR)/$(PROJECT).map -Wl,--print-memory-usage
+TGT_LDFLAGS += --specs=nosys.specs -mcpu=cortex-m0plus -mthumb -Wl,--gc-sections -Wl,-Map=$(BDIR)/$(PROJECT).map -Wl,--print-memory-usage
+TGT_LDFLAGS += --specs=nano.specs # Use newlib-nano instead of newlib for smaller flash size
+TGT_LDFLAGS += -nostartfiles # Exclude standard initialization actions
 
 # include paths
 TGT_INCFLAGS := $(addprefix -I $(TOP)/, $(INCLUDES))

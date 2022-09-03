@@ -16,7 +16,8 @@ LIB_FLAGS       =
 # C source folders
 CDIRS	:= User \
 		Libraries/CMSIS \
-		Libraries/HC32L110_Driver/src
+		Libraries/HC32L110_Driver/src \
+		Libraries/Debug
 # C source files (if there are any single ones)
 CFILES := 
 
@@ -28,6 +29,7 @@ AFILES	:=
 # Include paths
 INCLUDES	:= Libraries/CMSIS \
 			Libraries/HC32L110_Driver/inc \
+			Libraries/Debug \
 			User
 
 include ./rules.mk

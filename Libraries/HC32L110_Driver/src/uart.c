@@ -630,11 +630,38 @@ en_result_t Uart_Init(uint8_t u8Idx, stc_uart_config_t* pstcConfig)
     return enRet;
 }
 
+void Uart0_Init(uint32_t baud)
+{
+    uint16_t period;
+    uint32_t pclk;
+
+    UART0_SetDoubleBaud(TRUE);
+    UART0_SetMode(UartMode1);
+    UART0_SetMultiModeOff();
+    UART0_EnableRxReceivedIrq();
+    UART0_ClearRxReceivedStatus();
+    UART0_ClearTxSentStatus();
+    UART0_EnableRx();
+
+    // Config timer as baudrate source
+    BASE_TIM0_SetFunction(BtTimer);
+    BASE_TIM0_SetMode(BtMode2);
+
+    // Set timer period
+    pclk = Clk_GetPClkFreq();
+    //period = (0x10000 - ((pclk * (1 + 1)) / baud / 32));
+    period = UARTx_CalculatePeriod(pclk, 1, baud);
+    BASE_TIM0_SetARR(period);
+    BASE_TIM0_SetCounter16(period);
+    // Start timer
+    BASE_TIM0_Run();
+}
+
 void Uart1_Init(uint32_t baud)
 {
     uint16_t period;
     uint32_t pclk;
-    // Config UART1
+
     UART1_SetDoubleBaud(TRUE);
     UART1_SetMode(UartMode1);
     UART1_SetMultiModeOff();
@@ -655,6 +682,36 @@ void Uart1_Init(uint32_t baud)
     BASE_TIM1_SetCounter16(period);
     // Start timer
     BASE_TIM1_Run();
+}
+
+void Uart0_TxRx_Init(uint32_t baud, func_ptr_t rxCallback)
+{
+    uint16_t period;
+    uint32_t pclk;
+    stc_uart_irq_cb_t stcUartIrqCb;
+
+    UART0_SetDoubleBaud(TRUE);
+    UART0_SetMode(UartMode1);
+    UART0_SetMultiModeOff();
+    stcUartIrqCb.pfnRxIrqCb = rxCallback;
+    stcUartIrqCb.pfnTxIrqCb = NULL;
+    stcUartIrqCb.pfnRxErrIrqCb = NULL;
+    Uart0_SetCallback(&stcUartIrqCb);
+    UART0_EnableRxReceivedIrq();
+    UART0_ClearRxReceivedStatus();
+    UART0_ClearTxSentStatus();
+    UART0_EnableRx();
+
+    // Config timer0 as baudrate source
+    BASE_TIM0_SetFunction(BtTimer);
+    BASE_TIM0_SetMode(BtMode2);
+    // Set timer period
+    pclk = Clk_GetPClkFreq();
+    period = UARTx_CalculatePeriod(pclk, 1, baud);
+    BASE_TIM0_SetARR(period);
+    BASE_TIM0_SetCounter16(period);
+    // Start timer
+    BASE_TIM0_Run();
 }
 
 void Uart1_TxRx_Init(uint32_t baud, func_ptr_t rxCallback)
