@@ -3,33 +3,6 @@
 #include "gpio.h"
 #include "uart.h"
 
-void Uart1_Init(void)
-{
-    uint16_t period;
-    uint32_t pclk;
-    stc_bt_config_t baseTimerConfig;
-    // Config UART1
-    UART1_SetDoubleBaud(TRUE);
-    UART1_SetMode(UartMode1);
-    UART1_SetMultiModeOff();
-    UART1_EnableRxReceivedIrq();
-    UART1_ClearRxReceivedStatus();
-    UART1_ClearTxSentStatus();
-    UART1_EnableRx();
-
-    // Config timer1 as baudrate source
-    baseTimerConfig.enMD = BtMode2;
-    baseTimerConfig.enCT = BtTimer;
-    BaseTim1_Init(&baseTimerConfig);
-
-    // Set timer period
-    pclk = Clk_GetPClkFreq();
-    period = UARTx_CalculatePeriod(pclk, 1, 115200);
-    BASE_TIM1_SetARR(period);
-    BASE_TIM1_SetCounter16(period);
-    // Start timer
-    BASE_TIM1_Run();
-}
 
 int main(void)
 {
@@ -55,7 +28,7 @@ int main(void)
     Gpio_SetFunc_UART1_TXD_P01();
     Gpio_SetFunc_UART1_RXD_P02();
 
-    Uart1_Init();
+    Uart1_Init(115200);
 
     Gpio_SetAnalog(2, 4, TRUE); // AIN0
     Gpio_SetAnalog(2, 6, TRUE); // AIN1

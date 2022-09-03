@@ -53,6 +53,7 @@
 /* Include files                                                              */
 /******************************************************************************/
 #include "uart.h"
+#include "base_timer.h"
 /**
  ******************************************************************************
  ** \addtogroup UartGroup
@@ -627,6 +628,34 @@ en_result_t Uart_Init(uint8_t u8Idx, stc_uart_config_t* pstcConfig)
     }
     enRet = Ok;
     return enRet;
+}
+
+void Uart1_Init(uint32_t baud)
+{
+    uint16_t period;
+    uint32_t pclk;
+    // Config UART1
+    UART1_SetDoubleBaud(TRUE);
+    UART1_SetMode(UartMode1);
+    UART1_SetMultiModeOff();
+    UART1_EnableRxReceivedIrq();
+    UART1_ClearRxReceivedStatus();
+    UART1_ClearTxSentStatus();
+    UART1_EnableRx();
+
+    // Config timer as baudrate source
+    M0P_BT1->CR_f.CT     = BtTimer;
+    M0P_BT1->CR_f.MD     = BtMode2;
+
+    // Set timer period
+    
+    pclk = Clk_GetPClkFreq();
+    //period = (0x10000 - ((pclk * (1 + 1)) / baud / 32));
+    period = UARTx_CalculatePeriod(pclk, 1, baud);
+    M0P_BT1->ARR_f.ARR = period;
+    M0P_BT1->CNT_f.CNT = period;
+    // Start timer
+    M0P_BT1->CR_f.TR = 1;
 }
 
 static void Uart0_InitNvic(void)

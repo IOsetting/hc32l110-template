@@ -203,33 +203,31 @@ en_result_t Clk_SwitchTo(en_clk_source_t enSource)
     //close old
     Clk_Enable(ClkOld, FALSE);
 
-    //如果当前时钟非外部高速（即不大于24MHz）则不增加读等待周期
+    // 如果当前时钟非外部高速（即不大于24MHz）则不增加读等待周期
     if(ClkXTH != ClkNew)
     {
         M0P_FLASH->CR_f.WAIT = FALSE;
     }
-    
+
     SystemCoreClockUpdate();
 
     return Ok;
-
 }
 
 
 /**
  *******************************************************************************
- ** \brief 获得系统时钟（HCLK）频率值
+ ** \brief Get System Clock(HCLK) Frequency
  ** \param [in]     
- ** \retval      uint32_t         HCLK频率值
+ ** \retval      uint32_t         HCLK Frequency
  **
  ******************************************************************************/
 uint32_t Clk_GetHClkFreq(void)
 {
     uint32_t u32Val = 0;
     uint16_t u16TrimVal22_12 = 0;
-    const uint8_t u8hcr_tbl[] = { 4, 8, 16, 24 };
-    const uint32_t u32lcr_tbl[] = { 32768, 38400 };
-    
+    const uint32_t u32lcr_tbl[] = {32768, 38400};
+    const uint32_t u32hcr_tbl[] = {4000000UL, 8000000UL, 16000000UL, 24000000UL};
     en_clk_source_t enSrc;
 
     //1. get current input source
@@ -238,9 +236,8 @@ uint32_t Clk_GetHClkFreq(void)
     switch (enSrc)
     {
         case ClkRCH:
-            u32Val = u8hcr_tbl[(M0P_CLOCK->RCH_CR_f.TRIM&0x600U)>>9u];
-            u32Val *= 1000u * 1000u;
-			if(24000000u == u32Val)
+            u32Val = u32hcr_tbl[(M0P_CLOCK->RCH_CR_f.TRIM & 0x600U) >> 9u];
+            if(24000000u == u32Val)
 			{
                 u16TrimVal22_12 = RCH_CR_TRIM_22_12M_VAL;
 				if(u16TrimVal22_12 == M0P_CLOCK->RCH_CR_f.TRIM)
@@ -250,7 +247,7 @@ uint32_t Clk_GetHClkFreq(void)
 			}
             break;
         case ClkRCL:
-            u32Val = u32lcr_tbl[(M0P_CLOCK->RCL_CR_f.TRIM&0x200U)>>9u];
+            u32Val = u32lcr_tbl[(M0P_CLOCK->RCL_CR_f.TRIM & 0x200U) >> 9u];
             break;
         case ClkXTH:
             u32Val = CLK_XTH_VAL;
@@ -270,9 +267,9 @@ uint32_t Clk_GetHClkFreq(void)
 
 /**
  *******************************************************************************
- ** \brief 获得外设时钟（PCLK）频率值
+ ** \brief Get Peripheral Clock (PCLK) Frequency
  ** \param [in]     
- ** \retval      uint32_t         PCLK频率值
+ ** \retval      uint32_t         PCLK Frequency
  **
  ******************************************************************************/
 uint32_t Clk_GetPClkFreq(void)

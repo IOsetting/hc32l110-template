@@ -218,7 +218,7 @@ typedef struct stc_uart_config
 #define UART0_SetDoubleBaud(__STATE__)    (M0P_UART0->SCON_f.DBAUD = __STATE__)
 #define UART1_SetDoubleBaud(__STATE__)    (M0P_UART1->SCON_f.DBAUD = __STATE__)
 // Calculate timer period, for UART mode1 and mode3 only
-#define UARTx_CalculatePeriod(__PCLK__, __DOUBLE_BAUD__, __BAUD__) (0x10000 - ((__PCLK__ * (__DOUBLE_BAUD__ + 1)) / (__BAUD__ * 32)))
+#define UARTx_CalculatePeriod(__PCLK__, __DOUBLE_BAUD__, __BAUD__) (0x10000 - ((__PCLK__ * (__DOUBLE_BAUD__ + 1)) / __BAUD__ / 32))
 
 #define UART0_EnableTx()                (M0P_UART0->SCON_f.REN = 0)
 #define UART0_EnableRx()                (M0P_UART0->SCON_f.REN = 1)
@@ -286,6 +286,8 @@ boolean_t Uart_GetStatus(uint8_t u8Idx,en_uart_status_t enStatus);
 en_result_t Uart_ClrStatus(uint8_t u8Idx,en_uart_status_t enStatus);
 //数据查询方式的收发操作
 //en_result_t  Uart_MultiSendFirstData(uint8_t U8Addr);
+
+void Uart1_Init(uint32_t baud);
 
 en_result_t Uart0_TxChar(uint8_t u8Data);
 en_result_t Uart1_TxChar(uint8_t u8Data);
