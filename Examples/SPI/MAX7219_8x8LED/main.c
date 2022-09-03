@@ -55,8 +55,8 @@ int main(void)
     CLK_EnablePeripheralClk(ClkPeripheralGpio);
 
     Gpio_SetFunc_SPI_CS_P03();
-    Gpio_SetFunc_SPIMOSI_P24();
-    Gpio_SetFunc_SPICLK_P25();
+    Gpio_SetFunc_SPI_MOSI_P24();
+    Gpio_SetFunc_SPI_CLK_P25();
 
     SPIConfig.bCPHA = SpiClockPhaseFirst;
     SPIConfig.bCPOL = SpiClockPolarityLow;

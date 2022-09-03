@@ -150,6 +150,8 @@ en_result_t Spi_Init(stc_spi_config_t* pstcSpiConfig);
 en_result_t Spi_DeInit(void);
 // SPI exchange one byte
 uint8_t Spi_TxRx(uint8_t data);
+// SPI exchange multiple bytes
+void Spi_TxRxBytes(uint8_t *pBuf, uint8_t len);
 
 #ifdef __cplusplus
 }

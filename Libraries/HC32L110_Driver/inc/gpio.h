@@ -238,109 +238,109 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
 /*
     GPIO PIN功能配置设置宏定义
 */
-#define Gpio_SetFunc_UART0_RXD_P01()          do{\
+#define Gpio_SetFunc_UART0_RXD_P01()        do{\
                                                 M0P_GPIO->P0ADS_f.P01 = 0;\
                                                 M0P_GPIO->P01_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P0DIR_f.P01 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_I2C_SDA_P01()           do{\
+#define Gpio_SetFunc_I2C_SDA_P01()          do{\
                                                 M0P_GPIO->P0ADS_f.P01 = 0;\
                                                 M0P_GPIO->P01_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P0DIR_f.P01 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART1_TXD_P01()          do{\
+#define Gpio_SetFunc_UART1_TXD_P01()        do{\
                                                 M0P_GPIO->P0ADS_f.P01 = 0;\
                                                 M0P_GPIO->P01_SEL_f.SEL = 3;\
                                                 M0P_GPIO->P0DIR_f.P01 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM0_TOG_P01()        do{\
+#define Gpio_SetFunc_TIM0_TOG_P01()         do{\
                                                 M0P_GPIO->P0ADS_f.P01 = 0;\
                                                 M0P_GPIO->P01_SEL_f.SEL = 4;\
                                                 M0P_GPIO->P0DIR_f.P01 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM5_CHB_P01()              do{\
+#define Gpio_SetFunc_TIM5_CHB_P01()         do{\
                                                 M0P_GPIO->P0ADS_f.P01 = 0;\
                                                 M0P_GPIO->P01_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P0DIR_f.P01 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_SPI_SCK_P01()           do{\
+#define Gpio_SetFunc_SPI_SCK_P01()          do{\
                                                 M0P_GPIO->P0ADS_f.P01 = 0;\
                                                 M0P_GPIO->P01_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P0DIR_f.P01 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM2_EXT_P01()             do{\
+#define Gpio_SetFunc_TIM2_EXT_P01()         do{\
                                                 M0P_GPIO->P0ADS_f.P01 = 0;\
                                                 M0P_GPIO->P01_SEL_f.SEL = 7;\
                                                 M0P_GPIO->P0DIR_f.P01 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART0_TXD_P02()          do{\
+#define Gpio_SetFunc_UART0_TXD_P02()        do{\
                                                 M0P_GPIO->P0ADS_f.P02 = 0;\
                                                 M0P_GPIO->P02_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P0DIR_f.P02 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_I2C_SCL_P02()           do{\
+#define Gpio_SetFunc_I2C_SCL_P02()          do{\
                                                 M0P_GPIO->P0ADS_f.P02 = 0;\
                                                 M0P_GPIO->P02_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P0DIR_f.P02 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART1_RXD_P02()          do{\
+#define Gpio_SetFunc_UART1_RXD_P02()        do{\
                                                 M0P_GPIO->P0ADS_f.P02 = 0;\
                                                 M0P_GPIO->P02_SEL_f.SEL = 3;\
                                                 M0P_GPIO->P0DIR_f.P02 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TM0_TOGN_P02()       do{\
+#define Gpio_SetFunc_TM0_TOGN_P02()         do{\
                                                 M0P_GPIO->P0ADS_f.P02 = 0;\
                                                 M0P_GPIO->P02_SEL_f.SEL = 4;\
                                                 M0P_GPIO->P0DIR_f.P02 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM6_CHA_P02()              do{\
+#define Gpio_SetFunc_TIM6_CHA_P02()         do{\
                                                 M0P_GPIO->P0ADS_f.P02 = 0;\
                                                 M0P_GPIO->P02_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P0DIR_f.P02 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_SPI_CS_P02()            do{\
+#define Gpio_SetFunc_SPI_CS_P02()           do{\
                                                 M0P_GPIO->P0ADS_f.P02 = 0;\
                                                 M0P_GPIO->P02_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P0DIR_f.P02 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM2_GATE_P02()            do{\
+#define Gpio_SetFunc_TIM2_GATE_P02()        do{\
                                                 M0P_GPIO->P0ADS_f.P02 = 0;\
                                                 M0P_GPIO->P02_SEL_f.SEL = 7;\
                                                 M0P_GPIO->P0DIR_f.P02 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_PCA_CH3_P03(x)             do{\
+#define Gpio_SetFunc_PCA_CH3_P03(x)         do{\
                                                 M0P_GPIO->P0ADS_f.P03 = 0;\
                                                 M0P_GPIO->P03_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P0DIR_f.P03 = (x);\
                                             }while(0);
 
-#define Gpio_SetFunc_SPI_CS_P03()            do{\
+#define Gpio_SetFunc_SPI_CS_P03()           do{\
                                                 M0P_GPIO->P0ADS_f.P03 = 0;\
                                                 M0P_GPIO->P03_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P0DIR_f.P03 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM6_CHB_P03()              do{\
+#define Gpio_SetFunc_TIM6_CHB_P03()         do{\
                                                 M0P_GPIO->P0ADS_f.P03 = 0;\
                                                 M0P_GPIO->P03_SEL_f.SEL = 3;\
                                                 M0P_GPIO->P0DIR_f.P03 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_LPTIM_EXT_P03()             do{\
+#define Gpio_SetFunc_LPTIM_EXT_P03()        do{\
                                                 M0P_GPIO->P0ADS_f.P03 = 0;\
                                                 M0P_GPIO->P03_SEL_f.SEL = 4;\
                                                 M0P_GPIO->P0DIR_f.P03 = 1;\
@@ -352,85 +352,85 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->P0DIR_f.P03 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_PCA_ECI_P03()           do{\
+#define Gpio_SetFunc_PCA_ECI_P03()          do{\
                                                 M0P_GPIO->P0ADS_f.P03 = 0;\
                                                 M0P_GPIO->P03_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P0DIR_f.P03 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_VC0_OUT_P03()           do{\
+#define Gpio_SetFunc_VC0_OUT_P03()          do{\
                                                 M0P_GPIO->P0ADS_f.P03 = 0;\
                                                 M0P_GPIO->P03_SEL_f.SEL = 7;\
                                                 M0P_GPIO->P0DIR_f.P03 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_I2C_SCL_P14()           do{\
+#define Gpio_SetFunc_I2C_SCL_P14()          do{\
                                                 M0P_GPIO->P1ADS_f.P14 = 0;\
                                                 M0P_GPIO->P14_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P1DIR_f.P14 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM2_TOGN_P14()       do{\
+#define Gpio_SetFunc_TIM2_TOGN_P14()        do{\
                                                 M0P_GPIO->P1ADS_f.P14 = 0;\
                                                 M0P_GPIO->P14_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P1DIR_f.P14 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_PCA_ECI_P14()           do{\
+#define Gpio_SetFunc_PCA_ECI_P14()          do{\
                                                 M0P_GPIO->P1ADS_f.P14 = 0;\
                                                 M0P_GPIO->P14_SEL_f.SEL = 3;\
                                                 M0P_GPIO->P1DIR_f.P14 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_ADC_RDY_P14()           do{\
+#define Gpio_SetFunc_ADC_RDY_P14()          do{\
                                                 M0P_GPIO->P1ADS_f.P14 = 0;\
                                                 M0P_GPIO->P14_SEL_f.SEL = 4;\
                                                 M0P_GPIO->P1DIR_f.P14 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_SPICS_P14()            do{\
+#define Gpio_SetFunc_SPI_CS_P14()           do{\
                                                 M0P_GPIO->P1ADS_f.P14 = 0;\
                                                 M0P_GPIO->P14_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P1DIR_f.P14 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART0TX_P14()          do{\
+#define Gpio_SetFunc_UART0_TX_P14()         do{\
                                                 M0P_GPIO->P1ADS_f.P14 = 0;\
                                                 M0P_GPIO->P14_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P1DIR_f.P14 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_I2CDAT_P15()           do{\
+#define Gpio_SetFunc_I2C_DAT_P15()          do{\
                                                 M0P_GPIO->P1ADS_f.P15 = 0;\
                                                 M0P_GPIO->P15_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P1DIR_f.P15 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM2_TOG_P15()        do{\
+#define Gpio_SetFunc_TIM2_TOG_P15()         do{\
                                                 M0P_GPIO->P1ADS_f.P15 = 0;\
                                                 M0P_GPIO->P15_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P1DIR_f.P15 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM4_CHB_P15()              do{\
+#define Gpio_SetFunc_TIM4_CHB_P15()         do{\
                                                 M0P_GPIO->P1ADS_f.P15 = 0;\
                                                 M0P_GPIO->P15_SEL_f.SEL = 3;\
                                                 M0P_GPIO->P1DIR_f.P15 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_LPTIM_GATE_P15()            do{\
+#define Gpio_SetFunc_LPTIM_GATE_P15()       do{\
                                                 M0P_GPIO->P1ADS_f.P15 = 0;\
                                                 M0P_GPIO->P15_SEL_f.SEL = 4;\
                                                 M0P_GPIO->P1DIR_f.P15 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_SPICLK_P15()           do{\
+#define Gpio_SetFunc_SPI_CLK_P15()          do{\
                                                 M0P_GPIO->P1ADS_f.P15 = 0;\
                                                 M0P_GPIO->P15_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P1DIR_f.P15 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART0RX_P15()          do{\
+#define Gpio_SetFunc_UART0_RX_P15()         do{\
                                                 M0P_GPIO->P1ADS_f.P15 = 0;\
                                                 M0P_GPIO->P15_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P1DIR_f.P15 = 1;\
@@ -442,37 +442,37 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->P1DIR_f.P15 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM6_CHA_P23()              do{\
+#define Gpio_SetFunc_TIM6_CHA_P23()         do{\
                                                 M0P_GPIO->P2ADS_f.P23 = 0;\
                                                 M0P_GPIO->P23_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P2DIR_f.P23 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM4_CHB_P23()              do{\
+#define Gpio_SetFunc_TIM4_CHB_P23()         do{\
                                                 M0P_GPIO->P2ADS_f.P23 = 0;\
                                                 M0P_GPIO->P23_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P2DIR_f.P23 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM4_CHA_P23()              do{\
+#define Gpio_SetFunc_TIM4_CHA_P23()         do{\
                                                 M0P_GPIO->P2ADS_f.P23 = 0;\
                                                 M0P_GPIO->P23_SEL_f.SEL = 3;\
                                                 M0P_GPIO->P2DIR_f.P23 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_PCA_CH0_P23(x)             do{\
+#define Gpio_SetFunc_PCA_CH0_P23(x)         do{\
                                                 M0P_GPIO->P2ADS_f.P23 = 0;\
                                                 M0P_GPIO->P23_SEL_f.SEL = 4;\
                                                 M0P_GPIO->P2DIR_f.P23 = (x);\
                                             }while(0);
 
-#define Gpio_SetFunc_SPIMISO_P23()          do{\
+#define Gpio_SetFunc_SPI_MISO_P23()         do{\
                                                 M0P_GPIO->P2ADS_f.P23 = 0;\
                                                 M0P_GPIO->P23_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P2DIR_f.P23 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART1TX_P23()          do{\
+#define Gpio_SetFunc_UART1_TX_P23()         do{\
                                                 M0P_GPIO->P2ADS_f.P23 = 0;\
                                                 M0P_GPIO->P23_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P2DIR_f.P23 = 0;\
@@ -485,14 +485,14 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->CTRL1_f.IR_POL = (x);\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM4_CHB_P24()              do{\
+#define Gpio_SetFunc_TIM4_CHB_P24()         do{\
                                                 M0P_GPIO->P2ADS_f.P24 = 0;\
                                                 M0P_GPIO->P24_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P2DIR_f.P24 = 0;\
                                                 M0P_GPIO->CTRL1_f.HCLK_EN = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM5_CHB_P24()              do{\
+#define Gpio_SetFunc_TIM5_CHB_P24()         do{\
                                                 M0P_GPIO->P2ADS_f.P24 = 0;\
                                                 M0P_GPIO->P24_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P2DIR_f.P24 = 0;\
@@ -506,46 +506,46 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->CTRL1_f.HCLK_EN = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_PCA_CH1_P24(x)             do{\
+#define Gpio_SetFunc_PCA_CH1_P24(x)         do{\
                                                 M0P_GPIO->P2ADS_f.P24 = 0;\
                                                 M0P_GPIO->P24_SEL_f.SEL = 4;\
                                                 M0P_GPIO->P2DIR_f.P24 = (x);\
                                             }while(0);
 
-#define Gpio_SetFunc_SPIMOSI_P24()          do{\
+#define Gpio_SetFunc_SPI_MOSI_P24()         do{\
                                                 M0P_GPIO->P2ADS_f.P24 = 0;\
                                                 M0P_GPIO->P24_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P2DIR_f.P24 = 0;\
                                                 M0P_GPIO->CTRL1_f.HCLK_EN = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART1RX_P24()          do{\
+#define Gpio_SetFunc_UART1_RX_P24()         do{\
                                                 M0P_GPIO->P2ADS_f.P24 = 0;\
                                                 M0P_GPIO->P24_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P2DIR_f.P24 = 1;\
                                                 M0P_GPIO->CTRL1_f.HCLK_EN = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_VC1_OUT_P24()           do{\
+#define Gpio_SetFunc_VC1_OUT_P24()          do{\
                                                 M0P_GPIO->P2ADS_f.P24 = 0;\
                                                 M0P_GPIO->P24_SEL_f.SEL = 7;\
                                                 M0P_GPIO->P2DIR_f.P24 = 0;\
                                                 M0P_GPIO->CTRL1_f.HCLK_EN = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_SPICLK_P25()           do{\
+#define Gpio_SetFunc_SPI_CLK_P25()          do{\
                                                 M0P_GPIO->P2ADS_f.P25 = 0;\
                                                 M0P_GPIO->P25_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P2DIR_f.P25 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_PCA_CH0_P25(x)             do{\
+#define Gpio_SetFunc_PCA_CH0_P25(x)         do{\
                                                 M0P_GPIO->P2ADS_f.P25 = 0;\
                                                 M0P_GPIO->P25_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P2DIR_f.P25 = (x);\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM5_CHA_P25()              do{\
+#define Gpio_SetFunc_TIM5_CHA_P25()         do{\
                                                 M0P_GPIO->P2ADS_f.P25 = 0;\
                                                 M0P_GPIO->P25_SEL_f.SEL = 3;\
                                                 M0P_GPIO->P2DIR_f.P25 = 0;\
@@ -569,43 +569,43 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->P2DIR_f.P25 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM1_GATE_P25()            do{\
+#define Gpio_SetFunc_TIM1_GATE_P25()        do{\
                                                 M0P_GPIO->P2ADS_f.P25 = 0;\
                                                 M0P_GPIO->P25_SEL_f.SEL = 7;\
                                                 M0P_GPIO->P2DIR_f.P25 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_SPIMOSI_P26()          do{\
+#define Gpio_SetFunc_SPI_MOSI_P26()         do{\
                                                 M0P_GPIO->P2ADS_f.P26 = 0;\
                                                 M0P_GPIO->P26_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P2DIR_f.P26 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM4_CHA_P26()              do{\
+#define Gpio_SetFunc_TIM4_CHA_P26()         do{\
                                                 M0P_GPIO->P2ADS_f.P26 = 0;\
                                                 M0P_GPIO->P26_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P2DIR_f.P26 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM5_CHB_P26()              do{\
+#define Gpio_SetFunc_TIM5_CHB_P26()         do{\
                                                 M0P_GPIO->P2ADS_f.P26 = 0;\
                                                 M0P_GPIO->P26_SEL_f.SEL = 3;\
                                                 M0P_GPIO->P2DIR_f.P26 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_PCA_CH2_P26(x)             do{\
+#define Gpio_SetFunc_PCA_CH2_P26(x)         do{\
                                                 M0P_GPIO->P2ADS_f.P26 = 0;\
                                                 M0P_GPIO->P26_SEL_f.SEL = 4;\
                                                 M0P_GPIO->P2DIR_f.P26 = (x);\
                                             }while(0);
 
-#define Gpio_SetFunc_UART2TX_P26()          do{\
+#define Gpio_SetFunc_UART2_TX_P26()         do{\
                                                 M0P_GPIO->P2ADS_f.P26 = 0;\
                                                 M0P_GPIO->P26_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P2DIR_f.P26 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_I2CCLK_P26()           do{\
+#define Gpio_SetFunc_I2C_CLK_P26()          do{\
                                                 M0P_GPIO->P2ADS_f.P26 = 0;\
                                                 M0P_GPIO->P26_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P2DIR_f.P26 = 0;\
@@ -617,7 +617,7 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->P2DIR_f.P26 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_SPIMISO_P27()          do{\
+#define Gpio_SetFunc_SPI_MISO_P27()         do{\
                                                 M0P_GPIO->P2ADS_f.P27 = 0;\
                                                 M0P_GPIO->P27_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P2DIR_f.P27 = 1;\
@@ -629,25 +629,25 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->P2DIR_f.P27 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM6_CHA_P27()              do{\
+#define Gpio_SetFunc_TIM6_CHA_P27()         do{\
                                                 M0P_GPIO->P2ADS_f.P27 = 0;\
                                                 M0P_GPIO->P27_SEL_f.SEL = 3;\
                                                 M0P_GPIO->P2DIR_f.P27 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_PCA_CH3_P27(x)             do{\
+#define Gpio_SetFunc_PCA_CH3_P27(x)         do{\
                                                 M0P_GPIO->P2ADS_f.P27 = 0;\
                                                 M0P_GPIO->P27_SEL_f.SEL = 4;\
                                                 M0P_GPIO->P2DIR_f.P27 = (x);\
                                             }while(0);
 
-#define Gpio_SetFunc_UART0RX_P27()          do{\
+#define Gpio_SetFunc_UART0_RX_P27()         do{\
                                                 M0P_GPIO->P2ADS_f.P27 = 0;\
                                                 M0P_GPIO->P27_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P2DIR_f.P27 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_RCH_OUT_P27()        do{\
+#define Gpio_SetFunc_RCH_OUT_P27()          do{\
                                                 M0P_GPIO->P2ADS_f.P27 = 0;\
                                                 M0P_GPIO->P27_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P2DIR_f.P27 = 0;\
@@ -659,7 +659,7 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->P2DIR_f.P27 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TM3TOGGLE_P31()        do{\
+#define Gpio_SetFunc_TM3_TOGGLE_P31()       do{\
                                                 M0P_GPIO->P3ADS_f.P31 = 0;\
                                                 M0P_GPIO->P31_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P3DIR_f.P31 = 0;\
@@ -683,7 +683,7 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->CTRL1_f.HCLK_EN = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_VC0_OUT_P31()           do{\
+#define Gpio_SetFunc_VC0_OUT_P31()          do{\
                                                 M0P_GPIO->P3ADS_f.P31 = 0;\
                                                 M0P_GPIO->P31_SEL_f.SEL = 4;\
                                                 M0P_GPIO->P3DIR_f.P31 = 0;\
@@ -691,7 +691,7 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->CTRL1_f.HCLK_EN = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART0TX_P31()          do{\
+#define Gpio_SetFunc_UART0_TX_P31()         do{\
                                                 M0P_GPIO->P3ADS_f.P31 = 0;\
                                                 M0P_GPIO->P31_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P3DIR_f.P31 = 0;\
@@ -699,7 +699,7 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->CTRL1_f.HCLK_EN = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_RCL_OUT_P31()        do{\
+#define Gpio_SetFunc_RCL_OUT_P31()          do{\
                                                 M0P_GPIO->P3ADS_f.P31 = 0;\
                                                 M0P_GPIO->P31_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P3DIR_f.P31 = 0;\
@@ -715,37 +715,37 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->CTRL1_f.HCLK_EN = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_TM3TOGGLEB_P32()       do{\
+#define Gpio_SetFunc_TM3_TOGGLEB_P32()      do{\
                                                 M0P_GPIO->P3ADS_f.P32 = 0;\
                                                 M0P_GPIO->P32_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P3DIR_f.P32 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_PCA_CH2_P32(x)             do{\
+#define Gpio_SetFunc_PCA_CH2_P32(x)         do{\
                                                 M0P_GPIO->P3ADS_f.P32 = 0;\
                                                 M0P_GPIO->P32_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P3DIR_f.P32 = (x);\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM6_CHB_P32()              do{\
+#define Gpio_SetFunc_TIM6_CHB_P32()         do{\
                                                 M0P_GPIO->P3ADS_f.P32 = 0;\
                                                 M0P_GPIO->P32_SEL_f.SEL = 3;\
                                                 M0P_GPIO->P3DIR_f.P32 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_VC1_OUT_P32()           do{\
+#define Gpio_SetFunc_VC1_OUT_P32()          do{\
                                                 M0P_GPIO->P3ADS_f.P32 = 0;\
                                                 M0P_GPIO->P32_SEL_f.SEL = 4;\
                                                 M0P_GPIO->P3DIR_f.P32 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART1TX_P32()          do{\
+#define Gpio_SetFunc_UART1_TX_P32()         do{\
                                                 M0P_GPIO->P3ADS_f.P32 = 0;\
                                                 M0P_GPIO->P32_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P3DIR_f.P32 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_PCA_CH4_P32(x)             do{\
+#define Gpio_SetFunc_PCA_CH4_P32(x)         do{\
                                                 M0P_GPIO->P3ADS_f.P32 = 0;\
                                                 M0P_GPIO->P32_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P3DIR_f.P32 = (x);\
@@ -757,19 +757,19 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->P3DIR_f.P32 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART2RX_P33()          do{\
+#define Gpio_SetFunc_UART2_RX_P33()         do{\
                                                 M0P_GPIO->P3ADS_f.P33 = 0;\
                                                 M0P_GPIO->P33_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P3DIR_f.P33 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_PCA_CH1_P33(x)             do{\
+#define Gpio_SetFunc_PCA_CH1_P33(x)         do{\
                                                 M0P_GPIO->P3ADS_f.P33 = 0;\
                                                 M0P_GPIO->P33_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P3DIR_f.P33 = (x);\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM5_CHB_P33()              do{\
+#define Gpio_SetFunc_TIM5_CHB_P33()         do{\
                                                 M0P_GPIO->P3ADS_f.P33 = 0;\
                                                 M0P_GPIO->P33_SEL_f.SEL = 3;\
                                                 M0P_GPIO->P3DIR_f.P33 = 0;\
@@ -781,49 +781,49 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->P3DIR_f.P33 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART1RX_P33()          do{\
+#define Gpio_SetFunc_UART1_RX_P33()         do{\
                                                 M0P_GPIO->P3ADS_f.P33 = 0;\
                                                 M0P_GPIO->P33_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P3DIR_f.P33 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_XTL_P33()          do{\
+#define Gpio_SetFunc_XTL_P33()              do{\
                                                 M0P_GPIO->P3ADS_f.P33 = 0;\
                                                 M0P_GPIO->P33_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P3DIR_f.P33 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM1_TOGN_P33()       do{\
+#define Gpio_SetFunc_TIM1_TOGN_P33()        do{\
                                                 M0P_GPIO->P3ADS_f.P33 = 0;\
                                                 M0P_GPIO->P33_SEL_f.SEL = 7;\
                                                 M0P_GPIO->P3DIR_f.P33 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_PCA_CH0_P34(x)             do{\
+#define Gpio_SetFunc_PCA_CH0_P34(x)         do{\
                                                 M0P_GPIO->P3ADS_f.P34 = 0;\
                                                 M0P_GPIO->P34_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P3DIR_f.P34 = (x);\
                                             }while(0);
 
-#define Gpio_SetFunc_UART2TX_P34()          do{\
+#define Gpio_SetFunc_UART2_TX_P34()         do{\
                                                 M0P_GPIO->P3ADS_f.P34 = 0;\
                                                 M0P_GPIO->P34_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P3DIR_f.P34 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM5_CHA_P34()              do{\
+#define Gpio_SetFunc_TIM5_CHA_P34()         do{\
                                                 M0P_GPIO->P3ADS_f.P34 = 0;\
                                                 M0P_GPIO->P34_SEL_f.SEL = 3;\
                                                 M0P_GPIO->P3DIR_f.P34 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM0_EXT_P34()             do{\
+#define Gpio_SetFunc_TIM0_EXT_P34()         do{\
                                                 M0P_GPIO->P3ADS_f.P34 = 0;\
                                                 M0P_GPIO->P34_SEL_f.SEL = 4;\
                                                 M0P_GPIO->P3DIR_f.P34 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM4_CHA_P34()              do{\
+#define Gpio_SetFunc_TIM4_CHA_P34()         do{\
                                                 M0P_GPIO->P3ADS_f.P34 = 0;\
                                                 M0P_GPIO->P34_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P3DIR_f.P34 = 0;\
@@ -835,7 +835,7 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->P3DIR_f.P34 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM1_TOG_P34()        do{\
+#define Gpio_SetFunc_TIM1_TOG_P34()         do{\
                                                 M0P_GPIO->P3ADS_f.P34 = 0;\
                                                 M0P_GPIO->P34_SEL_f.SEL = 7;\
                                                 M0P_GPIO->P3DIR_f.P34 = 0;\
@@ -847,7 +847,7 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->P3DIR_f.P35 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM6_CHB_P35()              do{\
+#define Gpio_SetFunc_TIM6_CHB_P35()         do{\
                                                 M0P_GPIO->P3ADS_f.P35 = 0;\
                                                 M0P_GPIO->P35_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P3DIR_f.P35 = 0;\
@@ -860,44 +860,44 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->P3PU_f.P35 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM0_GATE_P35()            do{\
+#define Gpio_SetFunc_TIM0_GATE_P35()        do{\
                                                 M0P_GPIO->P3ADS_f.P35 = 0;\
                                                 M0P_GPIO->P35_SEL_f.SEL = 4;\
                                                 M0P_GPIO->P3DIR_f.P35 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM4_CHB_P35()              do{\
+#define Gpio_SetFunc_TIM4_CHB_P35()         do{\
                                                 M0P_GPIO->P3ADS_f.P35 = 0;\
                                                 M0P_GPIO->P35_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P3DIR_f.P35 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_SPIMISO_P35()          do{\
+#define Gpio_SetFunc_SPI_MISO_P35()         do{\
                                                 M0P_GPIO->P3ADS_f.P35 = 0;\
                                                 M0P_GPIO->P35_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P3DIR_f.P35 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_I2CDAT_P35()           do{\
+#define Gpio_SetFunc_I2C_DAT_P35()          do{\
                                                 M0P_GPIO->P3ADS_f.P35 = 0;\
                                                 M0P_GPIO->P35_SEL_f.SEL = 7;\
                                                 M0P_GPIO->P3DIR_f.P35 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART1RX_P36()          do{\
+#define Gpio_SetFunc_UART1_RX_P36()          do{\
                                                 M0P_GPIO->P3ADS_f.P36 = 0;\
                                                 M0P_GPIO->P36_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P3DIR_f.P36 = 1;\
                                                 M0P_GPIO->P3PD_f.P36 = 1;\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM6_CHA_P36()              do{\
+#define Gpio_SetFunc_TIM6_CHA_P36()         do{\
                                                 M0P_GPIO->P3ADS_f.P36 = 0;\
                                                 M0P_GPIO->P36_SEL_f.SEL = 2;\
                                                 M0P_GPIO->P3DIR_f.P36 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART0RX_P36()          do{\
+#define Gpio_SetFunc_UART0_RX_P36()         do{\
                                                 M0P_GPIO->P3ADS_f.P36 = 0;\
                                                 M0P_GPIO->P36_SEL_f.SEL = 3;\
                                                 M0P_GPIO->P3DIR_f.P36 = 1;\
@@ -909,19 +909,19 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->P3DIR_f.P36 = (x);\
                                             }while(0);
 
-#define Gpio_SetFunc_TIM4_CHA_P36()              do{\
+#define Gpio_SetFunc_TIM4_CHA_P36()         do{\
                                                 M0P_GPIO->P3ADS_f.P36 = 0;\
                                                 M0P_GPIO->P36_SEL_f.SEL = 5;\
                                                 M0P_GPIO->P3DIR_f.P36 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_SPIMOSI_P36()          do{\
+#define Gpio_SetFunc_SPI_MOSI_P36()         do{\
                                                 M0P_GPIO->P3ADS_f.P36 = 0;\
                                                 M0P_GPIO->P36_SEL_f.SEL = 6;\
                                                 M0P_GPIO->P3DIR_f.P36 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_I2CCLK_P36()           do{\
+#define Gpio_SetFunc_I2C_CLK_P36()          do{\
                                                 M0P_GPIO->P3ADS_f.P36 = 0;\
                                                 M0P_GPIO->P36_SEL_f.SEL = 7;\
                                                 M0P_GPIO->P3DIR_f.P36 = 0;\

@@ -4,7 +4,8 @@
 
 void Debug_PrinfInit(void)
 {
-
+    CLK_EnablePeripheralClk(ClkPeripheralBaseTim);
+    CLK_EnablePeripheralClk(ClkPeripheralGpio);
 #if (DEBUG_UARTx == DEBUG_UART0)
     CLK_EnablePeripheralClk(ClkPeripheralUart0);
 #if (DEBUG_UART_PORT == DEBUG_UART_P01P02)

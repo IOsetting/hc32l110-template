@@ -162,3 +162,15 @@ uint8_t Spi_TxRx(uint8_t data)
     while(!SPI_GetFlagTxFinished() && timeout--);
     return M0P_SPI->DATA;
 }
+
+void Spi_TxRxBytes(uint8_t *pBuf, uint8_t len)
+{
+    uint16_t timeout;
+    while(len--)
+    {
+        timeout = 1000;
+        M0P_SPI->DATA = *pBuf;
+        while(!SPI_GetFlagTxFinished() && timeout--);
+        *pBuf++ = M0P_SPI->DATA;
+    }
+}
