@@ -22,6 +22,7 @@ A build template for projects using HC32L110 series MCU and GNU Arm Embedded Too
 │   │   ├── startup_hc32l110.c  # Startup code
 │   │   ├── system_hc32l110.c
 │   │   └── system_hc32l110.h
+│   ├── Debug                   # Printf support
 │   ├── HC32L110_Driver         # MCU peripheral driver
 │   │   ├── inc
 │   │   └── src
