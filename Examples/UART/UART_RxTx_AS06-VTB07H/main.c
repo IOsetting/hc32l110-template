@@ -13,11 +13,6 @@ void RxIntCallback(void)
 int main(void)
 {
     uint8_t i;
-    uint16_t period;
-    uint32_t pclk;
-
-    stc_uart_irq_cb_t stcUartIrqCb;
-    stc_bt_config_t baseTimerConfig;
 
     /**
      * Set PCLK = HCLK = Clock source to 24MHz
@@ -31,33 +26,8 @@ int main(void)
     Gpio_SetFunc_UART1_TXD_P01();
     Gpio_SetFunc_UART1_RXD_P02();
     // Config UART1
-    UART1_SetDoubleBaud(TRUE);
-    UART1_SetMode(UartMode1);
-    UART1_SetMultiModeOff();
-    stcUartIrqCb.pfnRxIrqCb = RxIntCallback;
-    stcUartIrqCb.pfnTxIrqCb = NULL;
-    stcUartIrqCb.pfnRxErrIrqCb = NULL;
-    Uart1_SetCallback(&stcUartIrqCb);
-    UART1_EnableRxReceivedIrq();
-    UART1_ClearRxReceivedStatus();
-    UART1_ClearTxSentStatus();
-    UART1_EnableRx();
-
-    // Config timer1 as baudrate source
-    baseTimerConfig.enMD = BtMode2;
-    baseTimerConfig.enCT = BtTimer;
-    BaseTim1_Init(&baseTimerConfig);
-    // Set timer period
-    pclk = Clk_GetPClkFreq();
-    period = UARTx_CalculatePeriod(pclk, 1, 115200);
-    BASE_TIM1_SetARR(period);
-    BASE_TIM1_SetCounter16(period);
-    // Start timer
-    BASE_TIM1_Run();
-
-    Uart1_TxString("PCLK:");
-    Uart1_TxHex((uint8_t *)&pclk, 4);
-    Uart1_TxChar('\n');
+    Uart1_TxRx_Init(115200, RxIntCallback);
+    
     while (1)
     {
         if (u8RxFlg)

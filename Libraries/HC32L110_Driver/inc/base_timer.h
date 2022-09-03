@@ -184,6 +184,12 @@ typedef struct stc_bt_config
 #define BASE_TIM1_GetCounter32()        (M0P_BT1->CNT32_f.CNT32)
 #define BASE_TIM2_GetCounter32()        (M0P_BT2->CNT32_f.CNT32)
 
+#define BASE_TIM0_SetFunction(__FUNC__) (M0P_BT0->CR_f.TR = __FUNC__)
+#define BASE_TIM1_SetFunction(__FUNC__) (M0P_BT1->CR_f.TR = __FUNC__)
+#define BASE_TIM2_SetFunction(__FUNC__) (M0P_BT2->CR_f.TR = __FUNC__)
+#define BASE_TIM0_SetMode(__MODE__)     (M0P_BT0->CR_f.MD = __MODE__)
+#define BASE_TIM1_SetMode(__MODE__)     (M0P_BT1->CR_f.MD = __MODE__)
+#define BASE_TIM2_SetMode(__MODE__)     (M0P_BT2->CR_f.MD = __MODE__)
 #define BASE_TIM0_Run()                 (M0P_BT0->CR_f.TR = 1)
 #define BASE_TIM1_Run()                 (M0P_BT1->CR_f.TR = 1)
 #define BASE_TIM2_Run()                 (M0P_BT2->CR_f.TR = 1)

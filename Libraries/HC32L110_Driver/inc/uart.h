@@ -288,6 +288,7 @@ en_result_t Uart_ClrStatus(uint8_t u8Idx,en_uart_status_t enStatus);
 //en_result_t  Uart_MultiSendFirstData(uint8_t U8Addr);
 
 void Uart1_Init(uint32_t baud);
+void Uart1_TxRx_Init(uint32_t baud, func_ptr_t rxCallback);
 
 en_result_t Uart0_TxChar(uint8_t u8Data);
 en_result_t Uart1_TxChar(uint8_t u8Data);

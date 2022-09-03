@@ -644,18 +644,47 @@ void Uart1_Init(uint32_t baud)
     UART1_EnableRx();
 
     // Config timer as baudrate source
-    M0P_BT1->CR_f.CT     = BtTimer;
-    M0P_BT1->CR_f.MD     = BtMode2;
+    BASE_TIM1_SetFunction(BtTimer);
+    BASE_TIM1_SetMode(BtMode2);
 
     // Set timer period
-    
     pclk = Clk_GetPClkFreq();
     //period = (0x10000 - ((pclk * (1 + 1)) / baud / 32));
     period = UARTx_CalculatePeriod(pclk, 1, baud);
-    M0P_BT1->ARR_f.ARR = period;
-    M0P_BT1->CNT_f.CNT = period;
+    BASE_TIM1_SetARR(period);
+    BASE_TIM1_SetCounter16(period);
     // Start timer
-    M0P_BT1->CR_f.TR = 1;
+    BASE_TIM1_Run();
+}
+
+void Uart1_TxRx_Init(uint32_t baud, func_ptr_t rxCallback)
+{
+    uint16_t period;
+    uint32_t pclk;
+    stc_uart_irq_cb_t stcUartIrqCb;
+
+    UART1_SetDoubleBaud(TRUE);
+    UART1_SetMode(UartMode1);
+    UART1_SetMultiModeOff();
+    stcUartIrqCb.pfnRxIrqCb = rxCallback;
+    stcUartIrqCb.pfnTxIrqCb = NULL;
+    stcUartIrqCb.pfnRxErrIrqCb = NULL;
+    Uart1_SetCallback(&stcUartIrqCb);
+    UART1_EnableRxReceivedIrq();
+    UART1_ClearRxReceivedStatus();
+    UART1_ClearTxSentStatus();
+    UART1_EnableRx();
+
+    // Config timer1 as baudrate source
+    BASE_TIM1_SetFunction(BtTimer);
+    BASE_TIM1_SetMode(BtMode2);
+    // Set timer period
+    pclk = Clk_GetPClkFreq();
+    period = UARTx_CalculatePeriod(pclk, 1, baud);
+    BASE_TIM1_SetARR(period);
+    BASE_TIM1_SetCounter16(period);
+    // Start timer
+    BASE_TIM1_Run();
 }
 
 static void Uart0_InitNvic(void)
