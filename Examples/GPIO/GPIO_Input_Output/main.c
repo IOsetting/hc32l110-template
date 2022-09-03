@@ -3,22 +3,21 @@
 int main(void) {
     // Set P33 as input
     Gpio_InitIO(3, 3, GpioDirIn);
-    // Press key to continue
-    while (TRUE == Gpio_GetIO(3,3));
-
     // Set GPIO P34 and P35 as output
     Gpio_InitIOExt(3, 4, GpioDirOut, TRUE, FALSE, TRUE, FALSE);
     Gpio_InitIOExt(3, 5, GpioDirOut, TRUE, FALSE, TRUE, FALSE);
+    GPIO_SetPinOutLow(3, 4);
+    GPIO_SetPinOutLow(3, 5);
+
+    // Press key to continue
+    while (GPIO_GetPinIn(3, 3) == TRUE);
     // Toggle LED blink
+    GPIO_SetPinOutHigh(3, 4);
+    GPIO_SetPinOutLow(3, 5);
     while (1)
     {
-        Gpio_SetIO(3, 4, TRUE);
-        Gpio_SetIO(3, 5, FALSE);
-        delay1ms(1000);
-
-        Gpio_SetIO(3, 4, FALSE);
-        Gpio_SetIO(3, 5, TRUE);
+        GPIO_TogglePinOut(3, 4);
+        GPIO_TogglePinOut(3, 5);
         delay1ms(1000);
     }
 }
-

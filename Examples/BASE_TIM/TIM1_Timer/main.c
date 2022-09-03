@@ -1,14 +1,11 @@
 #include "base_timer.h"
 
-static volatile uint8_t ledState = 0;
-
 void TIM1_IRQHandler(void)
 {
     if (BASE_TIM1_GetIntFlag())
     {
         BASE_TIM1_ClearIntFlag();
-        Gpio_SetIO(3, 4, ledState);
-        ledState = 1 - ledState;
+        GPIO_TogglePinOut(3, 4);
     }
 }
 

@@ -177,38 +177,6 @@ en_result_t Gpio_InitIOExt(uint8_t u8Port,
     return Ok;
 }
 
-
-/**
- *******************************************************************************
- ** \brief GPIO IO输出值设定
- **
- ** \param [in]  u8Port          IO Port口
- ** \param [in]  u8Pin           IO Pin脚
- ** \param [in]  bVal            输出电平高低
- **
- ** \retval Ok         设置成功
- **         其他值     设置失败
- ******************************************************************************/
-void Gpio_SetIO(uint8_t u8Port, uint8_t u8Pin, boolean_t bVal)
-{
-    bVal = !!bVal;
-    setBit((uint32_t)&M0P_GPIO->P0OUT + u8Port * GPIO_GPSZ, u8Pin, bVal);
-}
-
-/**
- *******************************************************************************
- ** \brief GPIO IO输入值获取
- **
- ** \param [in]  u8Port          IO Port口
- ** \param [in]  u8Pin           IO Pin脚
- **
- ** \retval boolean_t            IO电平高低
- ******************************************************************************/
-boolean_t Gpio_GetIO(uint8_t u8Port, uint8_t u8Pin)
-{
-    return getBit((uint32_t)&M0P_GPIO->P0IN + u8Port * GPIO_GPSZ, u8Pin);
-}
-
 en_result_t _GpioEnableIrq(uint8_t u8Port,
                            uint8_t u8Pin,
                            en_gpio_irqtype_t enType,

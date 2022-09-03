@@ -179,6 +179,25 @@ typedef enum en_gpio_timex_in
     GpioUart2RxdIn = 3,     ///< Uart2Rxd
 }en_gpio_timex_in_t;
 
+#define GPIO_GetPinIn(__PORT__, __PIN__)            ((*((volatile uint32_t *)((uint32_t)&M0P_GPIO->P0IN + __PORT__ * GPIO_GPSZ)) >> (__PIN__)) & 1UL)
+#define GPIO_GetPinOut(__PORT__, __PIN__)           ((*((volatile uint32_t *)((uint32_t)&M0P_GPIO->P0OUT + __PORT__ * GPIO_GPSZ)) >> (__PIN__)) & 1UL)
+#define GPIO_SetPinOutHigh(__PORT__, __PIN__)       *((volatile uint32_t *)((uint32_t)&M0P_GPIO->P0OUT + __PORT__ * GPIO_GPSZ)) |= (1UL << (__PIN__))
+#define GPIO_SetPinOutLow(__PORT__, __PIN__)        *((volatile uint32_t *)((uint32_t)&M0P_GPIO->P0OUT + __PORT__ * GPIO_GPSZ)) &= ~(1UL << (__PIN__))
+
+#define GPIO_SetPinOut(__PORT__, __PIN__, __BIT__)  do { if( (__BIT__) == 0) {                    \
+                                                            GPIO_SetPinOutLow(__PORT__, __PIN__); \
+                                                        }else{                                    \
+                                                            GPIO_SetPinOutHigh(__PORT__, __PIN__);\
+                                                        }                                         \
+                                                    } while(0);
+
+#define GPIO_TogglePinOut(__PORT__, __PIN__)        do { if( GPIO_GetPinOut(__PORT__, __PIN__) == 0) {\
+                                                            GPIO_SetPinOutHigh(__PORT__, __PIN__); \
+                                                        }else{                                    \
+                                                            GPIO_SetPinOutLow(__PORT__, __PIN__);\
+                                                        }                                         \
+                                                    } while(0);
+
 
 /*******************************************************************************
  * Global definitions
@@ -197,10 +216,6 @@ en_result_t Gpio_InitIOExt(uint8_t u8Port, uint8_t u8Pin,
                         boolean_t bPulldown,
                         boolean_t bOdr,
                         boolean_t bDrive);
-
-///< GPIO IO输出输入电平
-void Gpio_SetIO(uint8_t u8Port, uint8_t u8Pin,boolean_t bVal);
-boolean_t Gpio_GetIO(uint8_t u8Port, uint8_t u8Pin);
 
 ///< GPIO 中断控制使能
 en_result_t Gpio_EnableIrq(uint8_t u8Port,

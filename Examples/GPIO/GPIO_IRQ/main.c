@@ -14,9 +14,9 @@ void PORT3_IRQHandler(void)
     Gpio_ClearIrq(KEY_PORT, KEY_PIN); //M0P_GPIO->P3ICLR_f.P33 = 0U;
     if (Gpio_GetIrqStat(KEY_PORT, KEY_PIN)) // if (TRUE == M0P_GPIO->P3STAT_f.P33)
     {
-        Gpio_SetIO(LED_PORT, LED_PIN, TRUE);
+        GPIO_SetPinOutHigh(LED_PORT, LED_PIN);
         delay1ms(1000);
-        Gpio_SetIO(LED_PORT, LED_PIN, FALSE);
+        GPIO_SetPinOutLow(LED_PORT, LED_PIN);
     }
 }
 
@@ -24,9 +24,10 @@ int main(void)
 {
     // LED
     Gpio_InitIO(LED_PORT, LED_PIN, GpioDirOut);
-    Gpio_SetIO(LED_PORT, LED_PIN, 1);
+    GPIO_SetPinOutHigh(LED_PORT, LED_PIN);
     delay1ms(500);
-    Gpio_SetIO(LED_PORT, LED_PIN, 0);
+    GPIO_SetPinOutLow(LED_PORT, LED_PIN);
+
     // Key
     Gpio_InitIOExt(KEY_PORT, KEY_PIN, GpioDirIn, TRUE, FALSE, FALSE, 0);
     Gpio_ClearIrq(KEY_PORT, KEY_PIN);
