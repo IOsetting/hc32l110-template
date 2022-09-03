@@ -8,8 +8,15 @@ A build template for projects using HC32L110 series MCU and GNU Arm Embedded Too
 ├── Build                       # Build results
 ├── Examples                    # Example code
 ├── Flash_Algorithms
-│   ├── HC32L110B4_C4.FLM       # Flash algorithm file for 16K types
-│   ├── HC32L110B6_C6.FLM       # Flash algorithm file for 32k types
+│   ├── HC32L110B4_C4.FLM       
+│   ├── HC32L110B6_C6.FLM       
+│   └── JLinkDevicesAddon.xml   
+├── Misc
+│   ├── Flash_Algorithms
+│   │   ├── HC32L110B4_C4.FLM   # Flash algorithm file for 16K types
+│   │   └── HC32L110B6_C6.FLM   # Flash algorithm file for 32k types
+│   ├── flash.jlink             # JLink download commander script
+│   ├── HC32L110.svd            # CMSIS System View Description file for debug
 │   └── JLinkDevicesAddon.xml   # Device addon for JLinkDevices.xml
 ├── Libraries
 │   ├── CMSIS
@@ -140,14 +147,78 @@ V=1 make
 make flash
 ```
 
+# Debugging In VSCode
+
+Install Cortex-Debug extension in VSCode, and setup the debug settings
+
+## .vscode/launch.json
+
+```
+    "configurations": [
+        {
+            "name": "Cortex Debug",
+            "cwd": "${workspaceFolder}",
+            "executable": "${workspaceFolder}/Build/app.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "runToEntryPoint": "main",
+            "servertype": "jlink",
+            "device": "HC32L110X4", // HC32L110X6 for 32KB type
+            "interface": "swd",
+            "runToMain": true,
+            "preLaunchTask": "build download", // task name configured in tasks.json
+            // "preLaunchCommands": ["Build all"], // or cli command instead of task
+            "svdFile": "${workspaceFolder}/Misc/HC32L110.svd", // Include svd to watch device peripherals
+            "showDevDebugOutput": "parsed", // parsed, raw, vscode
+            "swoConfig":
+            {
+                "enabled": true,
+                "cpuFrequency": 24000000,
+                "swoFrequency":  4000000,
+                "source": "probe",
+                "decoders":
+                [
+                    {
+                        "label": "ITM port 0 output",
+                        "type": "console",
+                        "port": 0,
+                        "showOnStartup": true,
+                        "encoding": "ascii"
+                    }
+                ]
+            }
+        }
+    ]
+```
+## .vscode/settings.json
+```json
+{
+    "cortex-debug.gdbPath": "/opt/gcc-arm/gcc-arm-11.2-2022.02-x86_64-arm-none-eabi/bin/arm-none-eabi-gdb",
+    "cortex-debug.JLinkGDBServerPath": "/opt/SEGGER/JLink/JLinkGDBServerCLExe",
+}
+```
+
+## rules.mk
+
+Add extra compile options in rules.mk,
+```makefile
+# produce debugging information in DWARF format version 2
+CFLAGS    += -g -gdwarf-2
+```
+And
+```makefile
+# Without optimization
+OPT       ?= -O0
+```
+
 # Try Other Examples
 
 Replace the source files of *User* folder with the source files from other example folder.
 
 # About The HC32L110 Driver
 
-This driver has been **heavily modified** from its original version(HC32L110_DDL_Rev1.1.4). The interrupt callbacks are associated will
-vector handler table directly and part of the peripheral functions were replaced by macros for efficiency.
+Part of the driver has been **heavily modified** from its original version(HC32L110_DDL_Rev1.1.4). The interrupt callbacks are associated will
+vector handler table directly and part of the peripheral functions were replaced with macros for efficiency.
 
 # Reference
 
