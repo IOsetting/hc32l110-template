@@ -2,7 +2,21 @@
 #include "gpio.h"
 #include "debug.h"
 
+#define TX_MODE     0
+
+const uint8_t TX_ADDRESS[NRF24_ADDR_WIDTH] = {0x32,0x4E,0x6F,0x64,0x22};
+const uint8_t RX_ADDRESS[NRF24_ADDR_WIDTH] = {0x32,0x4E,0x6F,0x64,0x65};
 extern uint8_t xbuf[NRF24_PLOAD_WIDTH];
+
+void PORT3_IRQHandler(void)
+{
+    /** Clear interrupt flag before handling, otherwise it will be triggered twice */
+    Gpio_ClearIrq(NRF_IRQ_PORT, NRF_IRQ_PIN);
+    if (Gpio_GetIrqStat(NRF_IRQ_PORT, NRF_IRQ_PIN))
+    {
+        NRF24L01_HandelIrqFlag();
+    }
+}
 
 void SPI_Init(void)
 {
@@ -30,13 +44,14 @@ void SPI_Init(void)
 
 int main(void)
 {
-    // uint8_t tmp[] = {
-    //     0x1F, 0x80, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-    //     0x21, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x28,
-    //     0x31, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x38,
-    //     0x41, 0x12, 0x13, 0x14, 0x15, 0x16, 0x37, 0x48};
-    // uint8_t succ = 0, err = 0;
-
+#if TX_MODE == 1
+    uint8_t tmp[] = {
+        0x1F, 0x80, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+        0x21, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x28,
+        0x31, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x38,
+        0x41, 0x12, 0x13, 0x14, 0x15, 0x16, 0x37, 0x48};
+    uint8_t dat, succ = 0, total = 0;
+#endif
     /**
      * Set PCLK = HCLK = Clock source to 24MHz
      */
@@ -49,15 +64,58 @@ int main(void)
     SPI_Init();
     printf("SPI Initialized\r\n");
 
-    Gpio_InitIOExt(NRF_CE_PORT, NRF_CE_PIN, GpioDirOut, TRUE, FALSE, FALSE, 0);
-    Gpio_InitIOExt(NRF_IRQ_PORT, NRF_IRQ_PIN, GpioDirIn, TRUE, FALSE, FALSE, 0);
-
-    while (NRF24L01_Check() == 1)
+    while (NRF24L01_SPI_Check() == 1)
     {
-        printf("Check failed\r\n");
+        printf(" SPI Check failed\r\n");
         delay1ms(1000);
     }
-    printf(" Checked\r\n");
+    printf(" SPI Check succ\r\n");
 
-    while(1);
+    Gpio_InitIOExt(NRF_CE_PORT, NRF_CE_PIN, GpioDirOut, TRUE, FALSE, FALSE, 0);
+
+    NRF24L01_Config();
+    printf("NRF24L01 Configured\r\n");
+
+#if TX_MODE == 1
+    NRF24L01_TxMode((uint8_t *)TX_ADDRESS, (uint8_t *)RX_ADDRESS);
+    printf("NRF24L01 TX Mode\r\n");
+#else
+    NRF24L01_RxMode((uint8_t *)RX_ADDRESS, (uint8_t *)TX_ADDRESS);
+    printf("NRF24L01 RX Mode\r\n");
+    Gpio_InitIOExt(NRF_IRQ_PORT, NRF_IRQ_PIN, GpioDirIn, FALSE, FALSE, FALSE, 0);
+    Gpio_ClearIrq(NRF_IRQ_PORT, NRF_IRQ_PIN);
+    Gpio_EnableIrq(NRF_IRQ_PORT, NRF_IRQ_PIN, GpioIrqLow);
+    EnableNvic(PORT3_IRQn, DDL_IRQ_LEVEL_DEFAULT, TRUE);
+#endif
+
+#if TX_MODE == 1
+    while (1)
+    {
+        if (NRF24L01_WriteFast(tmp) != 0)
+        {
+            NRF24L01_ResetTX();
+        }
+        else
+        {
+            succ++;
+        }
+        total++;
+        if (total == 255)
+        {
+            printf("Succ: %d\r\n", succ);
+            total = 0;
+            succ = 0;
+            NRF24L01_DumpConfig();
+        }
+        delay1ms(10);
+    }
+
+#else
+    while(1)
+    {
+        NRF24L01_DumpConfig();
+        delay1ms(1000);
+    }
+#endif
+
 }

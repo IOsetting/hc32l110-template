@@ -125,12 +125,10 @@ typedef enum
 } NRF24_SCEN;
 
 
-void NRF24L01_WriteReg(uint8_t reg, uint8_t value);
-
 uint8_t NRF24L01_ReadReg(uint8_t reg);
+uint8_t NRF24L01_WriteReg(uint8_t reg, uint8_t value);
 
 void NRF24L01_ReadToBuf(uint8_t reg, uint8_t len);
-
 void NRF24L01_WriteFromBuf(uint8_t reg, const uint8_t *pBuf, uint8_t len);
 
 void NRF24L01_PrintBuf(void);
@@ -153,8 +151,12 @@ void NRF24L01_Tx(uint8_t *pBuf);
 void NRF24L01_StartFastWrite(const void* pBuf);
 uint8_t NRF24L01_WriteFast(const void* pBuf);
 void NRF24L01_ResetTX(void);
-uint8_t NRF24L01_Check(void);
-void NRF24L01_Init(NRF24_MODE mode);
+uint8_t NRF24L01_SPI_Check(void);
+void NRF24L01_Config(void);
 
+void NRF24L01_TxMode(uint8_t *txAddr, uint8_t *rxAddr);
+void NRF24L01_RxMode(uint8_t *txAddr, uint8_t *rxAddr);
+
+void NRF24L01_DumpConfig(void);
 
 #endif

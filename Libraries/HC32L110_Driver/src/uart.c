@@ -811,8 +811,8 @@ void Uart1_TxHex(uint8_t *hex, uint8_t len)
 {
     while (len--)
     {
-        Uart1_TxChar(HEX_TABLE[*(hex + len) >> 4 & 0xF]);
-        Uart1_TxChar(HEX_TABLE[*(hex + len) & 0xF]);
+        Uart1_TxChar(HEX_TABLE[*(hex) >> 4 & 0xF]);
+        Uart1_TxChar(HEX_TABLE[*(hex++) & 0xF]);
     }
 }
 

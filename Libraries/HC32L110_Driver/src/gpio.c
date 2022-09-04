@@ -252,7 +252,7 @@ en_result_t Gpio_DisableIrq(uint8_t u8Port, uint8_t u8Pin, en_gpio_irqtype_t enT
  ******************************************************************************/
 boolean_t Gpio_GetIrqStat(uint8_t u8Port, uint8_t u8Pin)
 {
-    return getBit((uint32_t)&M0P_GPIO->P0STAT + u8Port * 0x40, u8Pin);
+    return getBit((uint32_t)&M0P_GPIO->P0STAT + u8Port * GPIO_GPSZ, u8Pin);
 }
 
 
