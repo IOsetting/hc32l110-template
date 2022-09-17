@@ -10,12 +10,12 @@ int main(void) {
     // Toggle LED blink
     while (1)
     {
-        Gpio_SetIO(3, 4, TRUE);
-        Gpio_SetIO(3, 5, FALSE);
+        GPIO_SetPinOutHigh(3, 4);
+        GPIO_SetPinOutLow(3, 5);
         delay1ms(1000);
 
-        Gpio_SetIO(3, 4, FALSE);
-        Gpio_SetIO(3, 5, TRUE);
+        GPIO_SetPinOutLow(3, 4);
+        GPIO_SetPinOutHigh(3, 5);
         delay1ms(1000);
     }
 }
