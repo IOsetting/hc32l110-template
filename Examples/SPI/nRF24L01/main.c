@@ -4,6 +4,9 @@
 
 #define TX_MODE     0
 
+#define LED_PORT       (3)
+#define LED_PIN        (4)
+
 const uint8_t TX_ADDRESS[NRF24_ADDR_WIDTH] = {0x32,0x4E,0x6F,0x64,0x22};
 const uint8_t RX_ADDRESS[NRF24_ADDR_WIDTH] = {0x32,0x4E,0x6F,0x64,0x65};
 extern uint8_t xbuf[NRF24_PLOAD_WIDTH];
@@ -14,7 +17,9 @@ void PORT3_IRQHandler(void)
     Gpio_ClearIrq(NRF_IRQ_PORT, NRF_IRQ_PIN);
     if (Gpio_GetIrqStat(NRF_IRQ_PORT, NRF_IRQ_PIN))
     {
+        GPIO_SetPinOutHigh(LED_PORT, LED_PIN);
         NRF24L01_HandelIrqFlag();
+        GPIO_SetPinOutLow(LED_PORT, LED_PIN);
     }
 }
 
@@ -64,6 +69,12 @@ int main(void)
     SPI_Init();
     printf("SPI Initialized\r\n");
 
+    // LED
+    Gpio_InitIO(LED_PORT, LED_PIN, GpioDirOut);
+    GPIO_SetPinOutHigh(LED_PORT, LED_PIN);
+    delay1ms(200);
+    GPIO_SetPinOutLow(LED_PORT, LED_PIN);
+
     while (NRF24L01_SPI_Check() == 1)
     {
         printf(" SPI Check failed\r\n");
@@ -91,6 +102,7 @@ int main(void)
 #if TX_MODE == 1
     while (1)
     {
+        tmp[NRF24_PLOAD_WIDTH - 1] = total;
         if (NRF24L01_WriteFast(tmp) != 0)
         {
             NRF24L01_ResetTX();
@@ -114,7 +126,7 @@ int main(void)
     while(1)
     {
         NRF24L01_DumpConfig();
-        delay1ms(1000);
+        delay1ms(5000);
     }
 #endif
 
