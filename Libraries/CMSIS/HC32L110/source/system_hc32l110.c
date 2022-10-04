@@ -115,17 +115,17 @@ void SystemInit(void)
 
     // TODO load trim from flash and enable RCH
     //hcr 4MHz manual trim.
-    Clk_SetRCHFreq(ClkFreq4Mhz);
-    Clk_Enable(ClkRCH, TRUE);
+    Clk_SetRCHFreq(ClkFreq4Mhz); // Set internal high speed clock to lowest speed(4MHz)
+    Clk_Enable(ClkRCH, TRUE);    // Then enable it
 
-    SystemCoreClockUpdate();
+    SystemCoreClockUpdate();     // This only update the value of SystemCoreClock 
 
-	_HidePinInit();
+    _HidePinInit();              // Not for 20-pin types
 
-    DDL_ZERO_STRUCT(stcCfg);
-    stcCfg.bNoRef = TRUE;
-    stcCfg.u32LoadVal = 0xFFFFFF;
-    Clk_SysTickConfig(&stcCfg);
+    DDL_ZERO_STRUCT(stcCfg);     // Clear the data
+    stcCfg.bNoRef = TRUE;        // True: use HCLK, false: use enClk
+    stcCfg.u32LoadVal = 0xFFFFFF; // Set it to the max value of 24-bit
+    Clk_SysTickConfig(&stcCfg);  // Init SysTick controller
 }
 
 

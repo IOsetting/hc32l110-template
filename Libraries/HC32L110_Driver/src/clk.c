@@ -764,8 +764,8 @@ en_result_t Clk_SysTickConfig(stc_clk_systickcfg_t *pstcCfg)
         return ErrorInvalidParameter;
     }
 
-    M0P_CLOCK->PERI_CLKEN_f.TICK = 1;
-    switch (pstcCfg->enClk)
+    M0P_CLOCK->PERI_CLKEN_f.TICK = 1;   // Enable peripheral clock on SysTick
+    switch (pstcCfg->enClk)             // Select clock source if using enClk
     {
         case ClkRCH:
             M0P_CLOCK->SYSTICK_CR_f.CLK_SEL = 0x2;
@@ -785,11 +785,11 @@ en_result_t Clk_SysTickConfig(stc_clk_systickcfg_t *pstcCfg)
 
     M0P_CLOCK->SYSTICK_CR_f.NOREF = pstcCfg->bNoRef;
 
-    SysTick->LOAD  = (uint32_t)(pstcCfg->u32LoadVal - 1UL);                         /* set reload register */
-    NVIC_SetPriority(SysTick_IRQn, (1UL << __NVIC_PRIO_BITS) - 1UL);                /* set Priority for Systick Interrupt */
-    SysTick->VAL   = 0UL;                                                           /* Load the SysTick Counter Value */
-    SysTick->CTRL  = SysTick_CTRL_ENABLE_Msk;
-    
+    SysTick->LOAD  = (uint32_t)(pstcCfg->u32LoadVal - 1UL);          // set reload value
+    NVIC_SetPriority(SysTick_IRQn, (1UL << __NVIC_PRIO_BITS) - 1UL); // set Priority for SysTick Interrupt
+    SysTick->VAL   = 0UL;                                            // Reset counter value
+    SysTick->CTRL  = SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk; // Turn on SysTick with Interrupt enabled
+
     return Ok;
 }
 

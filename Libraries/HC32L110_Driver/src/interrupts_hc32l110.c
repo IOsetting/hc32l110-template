@@ -56,6 +56,7 @@
 #include "ddl.h"
 #include "interrupts_hc32l110.h"
 
+__attribute__((weak)) void SysTick_Handler(void);
 __attribute__((weak)) void PORT0_IRQHandler(void);
 __attribute__((weak)) void PORT1_IRQHandler(void);
 __attribute__((weak)) void PORT2_IRQHandler(void);
@@ -91,7 +92,7 @@ __attribute__((weak)) void ClkTrim_IRQHandler(uint8_t u8Param);
  ** \retval    Ok       设置成功
  **            其他值   设置失败
  ******************************************************************************/
-void EnableNvic(uint32_t u32Irq,uint8_t u8Level,boolean_t bEn)
+void EnableNvic(uint32_t u32Irq, uint8_t u8Level, boolean_t bEn)
 {
     IRQn_Type enIrq = (IRQn_Type)u32Irq;
 
@@ -106,12 +107,16 @@ void EnableNvic(uint32_t u32Irq,uint8_t u8Level,boolean_t bEn)
 }
 
 /**
- *******************************************************************************
- ** \brief NVIC hardware fault 中断实现
- **        用于单步调试功能
- **
- ** \retval
- ******************************************************************************/
+  * @brief This function handles Non maskable interrupt.
+  */
+void NMI_Handler(void)
+{
+
+}
+
+/**
+  * @brief This function handles Hard fault interrupt.
+  */
 void HardFault_Handler(void)
 {
     volatile int a = 0;
@@ -120,6 +125,22 @@ void HardFault_Handler(void)
     {
         ;
     }
+}
+
+/**
+  * @brief This function handles System service call via SWI instruction.
+  */
+void SVC_Handler(void)
+{
+
+}
+
+/**
+  * @brief This function handles Pendable request for system service.
+  */
+void PendSV_Handler(void)
+{
+  
 }
 
 /**
@@ -253,9 +274,3 @@ void CLKTRIM_IRQHandler(void)
 {
     ClkTrim_IRQHandler(0);
 }
-
-
-
-/******************************************************************************/
-/* EOF (not truncated)                                                        */
-/******************************************************************************/
