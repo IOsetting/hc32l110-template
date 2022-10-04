@@ -65,7 +65,7 @@ void NRF24L01_PrintBuf(void)
 /**
 * Flush the RX FIFO
 */
-void NRF24L01_FlushRX(void)
+void NRF24L01_RxFlush(void)
 {
     NRF24L01_WriteReg(NRF24_CMD_FLUSH_RX, NRF24_CMD_NOP);
 }
@@ -73,7 +73,7 @@ void NRF24L01_FlushRX(void)
 /**
 * Flush the TX FIFO
 */
-void NRF24L01_FlushTX(void)
+void NRF24L01_TxFlush(void)
 {
     NRF24L01_WriteReg(NRF24_CMD_FLUSH_TX, NRF24_CMD_NOP);
 }
@@ -120,13 +120,7 @@ void NRF24L01_Tx(uint8_t *pBuf)
     NRF_CE_High();
 }
 
-void NRF24L01_StartFastWrite(const void* pBuf)
-{
-    NRF24L01_WriteFromBuf(NRF24_CMD_W_TX_PAYLOAD, pBuf, NRF24_PLOAD_WIDTH);
-    NRF_CE_High();
-}
-
-uint8_t NRF24L01_WriteFast(const void* pBuf)
+uint8_t NRF24L01_TxFast(const void* pBuf)
 {
     uint8_t dat;
     //Blocking only if FIFO is full. This will loop and block until TX is successful or fail
@@ -135,13 +129,15 @@ uint8_t NRF24L01_WriteFast(const void* pBuf)
         dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_STATUS);
         if (dat & NRF24_FLAG_MAX_RT) return 1;
     } while (dat & NRF24_FLAG_TX_FULL);
-    NRF24L01_StartFastWrite(pBuf);
+    NRF24L01_WriteFromBuf(NRF24_CMD_W_TX_PAYLOAD, pBuf, NRF24_PLOAD_WIDTH);
+    NRF_CE_High();
     return 0;
 }
 
-void NRF24L01_ResetTX(void)
+void NRF24L01_TxReset(void)
 {
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_STATUS, NRF24_FLAG_MAX_RT);//Clear max retry flag
+    //Clear max retry flag
+    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_STATUS, NRF24_FLAG_MAX_RT);
     NRF_CE_Low();
     delay100us(1);
     NRF_CE_High();
@@ -215,7 +211,7 @@ void NRF24L01_RxMode(uint8_t *txAddr, uint8_t *rxAddr)
     NRF24L01_WriteFromBuf(NRF24_CMD_W_REGISTER | NRF24_REG_RX_ADDR_P1, rxAddr, NRF24_ADDR_WIDTH);
     NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_CONFIG, 0x0F);
     NRF_CE_High();
-    NRF24L01_FlushRX();
+    NRF24L01_RxFlush();
 }
 
 /**

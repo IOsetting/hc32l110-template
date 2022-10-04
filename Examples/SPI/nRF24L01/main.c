@@ -55,7 +55,7 @@ int main(void)
         0x21, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x28,
         0x31, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x38,
         0x41, 0x12, 0x13, 0x14, 0x15, 0x16, 0x37, 0x48};
-    uint8_t dat, succ = 0, total = 0;
+    uint8_t succ = 0, total = 0;
 #endif
     /**
      * Set PCLK = HCLK = Clock source to 24MHz
@@ -87,25 +87,16 @@ int main(void)
     NRF24L01_Config();
     printf("NRF24L01 Configured\r\n");
 
+
 #if TX_MODE == 1
     NRF24L01_TxMode((uint8_t *)TX_ADDRESS, (uint8_t *)RX_ADDRESS);
     printf("NRF24L01 TX Mode\r\n");
-#else
-    NRF24L01_RxMode((uint8_t *)RX_ADDRESS, (uint8_t *)TX_ADDRESS);
-    printf("NRF24L01 RX Mode\r\n");
-    Gpio_InitIOExt(NRF_IRQ_PORT, NRF_IRQ_PIN, GpioDirIn, FALSE, FALSE, FALSE, 0);
-    Gpio_ClearIrq(NRF_IRQ_PORT, NRF_IRQ_PIN);
-    Gpio_EnableIrq(NRF_IRQ_PORT, NRF_IRQ_PIN, GpioIrqLow);
-    EnableNvic(PORT3_IRQn, DDL_IRQ_LEVEL_DEFAULT, TRUE);
-#endif
-
-#if TX_MODE == 1
     while (1)
     {
         tmp[NRF24_PLOAD_WIDTH - 1] = total;
-        if (NRF24L01_WriteFast(tmp) != 0)
+        if (NRF24L01_TxFast(tmp) != 0)
         {
-            NRF24L01_ResetTX();
+            NRF24L01_TxReset();
         }
         else
         {
@@ -119,10 +110,16 @@ int main(void)
             succ = 0;
             NRF24L01_DumpConfig();
         }
-        delay1ms(10);
+        delay1ms(100);
     }
 
 #else
+    NRF24L01_RxMode((uint8_t *)RX_ADDRESS, (uint8_t *)TX_ADDRESS);
+    printf("NRF24L01 RX Mode\r\n");
+    Gpio_InitIOExt(NRF_IRQ_PORT, NRF_IRQ_PIN, GpioDirIn, FALSE, FALSE, FALSE, 0);
+    Gpio_ClearIrq(NRF_IRQ_PORT, NRF_IRQ_PIN);
+    Gpio_EnableIrq(NRF_IRQ_PORT, NRF_IRQ_PIN, GpioIrqLow);
+    EnableNvic(PORT3_IRQn, DDL_IRQ_LEVEL_DEFAULT, TRUE);
     while(1)
     {
         NRF24L01_DumpConfig();

@@ -136,21 +136,20 @@ void NRF24L01_PrintBuf(void);
 /**
 * Flush the RX FIFO
 */
-void NRF24L01_FlushRX(void);
+void NRF24L01_RxFlush(void);
 
 /**
 * Flush the TX FIFO
 */
-void NRF24L01_FlushTX(void);
+void NRF24L01_TxFlush(void);
 
 void NRF24L01_CheckFlag(uint8_t *tx_ds, uint8_t *max_rt, uint8_t *rx_dr);
 uint8_t NRF24L01_RxAvailable(uint8_t* pipe_num);
 
 void NRF24L01_HandelIrqFlag(void);
 void NRF24L01_Tx(uint8_t *pBuf);
-void NRF24L01_StartFastWrite(const void* pBuf);
-uint8_t NRF24L01_WriteFast(const void* pBuf);
-void NRF24L01_ResetTX(void);
+uint8_t NRF24L01_TxFast(const void* pBuf);
+void NRF24L01_TxReset(void);
 uint8_t NRF24L01_SPI_Check(void);
 void NRF24L01_Config(void);
 
