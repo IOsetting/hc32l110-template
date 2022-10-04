@@ -15,7 +15,7 @@ LIB_FLAGS       =
 
 # C source folders
 CDIRS	:= User \
-		Libraries/CMSIS \
+		Libraries/CMSIS/HC32L110/source \
 		Libraries/HC32L110_Driver/src \
 		Libraries/Debug
 # C source files (if there are any single ones)
@@ -27,7 +27,8 @@ ADIRS	:= User
 AFILES	:= 
 
 # Include paths
-INCLUDES	:= Libraries/CMSIS \
+INCLUDES	:= Libraries/CMSIS/CM0/Core \
+			Libraries/CMSIS/HC32L110/include \
 			Libraries/HC32L110_Driver/inc \
 			Libraries/Debug \
 			User
