@@ -24,7 +24,7 @@ CFILES :=
 # ASM source folders
 ADIRS	:= User
 # ASM single files
-AFILES	:= 
+AFILES	:= Libraries/CMSIS/HC32L110/source/startup_hc32l110.s
 
 # Include paths
 INCLUDES	:= Libraries/CMSIS/CM0/Core \
