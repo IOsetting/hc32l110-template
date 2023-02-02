@@ -46,6 +46,7 @@ TGT_ASFLAGS += $(ARCH_FLAGS)
 TGT_LDFLAGS += --specs=nosys.specs -mcpu=cortex-m0plus -mthumb -Wl,--gc-sections -Wl,-Map=$(BDIR)/$(PROJECT).map -Wl,--print-memory-usage
 TGT_LDFLAGS += --specs=nano.specs # Use newlib-nano instead of newlib for smaller flash size
 #TGT_LDFLAGS += -nostartfiles # Exclude standard initialization actions
+TGT_LDFLAGS += -Wl,--no-warn-rwx-segments # for arm-gnu-toolchain-12.2
 
 # include paths
 TGT_INCFLAGS := $(addprefix -I $(TOP)/, $(INCLUDES))
@@ -53,7 +54,7 @@ TGT_INCFLAGS := $(addprefix -I $(TOP)/, $(INCLUDES))
 
 .PHONY: all clean flash echo
 
-all: $(BDIR)/$(PROJECT).elf $(BDIR)/$(PROJECT).bin
+all: $(BDIR)/$(PROJECT).elf $(BDIR)/$(PROJECT).bin $(BDIR)/$(PROJECT).hex
 
 # for debug
 echo:
@@ -85,11 +86,22 @@ $(BDIR)/$(PROJECT).elf: $(OBJS) $(TOP)/$(LDSCRIPT)
 
 # Convert elf to bin
 %.bin: %.elf
-	@printf "  OBJCP\t$@\n"
+	@printf "  OBJCP BIN\t$@\n"
 	$(Q)$(OBJCOPY) -I elf32-littlearm -O binary  $< $@
+
+# Convert elf to hex
+%.hex: %.elf
+	@printf "  OBJCP HEX\t$@\n"
+	$(Q)$(OBJCOPY) -I elf32-littlearm -O ihex  $< $@
+
 
 clean:
 	rm -rf $(BDIR)/*
 
 flash:
-	$(JLINKEXE) -device $(DEVICE) -if swd -speed 4000 -CommanderScript $(TOP)/Misc/flash.jlink
+ifeq ($(FLASH_PROGRM),jlink)
+	$(JLINKEXE) -device $(JLINK_DEVICE) -if swd -speed 4000 -CommanderScript $(TOP)/Misc/flash.jlink
+else ifeq ($(FLASH_PROGRM),pyocd)
+	$(PYOCD_EXE) erase -c -t $(PYOCD_DEVICE) --config $(TOP)/Misc/pyocd.yaml
+	$(PYOCD_EXE) load $(BDIR)/$(PROJECT).hex -t $(PYOCD_DEVICE) --config $(TOP)/Misc/pyocd.yaml
+endif

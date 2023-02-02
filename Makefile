@@ -1,12 +1,34 @@
+##### Project #####
+
 PROJECT 		?= app
-# path to gcc arm (or should be specified in PATH)
-ARM_TOOCHAIN 	?= /opt/gcc-arm/gcc-arm-11.2-2022.02-x86_64-arm-none-eabi/bin
-# path to JLinkExe (or should be specified in PATH)
-JLINKEXE		?= /opt/SEGGER/JLink/JLinkExe
-# MCU type, HC32L110x4 or HC32L110x6
-DEVICE			?= HC32L110x4
 # The path for generated files
 BUILD_DIR 		= Build
+
+
+##### Options #####
+
+# Programmer, jlink or pyocd
+FLASH_PROGRM	?= pyocd
+
+##### Toolchains #######
+
+# path to gcc arm
+#ARM_TOOCHAIN 	?= /opt/gcc-arm/gcc-arm-11.2-2022.02-x86_64-arm-none-eabi/bin
+#ARM_TOOCHAIN 	?= /opt/gcc-arm/arm-gnu-toolchain-11.3.rel1-x86_64-arm-none-eabi/bin
+ARM_TOOCHAIN 	?= /opt/gcc-arm/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi/bin
+
+
+# path to JLinkExe
+JLINKEXE		?= /opt/SEGGER/JLink/JLinkExe
+# JLink devices: HC32L110x4 or HC32L110x6
+JLINK_DEVICE	?= HC32L110x4
+# path to PyOCD
+PYOCD_EXE		?= pyocd
+# PyOCD device type: hc32l110 hc32l110b4pa hc32l110c4pa hc32l110c4ua hc32l110b6pa hc32l110c6pa hc32l110c6ua
+PYOCD_DEVICE	?= hc32l110c4ua
+
+
+##### Paths ############
 
 # Link descript file, hc32l110x4.ld or hc32l110x6.ld
 LDSCRIPT		= Libraries/LDScripts/hc32l110x4.ld
