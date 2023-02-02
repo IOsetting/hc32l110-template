@@ -24,14 +24,15 @@ int main(void)
     CLK_EnablePeripheralClk(ClkPeripheralUart1);
     /* 
     Set P01,P02 as UART1 TX,RX, or use P35,P36
-        Gpio_SetFunc_UART1TX_P35();
-        Gpio_SetFunc_UART1RX_P36();
+        Gpio_SetFunc_UART1_TX_P35();
+        Gpio_SetFunc_UART1_RX_P36();
     */
     Gpio_SetFunc_UART1_TXD_P01();
     Gpio_SetFunc_UART1_RXD_P02();
     // Config UART1
     Uart1_TxRx_Init(115200, RxIntCallback);
 
+    Uart1_TxString("Please input string and return\r\n");
     while (1)
     {
         if (u8RxFlg)
@@ -41,7 +42,7 @@ int main(void)
             {
                 Uart1_TxChar(u8RxData[i]);
             }
-            Uart1_TxChar('\n');
+            Uart1_TxString("\r\n");
         }
         delay1ms(200);
     }

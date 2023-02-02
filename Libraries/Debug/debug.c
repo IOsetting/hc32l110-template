@@ -26,8 +26,8 @@ void Debug_PrinfInit(void)
     Gpio_SetFunc_UART1_TXD_P01();
     Gpio_SetFunc_UART1_RXD_P02();
 #elif (DEBUG_UART_PORT == DEBUG_UART_P35P36)
-    Gpio_SetFunc_UART1TX_P35();
-    Gpio_SetFunc_UART1RX_P36();
+    Gpio_SetFunc_UART1_TX_P35();
+    Gpio_SetFunc_UART1_RX_P36();
 #endif
     Uart1_TxRx_Init(115200, NULL);
 #endif

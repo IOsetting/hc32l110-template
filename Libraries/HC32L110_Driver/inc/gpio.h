@@ -841,7 +841,7 @@ en_result_t Gpio_SetSignalSource(en_gpio_target_t enTarget, en_gpio_timex_in_t e
                                                 M0P_GPIO->P3DIR_f.P34 = 0;\
                                             }while(0);
 
-#define Gpio_SetFunc_UART1TX_P35()          do{\
+#define Gpio_SetFunc_UART1_TX_P35()         do{\
                                                 M0P_GPIO->P3ADS_f.P35 = 0;\
                                                 M0P_GPIO->P35_SEL_f.SEL = 1;\
                                                 M0P_GPIO->P3DIR_f.P35 = 0;\
