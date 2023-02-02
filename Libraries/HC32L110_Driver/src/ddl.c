@@ -51,7 +51,7 @@
 
 #include "ddl.h"
 
-uint8_t HEX_TABLE[16] = { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+const uint8_t HEX_TABLE[16] = { '0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 
 uint32_t Log2(uint32_t u32Val)
 {
@@ -111,13 +111,12 @@ void delay1ms(uint32_t u32Cnt)
     uint32_t u32end;
     while(u32Cnt-- > 0)
     {
+        // Next tick VAL will start from 0xFFFFFF
         SysTick->VAL = 0;
-
+        // VAL will count down, it takes 1/1000 second to reach this value
         u32end = 0x1000000 - SystemCoreClock/1000;
-        while(SysTick->VAL > u32end)
-        {
-            ;
-        }
+        // Block till it reachs the value
+        while(SysTick->VAL > u32end);
     }
 }
 
@@ -133,11 +132,7 @@ void delay100us(uint32_t u32Cnt)
     while(u32Cnt-- > 0)
     {
         SysTick->VAL = 0;
-
         u32end = 0x1000000 - SystemCoreClock/10000;
-        while(SysTick->VAL > u32end)
-        {
-            ;
-        }
+        while(SysTick->VAL > u32end);
     }
 }
