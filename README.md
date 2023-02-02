@@ -7,17 +7,6 @@ A build template for projects using HC32L110 series MCU and GNU Arm Embedded Too
 ```
 ├── Build                       # Build results
 ├── Examples                    # Example code
-├── Flash_Algorithms
-│   ├── HC32L110B4_C4.FLM       
-│   ├── HC32L110B6_C6.FLM       
-│   └── JLinkDevicesAddon.xml   
-├── Misc
-│   ├── Flash_Algorithms
-│   │   ├── HC32L110B4_C4.FLM   # Flash algorithm file for 16K types
-│   │   └── HC32L110B6_C6.FLM   # Flash algorithm file for 32k types
-│   ├── flash.jlink             # JLink download commander script
-│   ├── HC32L110.svd            # CMSIS System View Description file for debug
-│   └── JLinkDevicesAddon.xml   # Device addon for JLinkDevices.xml
 ├── Libraries
 │   ├── CMSIS
 │   │   ├── base_types.h
@@ -36,6 +25,15 @@ A build template for projects using HC32L110 series MCU and GNU Arm Embedded Too
 │   └── LDScripts
 │       ├── hc32l110x4.ld       # Link description script for 16K types
 │       └── hc32l110x6.ld       # Link description script for 32K types
+├── Misc
+│   ├── Flash_Algorithms
+│   │   ├── HC32L110B4_C4.FLM   # Flash algorithm file for 16K types
+│   │   └── HC32L110B6_C6.FLM   # Flash algorithm file for 32k types
+│   ├── flash.jlink             # JLink download commander script
+│   ├── HC32L110.svd            # CMSIS System View Description file for debug
+│   ├── HDSC.HC32L110.1.0.3.pack 
+│   ├── JLinkDevicesAddon.xml   # Device addon for JLinkDevices.xml
+│   └── pyocd.yaml              # PyOCD configuration file
 ├── LICENSE
 ├── Makefile                    # Make config
 ├── README.md
@@ -43,16 +41,17 @@ A build template for projects using HC32L110 series MCU and GNU Arm Embedded Too
 └── User                        # User application code
 ```
 
-# Requirements
+# Prerequisites
 
 * Board using HC32L110 serial MCU
   * 16K Flash / 2K RAM: HC32L110C4UA, HC32L110C4PA, HC32L110B4PA;
   * 32K Flash / 4k RAM: HC32L110C6UA, HC32L110C6PA, HC32L110B6PA, HC32L110B6YA;
-* JLink OB programmer
+* Programmer
+  * J-Link: J-Link OB programmer
+  * PyOCD: DAPLink or J-Link 
 * SEGGER J-Link Software and Documentation pack [https://www.segger.com/downloads/jlink/](https://www.segger.com/downloads/jlink/)
+* Or PyOCD [https://pyocd.io/](https://pyocd.io/)
 * GNU Arm Embedded Toolchain
-
-# Building
 
 ## 1. Install GNU Arm Embedded Toolchain
 
@@ -64,7 +63,9 @@ cd /opt/gcc-arm/
 sudo mv ~/Backup/linux/gcc-arm-11.2-2022.02-x86_64-arm-none-eabi/ .
 sudo chown -R root:root gcc-arm-11.2-2022.02-x86_64-arm-none-eabi/
 ```
-## 2. Install SEGGER J-Link
+## 2. Install JLink Or PyOCD
+
+### Option #1: Install SEGGER J-Link
 
 Download and install JLink from [J-Link / J-Trace Downloads](https://www.segger.com/downloads/jlink/).
 
@@ -79,7 +80,6 @@ The default installation directory is */opt/SEGGER*
 JLink (currently 7.70e) doesn't provide out-of-box support for HC32L110, which need to be added manually. 
 
 Create a folder `HDSC` under /opt/SEGGER/JLink/Devices, and copy the flash algorithm files to it.
-
 ```
 Devices
 ├── Altera
@@ -110,6 +110,22 @@ Edit /opt/SEGGER/JLink/JLinkDevices.xml, add the following lines before `</DataB
   </Device>
 ```
 
+### Option #2: Install PyOCD
+
+Install from pip instead of apt repository because the version is 0.13.1+dfsg-1, which is too low to recognize J-Link probe
+
+```bash
+pip uninstall pyocd
+```
+This will install PyOCD into:
+```
+/home/[user]/.local/bin/pyocd
+/home/[user]/.local/bin/pyocd-gdbserver
+/home/[user]/.local/lib/python3.10/site-packages/pyocd-0.34.2.dist-info/*
+/home/[user]/.local/lib/python3.10/site-packages/pyocd/*
+```
+.profile will take care of the PATH, run `source ~/.profile` to make pyocd command available
+
 ## 3. Clone This Repository
 
 Clone this repository to local workspace
@@ -117,24 +133,47 @@ Clone this repository to local workspace
 git clone https://github.com/IOsetting/hc32l110-template.git
 ```
 
-## 4. Edit Makefile
+# Building
 
-Change the settings in Makefile, make sure ARM_TOOCHAIN and JLINKEXE points to the correct path
+## 1. Edit Makefile
+
+* make sure ARM_TOOCHAIN points to the correct path
+* If you use J-Link, FLASH_PROGRM can be jlink or pyocd
+* If you use DAPLink, set FLASH_PROGRM to pyocd
 
 ```makefile
-PROJECT 		  ?= app
-# path to gcc arm (or should be specified in PATH)
-ARM_TOOCHAIN 	?= /opt/gcc-arm/gcc-arm-11.2-2022.02-x86_64-arm-none-eabi/bin
-# path to JLinkExe (or should be specified in PATH)
-JLINKEXE		  ?= /opt/SEGGER/JLink/JLinkExe
-# MCU type, HC32L110x4 or HC32L110x6
-DEVICE			  ?= HC32L110x4
+##### Project #####
+
+PROJECT 		?= app
 # The path for generated files
 BUILD_DIR 		= Build
+
+
+##### Options #####
+
+# Programmer, jlink or pyocd
+FLASH_PROGRM	?= pyocd
+
+##### Toolchains #######
+
+# path to gcc arm
+ARM_TOOCHAIN 	?= /opt/gcc-arm/arm-gnu-toolchain-12.2.rel1-x86_64-arm-none-eabi/bin
+# path to JLinkExe
+JLINKEXE		?= /opt/SEGGER/JLink/JLinkExe
+# JLink devices: HC32L110x4 or HC32L110x6
+JLINK_DEVICE	?= HC32L110x4
+# path to PyOCD
+PYOCD_EXE		?= pyocd
+# PyOCD device type: hc32l110 hc32l110b4pa hc32l110c4pa hc32l110c4ua hc32l110b6pa hc32l110c6pa hc32l110c6ua
+PYOCD_DEVICE	?= hc32l110c4ua
+
+##### Paths ############
+
 # Link descript file, hc32l110x4.ld or hc32l110x6.ld
-LDSCRIPT		  = Libraries/LDScripts/hc32l110x4.ld
+LDSCRIPT		= Libraries/LDScripts/hc32l110x4.ld
 ```
-## 5. Compiling And Flashing
+
+## 2. Compiling And Flashing
 
 ```bash
 # clean source code
