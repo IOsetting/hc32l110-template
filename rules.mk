@@ -15,11 +15,11 @@ TOP			= .
 BDIR		= $(TOP)/$(BUILD_DIR)
 
 # For each direcotry, add it to csources
-CSOURCES := $(foreach dir, $(CDIRS), $(shell find $(TOP)/$(dir) -name '*.c'))
+CSOURCES := $(foreach dir, $(CDIRS), $(shell find $(TOP)/$(dir) -maxdepth 1 -name '*.c'))
 # Add single c source files to csources
 CSOURCES += $(addprefix $(TOP)/, $(CFILES))
 # Then assembly source folders and files
-ASOURCES := $(foreach dir, $(ADIRS), $(shell find $(TOP)/$(dir) -name '*.s'))
+ASOURCES := $(foreach dir, $(ADIRS), $(shell find $(TOP)/$(dir) -maxdepth 1 -name '*.s'))
 ASOURCES += $(addprefix $(TOP)/, $(AFILES))
 
 # Fill object files with c and asm files (keep source directory structure)
@@ -28,27 +28,36 @@ OBJS += $(ASOURCES:$(TOP)/%.s=$(BDIR)/%.o)
 # d files for detecting h file changes
 DEPS=$(CSOURCES:$(TOP)/%.c=$(BDIR)/%.d)
 
-# Global compile flags
-CFLAGS		= -Wall -ffunction-sections -fdata-sections
-#CFLAGS     += -g -gdwarf-2 # For debug
-ASFLAGS		= -Wa,--warn
-
 # Arch and target specified flags
-OPT			?= -Os
-CSTD		?= -std=c99
-ARCH_FLAGS	:= -fno-common -mcpu=cortex-m0plus -mthumb
+ARCH_FLAGS	:= -mthumb -mcpu=cortex-m0plus -fno-common
+# Debug options, -gdwarf-2 for debug, -g0 for release 
+# https://gcc.gnu.org/onlinedocs/gcc-12.2.0/gcc/Debugging-Options.html
+#  -g: system’s native format, -g0:off, -g/g1,-g2,-g3 -> more verbosely
+#  -ggdb: for gdb, -ggdb0:off, -ggdb/ggdb1,-ggdb2,-ggdb3 -> more verbosely
+#  -gdwarf: in DWARF format, -gdwarf-2,-gdwarf-3,-gdwarf-4,-gdwarf-5
+DEBUG_FLAGS ?= -gdwarf-3
 
 # c flags
-TGT_CFLAGS 	+= $(ARCH_FLAGS) $(addprefix -D, $(LIB_FLAGS))
-# asm flags
-TGT_ASFLAGS += $(ARCH_FLAGS)
-# ld flags
-TGT_LDFLAGS += --specs=nosys.specs -mcpu=cortex-m0plus -mthumb -Wl,--gc-sections -Wl,-Map=$(BDIR)/$(PROJECT).map -Wl,--print-memory-usage
-TGT_LDFLAGS += --specs=nano.specs # Use newlib-nano instead of newlib for smaller flash size
-#TGT_LDFLAGS += -nostartfiles # Exclude standard initialization actions
-TGT_LDFLAGS += -Wl,--no-warn-rwx-segments # for arm-gnu-toolchain-12.2
+OPT			?= -Os
+CSTD		?= -std=c99
+TGT_CFLAGS 	+= $(ARCH_FLAGS) $(DEBUG_FLAGS) $(OPT) $(CSTD) $(addprefix -D, $(LIB_FLAGS)) -Wall -ffunction-sections -fdata-sections
 
-# include paths
+# asm flags
+TGT_ASFLAGS += $(ARCH_FLAGS) $(DEBUG_FLAGS) $(OPT) -Wa,--warn
+
+# ld flags
+TGT_LDFLAGS += $(ARCH_FLAGS) -specs=nano.specs -specs=nosys.specs -static -lc -lm \
+				-Wl,-Map=$(BDIR)/$(PROJECT).map \
+				-Wl,--gc-sections \
+				-Wl,--print-memory-usage \
+				-Wl,--no-warn-rwx-segments
+# Exclude standard initialization actions, when __libc_init_array exists, this should be omit, \
+   otherwise it will generate "undefined reference to `_init'" error. \
+   **Remove** `bl __libc_init_array` from startup.s if you want to enable this.
+# TGT_LDFLAGS += -nostartfiles
+
+
+### included paths ###
 TGT_INCFLAGS := $(addprefix -I $(TOP)/, $(INCLUDES))
 
 
@@ -71,18 +80,18 @@ echo:
 $(BDIR)/%.o: %.c
 	@printf "  CC\t$<\n"
 	@mkdir -p $(dir $@)
-	$(Q)$(CC) $(TGT_CFLAGS) $(OPT) $(CFLAGS) $(TGT_INCFLAGS) -MT $@ -MMD -MP -MF $(BDIR)/$*.d -o $@ -c $< 
+	$(Q)$(CC) $(TGT_CFLAGS) $(TGT_INCFLAGS) -o $@ -c $< -MD -MF $(BDIR)/$*.d -MP
 
 # Compile asm to obj
 $(BDIR)/%.o: %.s
 	@printf "  AS\t$<\n"
 	@mkdir -p $(dir $@)
-	$(Q)$(CC) $(TGT_ASFLAGS) $(ASFLAGS) -o $@ -c $<
+	$(Q)$(CC) $(TGT_ASFLAGS) -o $@ -c $<
 
 # Link object files to elf
 $(BDIR)/$(PROJECT).elf: $(OBJS) $(TOP)/$(LDSCRIPT)
 	@printf "  LD\t$@\n"
-	$(Q)$(CC) $(OBJS) $(TGT_LDFLAGS) -T$(TOP)/$(LDSCRIPT) -o $@
+	$(Q)$(CC) $(TGT_LDFLAGS) -T$(TOP)/$(LDSCRIPT) $(OBJS) -o $@
 
 # Convert elf to bin
 %.bin: %.elf
@@ -93,7 +102,6 @@ $(BDIR)/$(PROJECT).elf: $(OBJS) $(TOP)/$(LDSCRIPT)
 %.hex: %.elf
 	@printf "  OBJCP HEX\t$@\n"
 	$(Q)$(OBJCOPY) -I elf32-littlearm -O ihex  $< $@
-
 
 clean:
 	rm -rf $(BDIR)/*
