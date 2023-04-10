@@ -1,12 +1,24 @@
+/**
+ * LED Blink Demo
+ * 
+ * Wiring:
+ *   P34   -> + LED1 -  -> GND
+ *   P35   -> + LED2 -  -> GND
+*/
 #include "gpio.h"
 
 int main(void) {
-    // Set P33 as input
-    Gpio_InitIO(3, 3, GpioDirIn);
+    /**
+     * Set P34 and P35 as output
+    */
+    Gpio_InitIOExt(3, 4, 
+                    GpioDirOut, // Output
+                    FALSE,      // No pull up
+                    FALSE,      // No pull down
+                    FALSE,      // No open drain
+                    FALSE);     // High driver capability
+    Gpio_InitIOExt(3, 5, GpioDirOut, FALSE, FALSE, FALSE, FALSE);
 
-    // Set GPIO P34 and P35 as output
-    Gpio_InitIOExt(3, 4, GpioDirOut, TRUE, FALSE, TRUE, FALSE);
-    Gpio_InitIOExt(3, 5, GpioDirOut, TRUE, FALSE, TRUE, FALSE);
     // Toggle LED blink
     while (1)
     {
