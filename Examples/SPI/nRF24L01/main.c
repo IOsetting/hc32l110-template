@@ -1,6 +1,6 @@
 #include "nrf24l01.h"
 #include "gpio.h"
-#include "debug.h"
+#include "bsp_printf.h"
 
 #define TX_MODE     0
 
@@ -63,7 +63,7 @@ int main(void)
     Clk_Init(ClkFreq24Mhz, ClkDiv1, ClkDiv1);
 
     CLK_EnablePeripheralClk(ClkPeripheralGpio);
-    Debug_PrinfInit();
+    Bsp_PrinfInit(115200);
     printf("UART Initialized\r\n");
 
     SPI_Init();

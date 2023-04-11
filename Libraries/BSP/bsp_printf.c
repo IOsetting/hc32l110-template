@@ -1,11 +1,11 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include <errno.h>
-#include "debug.h"
 #include "ddl.h"
 #include "uart.h"
+#include "bsp_printf.h"
 
-void Debug_PrinfInit(void)
+void Bsp_PrinfInit(uint32_t baud)
 {
     CLK_EnablePeripheralClk(ClkPeripheralBaseTim);
     CLK_EnablePeripheralClk(ClkPeripheralGpio);
@@ -18,7 +18,7 @@ void Debug_PrinfInit(void)
     Gpio_SetFunc_UART0RX_P36();
     Gpio_SetFunc_UART0TX_P35();
 #endif
-    Uart0_TxRx_Init(115200, NULL);
+    Uart0_TxRx_Init(baud, NULL);
 
 #elif (DEBUG_UARTx == DEBUG_UART1)
     CLK_EnablePeripheralClk(ClkPeripheralUart1);
@@ -29,7 +29,7 @@ void Debug_PrinfInit(void)
     Gpio_SetFunc_UART1_TX_P35();
     Gpio_SetFunc_UART1_RX_P36();
 #endif
-    Uart1_TxRx_Init(115200, NULL);
+    Uart1_TxRx_Init(baud, NULL);
 #endif
 }
 

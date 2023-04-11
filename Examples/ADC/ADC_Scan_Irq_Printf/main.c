@@ -1,7 +1,7 @@
 #include "base_timer.h"
 #include "adc.h"
 #include "gpio.h"
-#include "debug.h"
+#include "bsp_printf.h"
 
 static  uint8_t   i, j;
 static  uint16_t  u16ScanResult[8];
@@ -38,7 +38,7 @@ int main(void)
     CLK_EnablePeripheralClk(ClkPeripheralAdcBgr);
 
     // Enable printf
-    Debug_PrinfInit();
+    Bsp_PrinfInit(115200);
 
     Gpio_SetAnalog(2, 4, TRUE); // AIN0
     Gpio_SetAnalog(2, 6, TRUE); // AIN1
