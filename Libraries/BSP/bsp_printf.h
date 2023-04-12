@@ -10,7 +10,7 @@
 // UART port for printf output
 #define DEBUG_UARTx         DEBUG_UART1
 // UART port pins for printf output
-#define DEBUG_UART_PORT     DEBUG_UART_P35P36
+#define DEBUG_UART_PORT     DEBUG_UART_P01P02
 
 void Bsp_PrinfInit(uint32_t baud);
 
