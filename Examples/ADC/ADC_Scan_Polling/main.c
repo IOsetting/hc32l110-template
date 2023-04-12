@@ -1,7 +1,15 @@
+/**
+ * ADC Scan In Polling Mode
+ * 
+ * Wiring:
+ *   P24,P26,P32,P33,P34,P36  -> Voltage between 0 ~ 3.3V
+ *   P01(TX)                  -> USB2TTL RX
+ *                               USB2TTL TX (disconnected)
+*/
 #include "base_timer.h"
 #include "adc.h"
 #include "gpio.h"
-#include "uart.h"
+#include "bsp_printf.h"
 
 
 int main(void)
@@ -22,13 +30,9 @@ int main(void)
     // Enable peripheral clock
     CLK_EnablePeripheralClk(ClkPeripheralBaseTim);
     CLK_EnablePeripheralClk(ClkPeripheralGpio);
-    CLK_EnablePeripheralClk(ClkPeripheralUart1);
     CLK_EnablePeripheralClk(ClkPeripheralAdcBgr);
     // Set P01,P02 as UART1 TX,RX
-    Gpio_SetFunc_UART1_TXD_P01();
-    Gpio_SetFunc_UART1_RXD_P02();
-
-    Uart1_Init(115200);
+    Bsp_PrinfInit(115200);
 
     Gpio_SetAnalog(2, 4, TRUE); // AIN0
     Gpio_SetAnalog(2, 6, TRUE); // AIN1
@@ -80,10 +84,9 @@ int main(void)
         for (i = 0; i < 9; i++)
         {
             adcResult = ADC_GetScanResult(i);
-            Uart1_TxHex((uint8_t *)&adcResult, 2);
-            Uart1_TxChar(' ');
+            printf("%04x ", adcResult);
         }
-        Uart1_TxChar('\n');
+        printf("\r\n");
         delay1ms(100);
     }
 }
