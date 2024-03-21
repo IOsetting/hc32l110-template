@@ -69,46 +69,24 @@ sudo chown -R root:root gcc-arm-11.2-2022.02-x86_64-arm-none-eabi/
 
 Download and install JLink from [J-Link / J-Trace Downloads](https://www.segger.com/downloads/jlink/).
 
+If you download the DEB installer
 ```bash
-# installation command for .deb
-sudo dpkg -i JLink_Linux_V770a_x86_64.deb
+# The default installation directory is */opt/SEGGER*
+sudo dpkg -i JLink_Linux_V784f_x86_64.deb
 ```
-The default installation directory is */opt/SEGGER*
+If you download the TGZ archive
+```bash
+sudo tar xvf JLink_Linux_V784f_x86_64.tgz -C [target folder]
+```
 
-**Add HC32L110 Deivce Support**
+Copy [Project directory]/Misc/Flash/JLinkDevices to [User home]/.config/SEGGER/
+```bash
+cd hc32l110-template
+cp -r Misc/Flash/JLinkDevices/ ~/.config/SEGGER/
+```
 
-JLink (currently 7.70e) doesn't provide out-of-box support for HC32L110, which need to be added manually. 
+Read more: [https://wiki.segger.com/J-Link_Device_Support_Kit](https://wiki.segger.com/J-Link_Device_Support_Kit)
 
-Create a folder `HDSC` under /opt/SEGGER/JLink/Devices, and copy the flash algorithm files to it.
-```
-Devices
-├── Altera
-├── AnalogDevices
-├── ATMEL
-├── Broadcom
-├── ClouderSemi
-├── HDSC
-│   ├── HC32L110B4_C4.FLM
-│   └── HC32L110B6_C6.FLM
-├── Infineon
-├── Samsung
-├── ST
-└── Zilog
-```
-Edit /opt/SEGGER/JLink/JLinkDevices.xml, add the following lines before `</DataBase>`
-```xml
-  <!--                 -->
-  <!-- Huada (HDSC)    -->
-  <!--                 -->
-  <Device>
-    <ChipInfo Vendor="HDSC" Name="HC32L110x4"  WorkRAMAddr="0x20000000" WorkRAMSize="0x800" Core="JLINK_CORE_CORTEX_M0"/>
-    <FlashBankInfo Name="Flash_16K" BaseAddr="0x0" MaxSize="0x4000" Loader="Devices/HDSC/HC32L110B4_C4.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
-  </Device>
-  <Device>
-    <ChipInfo Vendor="HDSC" Name="HC32L110x6"  WorkRAMAddr="0x20000000" WorkRAMSize="0x1000" Core="JLINK_CORE_CORTEX_M0"/>
-    <FlashBankInfo Name="Flash_32K" BaseAddr="0x0" MaxSize="0x8000" Loader="Devices/HDSC/HC32L110B6_C6.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
-  </Device>
-```
 
 ### Option #2: Install PyOCD
 

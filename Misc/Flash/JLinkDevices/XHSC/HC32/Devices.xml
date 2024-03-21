@@ -1,0 +1,77 @@
+<!--                 -->
+<!-- HDSC (HC32)     -->
+<!--                 -->
+<Database>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32L176"  WorkRAMAddr="0x20000000" WorkRAMSize="0x2000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_128K" BaseAddr="0x0" MaxSize="0x20000" Loader="FlashHC32L17X_128K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32L136"  WorkRAMAddr="0x20000000" WorkRAMSize="0x2000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_64K" BaseAddr="0x0" MaxSize="0x10000" Loader="FlashHC32L136_64K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32L130"  WorkRAMAddr="0x20000000" WorkRAMSize="0x2000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_64K" BaseAddr="0x0" MaxSize="0x10000" Loader="FlashHC32L130_64K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32F030"  WorkRAMAddr="0x20000000" WorkRAMSize="0x2000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_64K" BaseAddr="0x0" MaxSize="0x10000" Loader="FlashHC32F030_64K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32L110x4"  WorkRAMAddr="0x20000000" WorkRAMSize="0x800" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_16K" BaseAddr="0x0" MaxSize="0x4000" Loader="HC32L110B4_C4.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32L110x6"  WorkRAMAddr="0x20000000" WorkRAMSize="0x1000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_32K" BaseAddr="0x0" MaxSize="0x8000" Loader="HC32L110B4_C6.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32F003"  WorkRAMAddr="0x20000000" WorkRAMSize="0x800" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_16K" BaseAddr="0x0" MaxSize="0x4000" Loader="HC32F003.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>  
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32F005"  WorkRAMAddr="0x20000000" WorkRAMSize="0x1000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_32K" BaseAddr="0x0" MaxSize="0x8000" Loader="HC32F005.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device> 
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32L15"  WorkRAMAddr="0x20000000" WorkRAMSize="0x1800" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_128K" BaseAddr="0x0" MaxSize="0x20000" Loader="HC32L15.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32F_M14"  WorkRAMAddr="0x20000000" WorkRAMSize="0x2000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_128K" BaseAddr="0x0" MaxSize="0x20000" Loader="HC32F_M14.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device> 
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32L19x"  WorkRAMAddr="0x20000000" WorkRAMSize="0x8000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_256K" BaseAddr="0x0" MaxSize="0x40000" Loader="FlashHC32L19X_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32F19x"  WorkRAMAddr="0x20000000" WorkRAMSize="0x8000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_256K" BaseAddr="0x0" MaxSize="0x40000" Loader="FlashHC32F19X_256K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32F17x"  WorkRAMAddr="0x20000000" WorkRAMSize="0x4000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_128K" BaseAddr="0x0" MaxSize="0x20000" Loader="FlashHC32F17X_128K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32L17x"  WorkRAMAddr="0x20000000" WorkRAMSize="0x4000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_128K" BaseAddr="0x0" MaxSize="0x20000" Loader="FlashHC32L17X_128K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32F072"  WorkRAMAddr="0x20000000" WorkRAMSize="0x4000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_128K" BaseAddr="0x0" MaxSize="0x20000" Loader="FlashHC32F072_128K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32L07X"  WorkRAMAddr="0x20000000" WorkRAMSize="0x4000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_128K" BaseAddr="0x0" MaxSize="0x20000" Loader="FlashHC32L07X_128K.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32F120"  WorkRAMAddr="0x20000000" WorkRAMSize="0x1000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_64K" BaseAddr="0x0" MaxSize="0x10000" Loader="HC32F120.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+  <Device>
+    <ChipInfo Vendor="HDSC" Name="HC32M120"  WorkRAMAddr="0x20000000" WorkRAMSize="0x1000" Core="JLINK_CORE_CORTEX_M0"/>
+    <FlashBankInfo Name="Flash_32K" BaseAddr="0x0" MaxSize="0x8000" Loader="HC32M120.FLM" LoaderType="FLASH_ALGO_TYPE_OPEN" AlwaysPresent="1"/>
+  </Device>
+</Database>
