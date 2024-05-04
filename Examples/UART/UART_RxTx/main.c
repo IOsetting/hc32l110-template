@@ -23,10 +23,14 @@ int main(void)
     CLK_EnablePeripheralClk(ClkPeripheralGpio); // GPIO clock is required, equal to M0P_CLOCK->PERI_CLKEN_f.GPIO = 1;
     CLK_EnablePeripheralClk(ClkPeripheralUart1);
     /* 
-    Set P01,P02 as UART1 TX,RX, or use P35,P36
+     * Set P01,P02 as UART1 TX,RX, or use P35,P36
+        Gpio_InitIOExt(3,5,GpioDirOut,TRUE,FALSE,FALSE,FALSE);   
+        Gpio_InitIOExt(3,6,GpioDirOut,TRUE,FALSE,FALSE,FALSE); 
         Gpio_SetFunc_UART1_TX_P35();
         Gpio_SetFunc_UART1_RX_P36();
-    */
+     */
+    Gpio_InitIOExt(0,1,GpioDirOut,TRUE,FALSE,FALSE,FALSE);
+    Gpio_InitIOExt(0,2,GpioDirOut,TRUE,FALSE,FALSE,FALSE);
     Gpio_SetFunc_UART1_TXD_P01();
     Gpio_SetFunc_UART1_RXD_P02();
     // Config UART1
@@ -38,7 +42,7 @@ int main(void)
         if (u8RxFlg)
         {
             u8RxFlg = 0;
-            for (i = 0; i < 16; i++)
+            for (i = 0; i < u8RxPos; i++)
             {
                 Uart1_TxChar(u8RxData[i]);
             }

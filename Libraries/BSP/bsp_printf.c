@@ -12,9 +12,13 @@ void Bsp_PrinfInit(uint32_t baud)
 #if (DEBUG_UARTx == DEBUG_UART0)
     CLK_EnablePeripheralClk(ClkPeripheralUart0);
 #if (DEBUG_UART_PORT == DEBUG_UART_P01P02)
+    Gpio_InitIOExt(0,1,GpioDirOut,TRUE,FALSE,FALSE,FALSE);
+    Gpio_InitIOExt(0,2,GpioDirOut,TRUE,FALSE,FALSE,FALSE);
     Gpio_SetFunc_UART0_RXD_P01();
     Gpio_SetFunc_UART0_TXD_P02();
 #elif (DEBUG_UART_PORT == DEBUG_UART_P35P36)
+    Gpio_InitIOExt(3,5,GpioDirOut,TRUE,FALSE,FALSE,FALSE);
+    Gpio_InitIOExt(3,6,GpioDirOut,TRUE,FALSE,FALSE,FALSE);
     Gpio_SetFunc_UART0RX_P36();
     Gpio_SetFunc_UART0TX_P35();
 #endif
@@ -23,9 +27,13 @@ void Bsp_PrinfInit(uint32_t baud)
 #elif (DEBUG_UARTx == DEBUG_UART1)
     CLK_EnablePeripheralClk(ClkPeripheralUart1);
 #if (DEBUG_UART_PORT == DEBUG_UART_P01P02)
+    Gpio_InitIOExt(0,1,GpioDirOut,TRUE,FALSE,FALSE,FALSE);
+    Gpio_InitIOExt(0,2,GpioDirOut,TRUE,FALSE,FALSE,FALSE);
     Gpio_SetFunc_UART1_TXD_P01();
     Gpio_SetFunc_UART1_RXD_P02();
 #elif (DEBUG_UART_PORT == DEBUG_UART_P35P36)
+    Gpio_InitIOExt(3,5,GpioDirOut,TRUE,FALSE,FALSE,FALSE);
+    Gpio_InitIOExt(3,6,GpioDirOut,TRUE,FALSE,FALSE,FALSE);
     Gpio_SetFunc_UART1_TX_P35();
     Gpio_SetFunc_UART1_RX_P36();
 #endif
