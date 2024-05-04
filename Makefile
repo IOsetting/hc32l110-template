@@ -8,7 +8,7 @@ BUILD_DIR 		= Build
 ##### Options #####
 
 # Programmer, jlink or pyocd
-FLASH_PROGRM	?= pyocd
+FLASH_PROGRM	?= jlink
 
 ##### Toolchains #######
 
@@ -39,7 +39,7 @@ LIB_FLAGS       =
 CDIRS	:= User \
 		Libraries/CMSIS/HC32L110/source \
 		Libraries/HC32L110_Driver/src \
-		Libraries/Debug
+		Libraries/BSP
 # C source files (if there are any single ones)
 CFILES := 
 
@@ -49,10 +49,11 @@ ADIRS	:= User
 AFILES	:= Libraries/CMSIS/HC32L110/source/startup_hc32l110.s
 
 # Include paths
-INCLUDES	:= Libraries/CMSIS/CM0/Core \
+INCLUDES	:= User \
+			Libraries/CMSIS/CM0/Core \
 			Libraries/CMSIS/HC32L110/include \
 			Libraries/HC32L110_Driver/inc \
-			Libraries/Debug \
-			User
+			Libraries/BSP
+			
 
 include ./rules.mk
