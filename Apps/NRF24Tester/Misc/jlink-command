@@ -1,0 +1,4 @@
+erase
+loadfile ../../Build/nrf24_tester.hex 0 noreset
+reset
+exit
