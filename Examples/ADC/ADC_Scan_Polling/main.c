@@ -50,7 +50,7 @@ int main(void)
     // Enable internal temperature sensor
     M0P_BGR->CR_f.TS_EN = 0x1u;
     // Wait 20us+ for above become stable
-    delay100us(1);
+    delay1ms(0);
 
     // Scan mode
     stcAdcCfg.enAdcOpMode = AdcScanMode;

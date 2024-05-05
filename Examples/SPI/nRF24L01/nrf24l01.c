@@ -139,7 +139,7 @@ void NRF24L01_TxReset(void)
     //Clear max retry flag
     NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_STATUS, NRF24_FLAG_MAX_RT);
     NRF_CE_Low();
-    delay100us(1);
+    delay1ms(0);
     NRF_CE_High();
 }
 
