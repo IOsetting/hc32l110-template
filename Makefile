@@ -1,6 +1,8 @@
 ##### Project #####
 
 PROJECT 		?= app
+# `$(shell pwd)` or `.`, both works
+TOP			= .
 # The path for generated files
 BUILD_DIR 		= Build
 

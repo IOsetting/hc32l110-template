@@ -10,8 +10,7 @@ CC			= $(PREFIX)gcc
 AS			= $(PREFIX)as
 LD			= $(PREFIX)ld
 OBJCOPY		= $(PREFIX)objcopy
-# `$(shell pwd)` or `.`, both works
-TOP			= .
+
 BDIR		= $(TOP)/$(BUILD_DIR)
 
 # For each direcotry, add it to csources
@@ -38,7 +37,7 @@ ARCH_FLAGS	:= -mthumb -mcpu=cortex-m0plus -fno-common
 DEBUG_FLAGS ?= -gdwarf-3
 
 # c flags
-OPT			?= -Os
+OPT			?= -Og
 CSTD		?= -std=c99
 TGT_CFLAGS 	+= $(ARCH_FLAGS) $(DEBUG_FLAGS) $(OPT) $(CSTD) $(addprefix -D, $(LIB_FLAGS)) -Wall -ffunction-sections -fdata-sections
 
@@ -49,8 +48,13 @@ TGT_ASFLAGS += $(ARCH_FLAGS) $(DEBUG_FLAGS) $(OPT) -Wa,--warn
 TGT_LDFLAGS += $(ARCH_FLAGS) -specs=nano.specs -specs=nosys.specs -static -lc -lm \
 				-Wl,-Map=$(BDIR)/$(PROJECT).map \
 				-Wl,--gc-sections \
-				-Wl,--print-memory-usage \
-				-Wl,--no-warn-rwx-segments
+				-Wl,--print-memory-usage
+
+GCC_VERSION := $(shell $(CC) -dumpversion)
+IS_GCC_ABOVE_12 := $(shell expr "$(GCC_VERSION)" ">=" "12")
+ifeq "$(IS_GCC_ABOVE_12)" "1"
+    TGT_LDFLAGS += -Wl,--no-warn-rwx-segments
+endif
 # Exclude standard initialization actions, when __libc_init_array exists, this should be omit, \
    otherwise it will generate "undefined reference to `_init'" error. \
    **Remove** `bl __libc_init_array` from startup.s if you want to enable this.
@@ -77,20 +81,20 @@ echo:
 -include $(DEPS)
 
 # Compile c to obj -- should be `$(BDIR)/%.o: $(TOP)/%.c`, but since $(TOP) is base folder so non-path also works
-$(BDIR)/%.o: %.c
+$(BDIR)/%.o: $(TOP)/%.c
 	@printf "  CC\t$<\n"
 	@mkdir -p $(dir $@)
-	$(Q)$(CC) $(TGT_CFLAGS) $(TGT_INCFLAGS) -o $@ -c $< -MD -MF $(BDIR)/$*.d -MP
+	$(Q)$(CC) $(TGT_CFLAGS) $(TGT_INCFLAGS) -MT $@ -o $@ -c $< -MD -MF $(BDIR)/$*.d -MP
 
 # Compile asm to obj
-$(BDIR)/%.o: %.s
+$(BDIR)/%.o: $(TOP)/%.s
 	@printf "  AS\t$<\n"
 	@mkdir -p $(dir $@)
 	$(Q)$(CC) $(TGT_ASFLAGS) -o $@ -c $<
 
 # Link object files to elf
 $(BDIR)/$(PROJECT).elf: $(OBJS) $(TOP)/$(LDSCRIPT)
-	@printf "  LD\t$@\n"
+	@printf "  LD\t$(LDSCRIPT) -> $@\n"
 	$(Q)$(CC) $(TGT_LDFLAGS) -T$(TOP)/$(LDSCRIPT) $(OBJS) -o $@
 
 # Convert elf to bin
@@ -108,7 +112,7 @@ clean:
 
 flash:
 ifeq ($(FLASH_PROGRM),jlink)
-	$(JLINKEXE) -device $(JLINK_DEVICE) -if swd -speed 4000 -CommanderScript $(TOP)/Misc/flash.jlink
+	$(JLINKEXE) -device $(JLINK_DEVICE) -if swd -speed 4000 -CommanderScript Misc/jlink-command
 else ifeq ($(FLASH_PROGRM),pyocd)
 	$(PYOCD_EXE) erase -c -t $(PYOCD_DEVICE) --config $(TOP)/Misc/pyocd.yaml
 	$(PYOCD_EXE) load $(BDIR)/$(PROJECT).hex -t $(PYOCD_DEVICE) --config $(TOP)/Misc/pyocd.yaml
