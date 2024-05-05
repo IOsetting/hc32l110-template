@@ -56,7 +56,6 @@
 #include "ddl.h"
 #include "interrupts_hc32l110.h"
 
-__attribute__((weak)) void SysTick_Handler(void);
 __attribute__((weak)) void PORT0_IRQHandler(void);
 __attribute__((weak)) void PORT1_IRQHandler(void);
 __attribute__((weak)) void PORT2_IRQHandler(void);
