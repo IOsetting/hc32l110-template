@@ -700,7 +700,7 @@ en_result_t Clk_Enable(en_clk_source_t enSource, boolean_t bFlag)
  ******************************************************************************/
 boolean_t Clk_GetPeripheralGate(en_clk_peripheral_gate_t enPeripheral)
 {
-    return getBit(&M0P_CLOCK->PERI_CLKEN, enPeripheral);
+    return READ_BIT(&M0P_CLOCK->PERI_CLKEN, enPeripheral);
 }
 
 
@@ -788,7 +788,7 @@ en_result_t Clk_SysTickConfig(stc_clk_systickcfg_t *pstcCfg)
     SysTick->LOAD  = (uint32_t)(pstcCfg->u32LoadVal - 1UL);          // set reload value
     NVIC_SetPriority(SysTick_IRQn, (1UL << __NVIC_PRIO_BITS) - 1UL); // set Priority for SysTick Interrupt
     SysTick->VAL   = 0UL;                                            // Reset counter value
-    SysTick->CTRL  = SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk; // Turn on SysTick with Interrupt enabled
+    SysTick->CTRL  = SysTick_CTRL_ENABLE_Msk; // Turn on SysTick without interrupt
 
     return Ok;
 }
@@ -838,7 +838,7 @@ en_result_t Clk_DebugClk(en_clk_debug_t enPeri, boolean_t bFlag)
         case ClkDBGTWdt:
         case ClkDBGTRtc:
         case ClkDBGTTick:
-            setBit(&M0P_CLOCK->DEBUG_ACTIVE, 1 << enPeri, bFlag);
+            WRITE_BIT(&M0P_CLOCK->DEBUG_ACTIVE, 1 << enPeri, bFlag);
             break;
         default:
             return ErrorInvalidParameter;

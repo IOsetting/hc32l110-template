@@ -76,14 +76,18 @@ extern "C"
 #define DEC2BCD(x)                  ((((x)/10)<<4) + ((x)%10))
 #define BCD2DEC(x)                  ((((x)>>4)*10) + ((x)&0x0F))
 
-#define setBit(addr,offset,flag)    {   if( (flag) > 0u){\
+#define WRITE_BIT(addr,offset,flag)    {   if( (flag) > 0u){\
                                             *((volatile uint32_t *)(addr)) |= ((1UL)<<(offset));\
                                         }else{\
                                             *((volatile uint32_t *)(addr)) &= (~(1UL<<(offset)));\
                                         }\
                                     }
 
-#define getBit(addr,offset)         ((((*((volatile uint32_t *)(addr))) >> (offset)) & 1u)>0?1u:0)
+#define READ_BIT(addr,offset)         ((((*((volatile uint32_t *)(addr))) >> (offset)) & 1u)>0?1u:0)
+
+#define SET_BIT(REG, BIT)           ((REG) |= (BIT))
+#define CLEAR_BIT(REG, BIT)         ((REG) &= ~(BIT))
+#define GET_BIT(REG, BIT)           ((REG) & (BIT))
 
 /**
  ******************************************************************************
@@ -167,7 +171,7 @@ uint32_t Log2(uint32_t u32Val);
 extern void DDL_WAIT_LOOP_HOOK(void);
 
 void delay1ms(uint32_t u32Cnt);
-void delay100us(uint32_t u32Cnt);
+
 
 #ifdef __cplusplus
 }

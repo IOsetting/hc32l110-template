@@ -100,7 +100,7 @@
  ******************************************************************************/
 en_result_t Gpio_SetAnalog(uint8_t u8Port, uint8_t u8Pin, boolean_t bFlag)
 {
-    setBit((uint32_t)&M0P_GPIO->P0ADS + u8Port * GPIO_GPSZ, u8Pin, bFlag);
+    WRITE_BIT((uint32_t)&M0P_GPIO->P0ADS + u8Port * GPIO_GPSZ, u8Pin, bFlag);
 
     return Ok;
 }
@@ -127,13 +127,13 @@ en_result_t Gpio_InitIO(uint8_t u8Port, uint8_t u8Pin, en_gpio_dir_t enDir)
     //fn
     *((volatile uint32_t *)((uint32_t)&M0P_GPIO->P01_SEL + u8Port * GPIO_GPSZ - 4 + u8Pin * 4)) = 0;
     //ADS
-    //setBit((uint32_t)&M0P_GPIO->ADS0 + u8Port * GPIO_GPSZ, u8Pin, 0);
+    //WRITE_BIT((uint32_t)&M0P_GPIO->ADS0 + u8Port * GPIO_GPSZ, u8Pin, 0);
     //dir
-    setBit((uint32_t)&M0P_GPIO->P0DIR + u8Port * GPIO_GPSZ, u8Pin, enDir);
+    WRITE_BIT((uint32_t)&M0P_GPIO->P0DIR + u8Port * GPIO_GPSZ, u8Pin, enDir);
     //dr
-    setBit((uint32_t)&M0P_GPIO->P0PU + u8Port * GPIO_GPSZ, u8Pin, FALSE);
-    setBit((uint32_t)&M0P_GPIO->P0PD + u8Port * GPIO_GPSZ, u8Pin, FALSE);
-    setBit((uint32_t)&M0P_GPIO->P0OD + u8Port * GPIO_GPSZ, u8Pin, FALSE);
+    WRITE_BIT((uint32_t)&M0P_GPIO->P0PU + u8Port * GPIO_GPSZ, u8Pin, FALSE);
+    WRITE_BIT((uint32_t)&M0P_GPIO->P0PD + u8Port * GPIO_GPSZ, u8Pin, FALSE);
+    WRITE_BIT((uint32_t)&M0P_GPIO->P0OD + u8Port * GPIO_GPSZ, u8Pin, FALSE);
 
     return Ok;
 }
@@ -166,13 +166,13 @@ en_result_t Gpio_InitIOExt(uint8_t u8Port,
     //fn
     *((volatile uint32_t *)((uint32_t)&M0P_GPIO->P01_SEL + u8Port * GPIO_GPSZ - 4 + u8Pin * 4)) = 0;
     //ADS
-    //setBit((uint32_t)&M0P_GPIO->ADS0 + u8Port * GPIO_GPSZ, u8Pin, 0);
-    setBit((uint32_t)&M0P_GPIO->P0DIR + u8Port * GPIO_GPSZ, u8Pin, enDir);
-    setBit((uint32_t)&M0P_GPIO->P0DR + u8Port * GPIO_GPSZ, u8Pin, bDrive);
+    //WRITE_BIT((uint32_t)&M0P_GPIO->ADS0 + u8Port * GPIO_GPSZ, u8Pin, 0);
+    WRITE_BIT((uint32_t)&M0P_GPIO->P0DIR + u8Port * GPIO_GPSZ, u8Pin, enDir);
+    WRITE_BIT((uint32_t)&M0P_GPIO->P0DR + u8Port * GPIO_GPSZ, u8Pin, bDrive);
 
-    setBit((uint32_t)&M0P_GPIO->P0PU + u8Port * GPIO_GPSZ, u8Pin, bPullup);
-    setBit((uint32_t)&M0P_GPIO->P0PD + u8Port * GPIO_GPSZ, u8Pin, bPulldown);
-    setBit((uint32_t)&M0P_GPIO->P0OD + u8Port * GPIO_GPSZ, u8Pin, bOdr);
+    WRITE_BIT((uint32_t)&M0P_GPIO->P0PU + u8Port * GPIO_GPSZ, u8Pin, bPullup);
+    WRITE_BIT((uint32_t)&M0P_GPIO->P0PD + u8Port * GPIO_GPSZ, u8Pin, bPulldown);
+    WRITE_BIT((uint32_t)&M0P_GPIO->P0OD + u8Port * GPIO_GPSZ, u8Pin, bOdr);
 
     return Ok;
 }
@@ -185,22 +185,22 @@ en_result_t _GpioEnableIrq(uint8_t u8Port,
     //high level
     if (enType & GpioIrqHigh)
     {
-        setBit((uint32_t)&M0P_GPIO->P0HIE + u8Port * GPIO_GPSZ, u8Pin, bEnable);
+        WRITE_BIT((uint32_t)&M0P_GPIO->P0HIE + u8Port * GPIO_GPSZ, u8Pin, bEnable);
     }
     //low level
     if (enType & GpioIrqLow)
     {
-        setBit((uint32_t)&M0P_GPIO->P0LIE + u8Port * GPIO_GPSZ, u8Pin, bEnable);
+        WRITE_BIT((uint32_t)&M0P_GPIO->P0LIE + u8Port * GPIO_GPSZ, u8Pin, bEnable);
     }
     //rising
     if (enType & GpioIrqRising)
     {
-        setBit((uint32_t)&M0P_GPIO->P0RIE + u8Port * GPIO_GPSZ, u8Pin, bEnable);
+        WRITE_BIT((uint32_t)&M0P_GPIO->P0RIE + u8Port * GPIO_GPSZ, u8Pin, bEnable);
     }
     //falling
     if (enType & GpioIrqFalling)
     {
-        setBit((uint32_t)&M0P_GPIO->P0FIE + u8Port * GPIO_GPSZ, u8Pin, bEnable);
+        WRITE_BIT((uint32_t)&M0P_GPIO->P0FIE + u8Port * GPIO_GPSZ, u8Pin, bEnable);
     }
 
 
@@ -252,7 +252,7 @@ en_result_t Gpio_DisableIrq(uint8_t u8Port, uint8_t u8Pin, en_gpio_irqtype_t enT
  ******************************************************************************/
 boolean_t Gpio_GetIrqStat(uint8_t u8Port, uint8_t u8Pin)
 {
-    return getBit((uint32_t)&M0P_GPIO->P0STAT + u8Port * GPIO_GPSZ, u8Pin);
+    return READ_BIT((uint32_t)&M0P_GPIO->P0STAT + u8Port * GPIO_GPSZ, u8Pin);
 }
 
 
@@ -267,7 +267,7 @@ boolean_t Gpio_GetIrqStat(uint8_t u8Port, uint8_t u8Pin)
  ******************************************************************************/
 en_result_t Gpio_ClearIrq(uint8_t u8Port, uint8_t u8Pin)
 {
-    setBit((uint32_t)&M0P_GPIO->P0ICLR + u8Port * GPIO_GPSZ, u8Pin, 0u);
+    WRITE_BIT((uint32_t)&M0P_GPIO->P0ICLR + u8Port * GPIO_GPSZ, u8Pin, 0u);
 
     return Ok;
 }

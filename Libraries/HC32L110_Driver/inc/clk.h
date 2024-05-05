@@ -232,8 +232,11 @@ typedef struct
 
 #define CLK_DummyWrite()            (M0P_CLOCK->SYSCTRL0_f.RESERVED11 = 0x0)
 
-#define CLK_EnablePeripheralClk(__PERIPHERAL_GATE_T__)      setBit(&M0P_CLOCK->PERI_CLKEN, __PERIPHERAL_GATE_T__, 1)
-#define CLK_DisablePeripheralClk(__PERIPHERAL_GATE_T__)     setBit(&M0P_CLOCK->PERI_CLKEN, __PERIPHERAL_GATE_T__, 0)
+#define CLK_EnablePeripheralClk(__PERIPHERAL_GATE_T__)      WRITE_BIT(&M0P_CLOCK->PERI_CLKEN, __PERIPHERAL_GATE_T__, 1)
+#define CLK_DisablePeripheralClk(__PERIPHERAL_GATE_T__)     WRITE_BIT(&M0P_CLOCK->PERI_CLKEN, __PERIPHERAL_GATE_T__, 0)
+
+#define CLK_EnableSysTickIrq()      SET_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk)
+#define CLK_DisableSysTickIrq()     CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_TICKINT_Msk)
 
 
 /******************************************************************************
