@@ -108,31 +108,22 @@ void DDL_WAIT_LOOP_HOOK(void)
  */
 void delay1ms(uint32_t u32Cnt)
 {
-    uint32_t u32end;
-    while(u32Cnt-- > 0)
+    __IO uint32_t  tmp = SysTick->CTRL;  /* Clear the COUNTFLAG first */
+    uint32_t tmpDelay; /* MISRAC2012-Rule-17.8 */
+    /* Add this code to indicate that local variable is not used */
+    ((void)tmp);
+    tmpDelay = u32Cnt;
+    /* Add a period to guaranty minimum wait */
+    if (tmpDelay < 0xFFFFFFU)
     {
-        // Next tick VAL will start from 0xFFFFFF
-        SysTick->VAL = 0;
-        // VAL will count down, it takes 1/1000 second to reach this value
-        u32end = 0x1000000 - SystemCoreClock/1000;
-        // Block till it reachs the value
-        while(SysTick->VAL > u32end);
+        tmpDelay++;
     }
-}
 
-/**
- * \brief   delay100us
- *          delay approximately 100us.
- * \param   [in]  u32Cnt
- * \retval  void
- */
-void delay100us(uint32_t u32Cnt)
-{
-    uint32_t u32end;
-    while(u32Cnt-- > 0)
+    while (tmpDelay != 0U)
     {
-        SysTick->VAL = 0;
-        u32end = 0x1000000 - SystemCoreClock/10000;
-        while(SysTick->VAL > u32end);
+        if ((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) != 0U)
+        {
+            tmpDelay--;
+        }
     }
 }

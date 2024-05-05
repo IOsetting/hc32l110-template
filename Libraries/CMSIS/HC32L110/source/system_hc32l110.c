@@ -124,7 +124,7 @@ void SystemInit(void)
 
     DDL_ZERO_STRUCT(stcCfg);     // Clear the data
     stcCfg.bNoRef = TRUE;        // True: use HCLK, false: use enClk
-    stcCfg.u32LoadVal = 0xFFFFFF; // Set it to the max value of 24-bit
+    stcCfg.u32LoadVal = CLK_RCH_VAL / 1000; // ticks for 1 ms
     Clk_SysTickConfig(&stcCfg);  // Init SysTick controller
 }
 
