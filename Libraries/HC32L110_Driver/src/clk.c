@@ -210,6 +210,8 @@ en_result_t Clk_SwitchTo(en_clk_source_t enSource)
     }
 
     SystemCoreClockUpdate();
+    // Update systick reload value
+    SysTick->LOAD  = SystemCoreClock / 1000 - 1UL;
 
     return Ok;
 }
