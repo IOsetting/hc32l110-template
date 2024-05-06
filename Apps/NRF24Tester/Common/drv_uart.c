@@ -4,7 +4,7 @@
 __IO uint8_t opflag = 0;
 uint8_t opcommand[RING_BUFFER_SIZE];
 
-void APP_UART_RX_Callback(void);
+void DRV_UART_RX_Callback(void);
 
 void DRV_UART_Init(void)
 {
@@ -17,10 +17,10 @@ void DRV_UART_Init(void)
     Gpio_SetFunc_UART1_TXD_P01();
     Gpio_SetFunc_UART1_RXD_P02();
     // Config UART1
-    Uart1_TxRx_Init(115200, APP_UART_RX_Callback);
+    Uart1_TxRx_Init(115200, DRV_UART_RX_Callback);
 }
 
-void APP_UART_RX_Callback(void)
+void DRV_UART_RX_Callback(void)
 {
     uint8_t ch = UART1_RxReceive();
     if (ch == '\n')
