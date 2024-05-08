@@ -29,7 +29,7 @@ void DRV_Button_Tick(void)
   uint8_t i;
   for (i = 0; i < DRV_BUTTON_SIZE; i++)
   {
-    if (GPIO_GetPinIn(key[i].port, key[i].pin) != 1 && key[i].counter < 0xFFFF)
+    if (GPIO_GetPinIn(key[i].port, key[i].pin) == 0 && key[i].counter < 0xFFFF)
     {
       key[i].counter++;
       if (key[i].counter > LONG_PRESS_THRESHOLD)

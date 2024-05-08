@@ -1,23 +1,10 @@
-/**
- * 
- * LED1 (RED): P34
- * LED2 (GRE): P35
- * BUTTON    : P33, active = low
- * UART1 TX  : P01
- * UART1 RX  : P02
- * SPI CS    : P14
- * SPI MISO  : P23
- * SPI MOSI  : P24
- * SPI CLK   : P25
- * CE        : P26
- * IRQ       : P32
-*/
 #include "main.h"
 
 #include "drv_led.h"
 #include "drv_button.h"
-#include "drv_uart.h"
+#include "hc32l110_bsp.h"
 #include "ring_buffer.h"
+#include "nrf24l01.h"
 
 typedef enum {
   APP_MODE_INIT,
@@ -66,25 +53,35 @@ int main(void)
 static APP_ModeType_t APP_Init(void)
 {
   /**
-   * Set PCLK = HCLK = Clock source to 24MHz
+   * Internal high speed 24MHz
    */
   Clk_Init(ClkFreq24Mhz, ClkDiv1, ClkDiv1);
-  // Enable peripheral clock
+  // Peripheral clock
   CLK_EnablePeripheralClk(ClkPeripheralBaseTim);
-  // GPIO clock is required
+  // GPIO clock
   CLK_EnablePeripheralClk(ClkPeripheralGpio);
+  // SPI clock
+  CLK_EnablePeripheralClk(ClkPeripheralSpi);
+
   // Enable systick interrupt
   CLK_EnableSysTickIrq();
 
-  DRV_UART_Init();
+  BSP_GPIO_Init();
+  BSP_UART_Init();
+  BSP_SPI_Init();
 
-  Gpio_InitIOExt(3, 4, GpioDirOut, FALSE, FALSE, FALSE, FALSE);
-  Gpio_InitIOExt(3, 5, GpioDirOut, FALSE, FALSE, FALSE, FALSE);
   DRV_LED_Init(0, 3, 4, DRV_LED_PATTERN_BLINK_SLOW, DRV_LED_ON);
   DRV_LED_Init(1, 3, 5, DRV_LED_PATTERN_BLINK_NORM, DRV_LED_ON);
-
-  Gpio_InitIOExt(3, 3,  GpioDirIn, TRUE, FALSE, FALSE, FALSE);
   DRV_Button_Init(0, 3, 3);
+
+  Uart1_TxString("SPI Check ...");
+  while (NRF24L01_SPI_Check() == 1)
+  {
+    Uart1_TxString("failed\r\n");
+    delay1ms(1000);
+  }
+  printf("succ\r\n");
+  NRF24L01_Config();
 
   return APP_MODE_RX;
 }
