@@ -21,6 +21,8 @@ const DRV_LED_Pattern_TypeDef_t ledpattern[] = {
   {  60, {  1,  10,  21,  30,  41,  50}}, // quick blink
   { 200, {  1,  20,  41,  60,  81, 100}}, // blink
   { 300, {  1, 150,   0,   0,   0,   0}}, // slow blink
+  { 100, { 45,  50,   0,   0,   0,   0}}, // short flash
+  { 300, {145, 150,   0,   0,   0,   0}}, // long flash
   { 200, {  1,  21,   0,   0,   0,   0}}, // always on
   { 200, {  2,  22,   0,   0,   0,   0}}, // always off
 };

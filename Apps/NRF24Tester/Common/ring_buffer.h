@@ -8,6 +8,11 @@
  */
 #define RING_BUFFER_SIZE 64
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
 void ring_buffer_clear(void);
 /**
  * Push one char to the end of the ring
@@ -34,5 +39,8 @@ uint16_t ring_buffer_size(void);
 */
 uint16_t ring_buffer_read(uint8_t *buf);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* __RING_BUFFER_H */

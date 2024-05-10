@@ -124,6 +124,10 @@ typedef enum
     NRF24_SCEN_HALF_DUPLEX = 0x02
 } NRF24_SCEN;
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 uint8_t NRF24L01_ReadReg(uint8_t reg);
 uint8_t NRF24L01_WriteReg(uint8_t reg, uint8_t value);
@@ -157,5 +161,9 @@ void NRF24L01_TxMode(uint8_t *txAddr, uint8_t *rxAddr);
 void NRF24L01_RxMode(uint8_t *txAddr, uint8_t *rxAddr);
 
 void NRF24L01_DumpConfig(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

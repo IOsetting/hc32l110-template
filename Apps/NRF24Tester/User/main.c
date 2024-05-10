@@ -5,6 +5,7 @@
 #include "hc32l110_bsp.h"
 #include "ring_buffer.h"
 #include "nrf24l01.h"
+#include "at_parser.h"
 
 typedef enum {
   APP_MODE_INIT,
@@ -70,8 +71,8 @@ static APP_ModeType_t APP_Init(void)
   BSP_UART_Init();
   BSP_SPI_Init();
 
-  DRV_LED_Init(0, 3, 4, DRV_LED_PATTERN_BLINK_SLOW, DRV_LED_ON);
-  DRV_LED_Init(1, 3, 5, DRV_LED_PATTERN_BLINK_NORM, DRV_LED_ON);
+  DRV_LED_Init(0, 3, 4, DRV_LED_PATTERN_LONG_OFF, DRV_LED_ON); // RED
+  DRV_LED_Init(1, 3, 5, DRV_LED_PATTERN_LONG_OFF, DRV_LED_ON); // GREEN
   DRV_Button_Init(0, 3, 3);
 
   Uart1_TxString("SPI Check ...");
@@ -93,6 +94,8 @@ static void APP_ModeSwitchTo(APP_ModeType_t mode)
   case APP_MODE_RX:
     Uart1_TxString("RX mode\r\n");
     delay1ms(200);
+    DRV_LED_SetPattern(0, DRV_LED_PATTERN_LONG_OFF);
+    DRV_LED_SetPattern(1, DRV_LED_PATTERN_FLASH_SLOW);
     DRV_Button_ClearState(0);
     break;
 
@@ -100,6 +103,8 @@ static void APP_ModeSwitchTo(APP_ModeType_t mode)
   default:
     Uart1_TxString("TX mode\r\n");
     delay1ms(200);
+    DRV_LED_SetPattern(0, DRV_LED_PATTERN_FLASH_SLOW);
+    DRV_LED_SetPattern(1, DRV_LED_PATTERN_LONG_OFF);
     DRV_Button_ClearState(0);
     break;
   }
@@ -117,6 +122,7 @@ static APP_ModeType_t APP_RxMode(void)
     opflag = 0;
     Uart1_TxString((char *)opcommand);
     Uart1_TxString("\r\n");
+    AT_Parse((char *)opcommand);
   }
   delay1ms(50);
   return APP_MODE_RX;
