@@ -295,8 +295,11 @@ void Uart1_TxRx_Init(uint32_t baud, func_ptr_t rxCallback);
 en_result_t Uart0_TxChar(uint8_t u8Data);
 en_result_t Uart1_TxChar(uint8_t u8Data);
 
-void Uart0_TxHex(uint8_t *hex, uint8_t len);
-void Uart1_TxHex(uint8_t *hex, uint8_t len);
+void Uart0_TxHex8Bit(uint8_t hex);
+void Uart1_TxHex8Bit(uint8_t hex);
+
+void Uart0_TxHexArray(uint8_t *hex, uint8_t len);
+void Uart1_TxHexArray(uint8_t *hex, uint8_t len);
 
 void Uart0_TxString(char *str);
 void Uart1_TxString(char *str);

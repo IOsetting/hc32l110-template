@@ -104,7 +104,7 @@ int main(void)
         delay1ms(200);
         for (j = 0; j < 8; j++)
         {
-            Uart1_TxHex((uint8_t *)&u16ScanResult[j], 2);
+            Uart1_TxHexArray((uint8_t *)&u16ScanResult[j], 2);
             Uart1_TxChar(' ');
         }
         Uart1_TxChar('\n');

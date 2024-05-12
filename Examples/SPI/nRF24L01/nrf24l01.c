@@ -58,7 +58,7 @@ void NRF24L01_WriteFromBuf(uint8_t reg, const uint8_t *pBuf, uint8_t len)
 
 void NRF24L01_PrintBuf(void)
 {
-    Uart1_TxHex(xbuf, NRF24_PLOAD_WIDTH);
+    Uart1_TxHexArray(xbuf, NRF24_PLOAD_WIDTH);
     Uart1_TxString("\r\n");
 }
 
@@ -150,7 +150,7 @@ uint8_t NRF24L01_SPI_Check(void)
     NRF24L01_WriteFromBuf(NRF24_CMD_W_REGISTER | NRF24_REG_TX_ADDR, ptr, NRF24_ADDR_WIDTH);
     NRF24L01_ReadToBuf(NRF24_CMD_R_REGISTER | NRF24_REG_TX_ADDR, NRF24_ADDR_WIDTH);
     for (i = 0; i < NRF24_ADDR_WIDTH; i++) {
-        Uart1_TxHex(xbuf + i, 1);
+        Uart1_TxHexArray(xbuf + i, 1);
         if (*(xbuf + i) != *ptr++) return 1;
     }
     return 0;

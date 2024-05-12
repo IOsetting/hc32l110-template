@@ -798,7 +798,19 @@ en_result_t Uart1_TxChar(uint8_t u8Data)
 
 extern uint8_t HEX_TABLE[16];
 
-void Uart0_TxHex(uint8_t *hex, uint8_t len)
+void Uart0_TxHex8Bit(uint8_t hex)
+{
+    Uart0_TxChar(HEX_TABLE[hex >> 4 & 0xF]);
+    Uart0_TxChar(HEX_TABLE[hex & 0xF]);
+}
+
+void Uart1_TxHex8Bit(uint8_t hex)
+{
+    Uart1_TxChar(HEX_TABLE[hex >> 4 & 0xF]);
+    Uart1_TxChar(HEX_TABLE[hex & 0xF]);
+}
+
+void Uart0_TxHexArray(uint8_t *hex, uint8_t len)
 {
     while (len--)
     {
@@ -807,7 +819,7 @@ void Uart0_TxHex(uint8_t *hex, uint8_t len)
     }
 }
 
-void Uart1_TxHex(uint8_t *hex, uint8_t len)
+void Uart1_TxHexArray(uint8_t *hex, uint8_t len)
 {
     while (len--)
     {
