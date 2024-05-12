@@ -157,8 +157,39 @@ void NRF24L01_TxReset(void);
 uint8_t NRF24L01_SPI_Check(void);
 void NRF24L01_Config(void);
 
-void NRF24L01_TxMode(uint8_t *txAddr, uint8_t *rxAddr);
-void NRF24L01_RxMode(uint8_t *txAddr, uint8_t *rxAddr);
+
+/**
+* Set RF Channel
+* @param channel: 0 ~ 125
+*/
+void NRF24L01_SetRfChannel(uint8_t channel);
+/**
+* Set RF data rate
+* @param rate: 0:1Mbps, 1:2Mbps, 2:250Kbps
+*/
+void NRF24L01_SetRfDataRate(uint8_t rate);
+/**
+* Set RF power
+* @param power: 0:-18dBm, 1:-12dBm, 2:-6dBm, 3:0dBm
+*/
+void NRF24L01_SetRfPower(uint8_t power);
+/**
+* Set TX address
+*/
+void NRF24L01_SetTxAddr(uint8_t *txAddr);
+/**
+* Set RX address of specified pipe
+*/
+void NRF24L01_SetRxAddr(uint8_t pipe, uint8_t *rxAddr);
+/**
+* Switch to TX mode
+*/
+void NRF24L01_SetTxMode(void);
+/**
+* Switch to RX mode
+*/
+void NRF24L01_SetRxMode(void);
+
 
 void NRF24L01_DumpConfig(void);
 

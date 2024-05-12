@@ -58,7 +58,7 @@ void NRF24L01_WriteFromBuf(uint8_t reg, const uint8_t *pBuf, uint8_t len)
 
 void NRF24L01_PrintBuf(void)
 {
-    Uart1_TxHex(xbuf, NRF24_PLOAD_WIDTH);
+    Uart1_TxHexArray(xbuf, NRF24_PLOAD_WIDTH);
     Uart1_TxString("\r\n");
 }
 
@@ -105,7 +105,7 @@ void NRF24L01_HandelIrqFlag(void)
         NRF24L01_rxsn++;
         NRF24L01_PrintBuf();
     }
-    printf("TxDS:%x MxRT:%x RxDR:%x Pipe:%d\r\n", tx_ds, max_rt, rx_dr, pipe_num);
+    //printf("TxDS:%x MxRT:%x RxDR:%x Pipe:%d\r\n", tx_ds, max_rt, rx_dr, pipe_num);
 }
 
 void NRF24L01_Tx(uint8_t *pBuf)
@@ -150,7 +150,7 @@ uint8_t NRF24L01_SPI_Check(void)
     NRF24L01_WriteFromBuf(NRF24_CMD_W_REGISTER | NRF24_REG_TX_ADDR, ptr, NRF24_ADDR_WIDTH);
     NRF24L01_ReadToBuf(NRF24_CMD_R_REGISTER | NRF24_REG_TX_ADDR, NRF24_ADDR_WIDTH);
     for (i = 0; i < NRF24_ADDR_WIDTH; i++) {
-        Uart1_TxHex(xbuf + i, 1);
+        Uart1_TxHexArray(xbuf + i, 1);
         if (*(xbuf + i) != *ptr++) return 1;
     }
     Uart1_TxChar(' ');
@@ -180,13 +180,71 @@ void NRF24L01_Config(void)
 }
 
 /**
-* Switch to TX mode
+* Set RF Channel
+* @param channel: 0 ~ 125 -> 2.400GHz ~ 2.525GHz
 */
-void NRF24L01_TxMode(uint8_t *txAddr, uint8_t *rxAddr)
+void NRF24L01_SetRfChannel(uint8_t channel)
+{
+    if (channel > 125) channel = 125;
+    // channel = 40 -> 2.400  + 0.040 = 2.440GHz
+    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_RF_CH, channel);
+}
+
+/**
+* Set RF data rate
+* @param rate: 0:1Mbps, 1:2Mbps, 2:250Kbps
+*/
+void NRF24L01_SetRfDataRate(uint8_t rate)
+{
+    uint8_t dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RF_SETUP);
+    switch (rate)
+    {
+    case 0:
+        dat = (dat & 0B11010111) | 0B00000000;
+        break;
+    case 1:
+        dat = (dat & 0B11010111) | 0B00001000;
+        break;
+    case 2:
+    default:
+        dat = (dat & 0B11010111) | 0B00100000;
+        break;
+    }
+    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_RF_SETUP, dat);
+}
+
+/**
+* Set RF power
+* @param power: 0:-18dBm, 1:-12dBm, 2:-6dBm, 3:0dBm
+*/
+void NRF24L01_SetRfPower(uint8_t power)
+{
+    uint8_t dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RF_SETUP);
+    dat = (dat & 0B11111001) | ((power & 0x03) << 1);
+    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_RF_SETUP, dat);
+}
+
+/**
+* Set TX address
+*/
+void NRF24L01_SetTxAddr(uint8_t *txAddr)
 {
     NRF24L01_WriteFromBuf(NRF24_CMD_W_REGISTER | NRF24_REG_TX_ADDR, txAddr, NRF24_ADDR_WIDTH);
-    NRF24L01_WriteFromBuf(NRF24_CMD_W_REGISTER | NRF24_REG_RX_ADDR_P0, txAddr, NRF24_ADDR_WIDTH);
-    NRF24L01_WriteFromBuf(NRF24_CMD_W_REGISTER | NRF24_REG_RX_ADDR_P1, rxAddr, NRF24_ADDR_WIDTH);
+}
+
+/**
+* Set RX address of specified pipe
+*/
+void NRF24L01_SetRxAddr(uint8_t pipe, uint8_t *rxAddr)
+{
+    NRF24L01_WriteFromBuf(NRF24_CMD_W_REGISTER | (NRF24_REG_RX_ADDR_P0 + pipe), rxAddr, NRF24_ADDR_WIDTH);
+}
+
+/**
+* Switch to TX mode
+*/
+void NRF24L01_SetTxMode(void)
+{
     /**
     REG 0x00:
     0)PRIM_RX     0:TX             1:RX
@@ -204,12 +262,9 @@ void NRF24L01_TxMode(uint8_t *txAddr, uint8_t *rxAddr)
 /**
 * Switch to RX mode
 */
-void NRF24L01_RxMode(uint8_t *txAddr, uint8_t *rxAddr)
+void NRF24L01_SetRxMode(void)
 {
     NRF_CE_Low();
-    NRF24L01_WriteFromBuf(NRF24_CMD_W_REGISTER | NRF24_REG_TX_ADDR, txAddr, NRF24_ADDR_WIDTH);
-    NRF24L01_WriteFromBuf(NRF24_CMD_W_REGISTER | NRF24_REG_RX_ADDR_P0, txAddr, NRF24_ADDR_WIDTH);
-    NRF24L01_WriteFromBuf(NRF24_CMD_W_REGISTER | NRF24_REG_RX_ADDR_P1, rxAddr, NRF24_ADDR_WIDTH);
     NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_CONFIG, 0x0F);
     NRF_CE_High();
     NRF24L01_RxFlush();

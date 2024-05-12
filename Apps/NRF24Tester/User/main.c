@@ -13,8 +13,8 @@ typedef enum {
   APP_MODE_RX
 } APP_ModeType_t;
 
-extern __IO uint8_t opflag;
-extern uint8_t opcommand[RING_BUFFER_SIZE];
+extern __IO uint8_t uart_rx_flag;
+extern uint8_t uart_rx_buff[RING_BUFFER_SIZE];
 
 APP_ModeType_t app_mode, app_mode_next;
 
@@ -23,6 +23,13 @@ static APP_ModeType_t APP_Init(void);
 static void APP_ModeSwitchTo(APP_ModeType_t mode);
 static APP_ModeType_t APP_RxMode(void);
 static APP_ModeType_t APP_TxMode(void);
+static APP_ModeType_t APP_HandleCommand(APP_ModeType_t mode, AT_Command_t cmd);
+
+static void APP_SetRxAddr(uint8_t *data);
+static void APP_SetTxAddr(uint8_t *data);
+static void APP_SetRfChannel(uint8_t *data);
+static void APP_SetRfRate(uint8_t *data);
+static void APP_SetRfPower(uint8_t *data);
 
 int main(void)
 {
@@ -96,6 +103,7 @@ static void APP_ModeSwitchTo(APP_ModeType_t mode)
     delay1ms(200);
     DRV_LED_SetPattern(0, DRV_LED_PATTERN_LONG_OFF);
     DRV_LED_SetPattern(1, DRV_LED_PATTERN_FLASH_SLOW);
+    NRF24L01_SetRxMode();
     DRV_Button_ClearState(0);
     break;
 
@@ -105,6 +113,7 @@ static void APP_ModeSwitchTo(APP_ModeType_t mode)
     delay1ms(200);
     DRV_LED_SetPattern(0, DRV_LED_PATTERN_FLASH_SLOW);
     DRV_LED_SetPattern(1, DRV_LED_PATTERN_LONG_OFF);
+    NRF24L01_SetTxMode();
     DRV_Button_ClearState(0);
     break;
   }
@@ -117,15 +126,20 @@ static APP_ModeType_t APP_RxMode(void)
     return APP_MODE_TX;
   }
 
-  if (opflag)
+  if (uart_rx_flag)
   {
-    opflag = 0;
-    Uart1_TxString((char *)opcommand);
-    Uart1_TxString("\r\n");
-    AT_Parse((char *)opcommand);
+    uart_rx_flag = 0;
+    // Uart1_TxString((char *)uart_rx_buff);
+    // Uart1_TxString("\r\n");
+    AT_Command_t atcmd = AT_Parse((char *)uart_rx_buff);
+    APP_ModeType_t mode = APP_HandleCommand(app_mode, atcmd);
+    if (mode != app_mode)
+    {
+      return mode;
+    }
   }
   delay1ms(50);
-  return APP_MODE_RX;
+  return app_mode;
 }
 
 static APP_ModeType_t APP_TxMode(void)
@@ -134,5 +148,152 @@ static APP_ModeType_t APP_TxMode(void)
   {
     return APP_MODE_RX;
   }
-  return APP_MODE_TX;
+  if (uart_rx_flag)
+  {
+    uart_rx_flag = 0;
+    // Uart1_TxString((char *)uart_rx_buff);
+    // Uart1_TxString("\r\n");
+    AT_Command_t atcmd = AT_Parse((char *)uart_rx_buff);
+    APP_ModeType_t mode = APP_HandleCommand(app_mode, atcmd);
+    if (mode != app_mode)
+    {
+      return mode;
+    }
+  }
+  delay1ms(50);
+  return app_mode;
+}
+
+static APP_ModeType_t APP_HandleCommand(APP_ModeType_t mode, AT_Command_t cmd)
+{
+  switch (cmd)
+  {
+  case AT_Command_SetRxMode:
+    if (mode == APP_MODE_RX)
+    {
+      Uart1_TxString("Already in RX mode\r\n");
+    }
+    else
+    {
+      return APP_MODE_RX;
+    }
+    break;
+  case AT_Command_SetTxMode:
+    if (mode == APP_MODE_TX)
+    {
+      Uart1_TxString("Already in TX mode\r\n");
+    }
+    else
+    {
+      return APP_MODE_TX;
+    }
+    break;
+  case AT_Command_SetRxAddr:
+    APP_SetRxAddr(uart_rx_buff);
+    break;
+  case AT_Command_SetTxAddr:
+    APP_SetTxAddr(uart_rx_buff);
+    break;
+  case AT_Command_SetRfCh:
+    APP_SetRfChannel(uart_rx_buff);
+    break;
+  case AT_Command_SetRfRate:
+    APP_SetRfRate(uart_rx_buff);
+    break;
+  case AT_Command_SetRfPower:
+    APP_SetRfPower(uart_rx_buff);
+    break;
+  case AT_Command_GetRxAddr:
+    Uart1_TxString("Get RX addr\r\n");
+    break;
+  case AT_Command_GetTxAddr:
+    Uart1_TxString("Get TX addr\r\n");
+    break;
+  case AT_Command_Unknown:
+    Uart1_TxString("Unknown command\r\n");
+    break;
+  case AT_Command_None:
+  default:
+    Uart1_TxString("echo\r\n");
+    break;
+  }
+  return mode;
+}
+
+static void APP_SetRxAddr(uint8_t *data)
+{
+  NRF24L01_SetRxAddr(1, data);
+  Uart1_TxString("Set RX addr: ");
+  for (uint8_t i = 0; i < 5; i++)
+  {
+    Uart1_TxHex8Bit(data[i]);
+    Uart1_TxChar(' ');
+  }
+  Uart1_TxString("\r\n");
+}
+
+static void APP_SetTxAddr(uint8_t *data)
+{
+  NRF24L01_SetTxAddr(data);
+  NRF24L01_SetRxAddr(0, data);
+  Uart1_TxString("Set TX addr: ");
+  for (uint8_t i = 0; i < 5; i++)
+  {
+    Uart1_TxHex8Bit(data[i]);
+    Uart1_TxChar(' ');
+  }
+  Uart1_TxString("\r\n");
+}
+
+static void APP_SetRfChannel(uint8_t *data)
+{
+  if (*data > 125)
+  {
+    *data = 125;
+  }
+  NRF24L01_SetRfChannel(*data);
+  Uart1_TxString("Set RF CH = ");
+  Uart1_TxHex8Bit(*data);
+  Uart1_TxString("\r\n");
+}
+
+static void APP_SetRfRate(uint8_t *data)
+{
+  NRF24L01_SetRfDataRate(*data);
+  Uart1_TxString("Set RF Rate = ");
+  switch (*data)
+  {
+    case 0:
+      Uart1_TxString("1Mbps\r\n");
+      break;
+    case 1:
+      Uart1_TxString("2Mbps\r\n");
+      break;
+    case 2:
+    default:
+      Uart1_TxString("250Kbps\r\n");
+      break;
+  }
+}
+
+static void APP_SetRfPower(uint8_t *data)
+{
+  NRF24L01_SetRfPower(*data);
+  Uart1_TxString("Set RF Power = ");
+  switch (*data)
+  {
+    case 0:
+      Uart1_TxString("-18dBm\r\n");
+      break;
+    case 1:
+      Uart1_TxString("-12dBm\r\n");
+      break;
+    case 2:
+      Uart1_TxString("-6dBm\r\n");
+      break;
+    case 3:
+    default:
+      Uart1_TxString("0dBm\r\n");
+      break;
+  }
 }

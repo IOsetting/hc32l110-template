@@ -15,8 +15,8 @@
 #include "hc32l110_bsp.h"
 #include "ring_buffer.h"
 
-__IO uint8_t opflag = 0;
-uint8_t opcommand[RING_BUFFER_SIZE];
+__IO uint8_t uart_rx_flag = 0;
+uint8_t uart_rx_buff[RING_BUFFER_SIZE];
 
 void BSP_UART_RX_Callback(void);
 
@@ -75,9 +75,9 @@ void BSP_UART_RX_Callback(void)
   {
     if (ring_buffer_size() > 0)
     {
-      ring_buffer_read(opcommand);
+      ring_buffer_read(uart_rx_buff);
       ring_buffer_clear();
-      opflag = 1;
+      uart_rx_flag = 1;
     }
   }
   else if (ch != '\r')
