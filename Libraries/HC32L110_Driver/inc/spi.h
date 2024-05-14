@@ -144,14 +144,26 @@ typedef struct stc_spi_config
 // Master mode error flag
 #define SPI_GetFlagMasterError()    (M0P_SPI->STAT_f.MDF)
 
-//SPI初始化函数
+/**
+ * SPI Initialize
+*/
 en_result_t Spi_Init(stc_spi_config_t* pstcSpiConfig);
-//SPI关闭函数
+/**
+ * SPI De-initialize
+*/
 en_result_t Spi_DeInit(void);
-// SPI exchange one byte
+/**
+ * SPI exchange one byte
+*/
 uint8_t Spi_TxRx(uint8_t data);
-// SPI exchange multiple bytes
+/**
+ * SPI exchange multiple bytes (read and write)
+*/
 void Spi_TxRxBytes(uint8_t *pBuf, uint8_t len);
+/**
+ * SPI send multiple bytes (without exchange)
+*/
+void Spi_TxBytes(uint8_t *pBuf, uint8_t len);
 
 #ifdef __cplusplus
 }
