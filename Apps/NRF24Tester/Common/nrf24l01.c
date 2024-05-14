@@ -15,73 +15,151 @@
 #include "nrf24l01.h"
 #include "uart.h"
 
-uint8_t xbuf[NRF24_PLOAD_WIDTH];
 uint16_t NRF24L01_rxsn = 0;
 
-uint8_t NRF24L01_WriteReg(uint8_t reg, uint8_t value)
+void NRF24L01_Init(void)
 {
-    uint8_t ret;
-    SPI_SetCsLow();
-    ret = Spi_TxRx(reg);
-    Spi_TxRx(value);
     SPI_SetCsHigh();
-    return ret;
 }
 
+/**
+* Read a 1-bit register
+*/
 uint8_t NRF24L01_ReadReg(uint8_t reg)
 {
     uint8_t ret;
     SPI_SetCsLow();
     Spi_TxRx(reg);
-    ret = Spi_TxRx(NRF24_CMD_NOP);
+    ret = Spi_TxRx(NRF24L01_CMD_NOP);
     SPI_SetCsHigh();
     return ret;
 }
 
-void NRF24L01_ReadToBuf(uint8_t reg, uint8_t len)
+/**
+* Write a 1-byte register
+*/
+uint8_t NRF24L01_WriteReg(uint8_t reg, uint8_t value)
 {
-    memset(xbuf, NRF24_CMD_NOP, NRF24_PLOAD_WIDTH);
+    uint8_t status;
+    SPI_SetCsLow();
+    if (reg < NRF24L01_CMD_W_REGISTER)
+    {
+        // This is a register access
+        status = Spi_TxRx(NRF24L01_CMD_W_REGISTER | (reg & NRF24L01_MASK_REG_MAP));
+        Spi_TxRx(value);
+    }
+    else
+    {
+        // This is a single byte command or future command/register
+        status = Spi_TxRx(reg);
+        if ((reg != NRF24L01_CMD_FLUSH_TX) 
+            && (reg != NRF24L01_CMD_FLUSH_RX) 
+            && (reg != NRF24L01_CMD_REUSE_TX_PL) 
+            && (reg != NRF24L01_CMD_NOP)) {
+            // Send register value
+            Spi_TxRx(value);
+        }
+    }
+    SPI_SetCsHigh();
+    return status; 
+}
+
+/**
+* Read a multi-byte register
+*  reg  - register to read
+*  buf  - pointer to the buffer to write
+*  len  - number of bytes to read
+*/
+uint8_t NRF24L01_ReadToBuf(uint8_t reg, uint8_t *pBuf, uint8_t len)
+{
+    SPI_SetCsLow();
+    uint8_t status = Spi_TxRx(reg);
+    Spi_TxRxBytes(pBuf, len);
+    SPI_SetCsHigh();
+    return status;
+}
+
+/**
+* Write a multi-byte register
+*  reg - register to write
+*  buf - pointer to the buffer with data
+*  len - number of bytes to write
+*/
+void NRF24L01_WriteFromBuf(uint8_t reg, uint8_t *pBuf, uint8_t len)
+{
     SPI_SetCsLow();
     Spi_TxRx(reg);
-    Spi_TxRxBytes(xbuf, len);
+    Spi_TxBytes(pBuf, len);
     SPI_SetCsHigh();
 }
 
-void NRF24L01_WriteFromBuf(uint8_t reg, const uint8_t *pBuf, uint8_t len)
+uint8_t NRF24L01_SPI_Check(void)
 {
-    memcpy(xbuf, pBuf, len);
-    SPI_SetCsLow();
-    Spi_TxRx(reg);
-    Spi_TxRxBytes(xbuf, len);
-    SPI_SetCsHigh();
-}
-
-void NRF24L01_PrintBuf(void)
-{
-    Uart1_TxHexArray(xbuf, NRF24_PLOAD_WIDTH);
-    Uart1_TxString("\r\n");
+    uint8_t i, addr[NRF24L01_ADDR_WIDTH];
+    uint8_t *ptr = (uint8_t *)NRF24L01_TEST_ADDR;
+    NRF24L01_WriteFromBuf(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_TX_ADDR, ptr, NRF24L01_ADDR_WIDTH);
+    NRF24L01_ReadToBuf(NRF24L01_CMD_R_REGISTER | NRF24L01_REG_TX_ADDR, addr, NRF24L01_ADDR_WIDTH);
+    for (i = 0; i < NRF24L01_ADDR_WIDTH; i++) 
+    {
+        Uart1_TxHex8Bit(addr[i]);
+        if (addr[i] != *ptr++) return 1;
+    }
+    Uart1_TxChar(' ');
+    return 0;
 }
 
 /**
 * Flush the RX FIFO
 */
-void NRF24L01_RxFlush(void)
+void NRF24L01_FlushRX(void)
 {
-    NRF24L01_WriteReg(NRF24_CMD_FLUSH_RX, NRF24_CMD_NOP);
+    NRF24L01_WriteReg(NRF24L01_CMD_FLUSH_RX, NRF24L01_CMD_NOP);
 }
 
 /**
 * Flush the TX FIFO
 */
-void NRF24L01_TxFlush(void)
+void NRF24L01_FlushTX(void)
 {
-    NRF24L01_WriteReg(NRF24_CMD_FLUSH_TX, NRF24_CMD_NOP);
+    NRF24L01_WriteReg(NRF24L01_CMD_FLUSH_TX, NRF24L01_CMD_NOP);
+}
+
+
+void NRF24L01_ResetTX(void)
+{
+    //Clear max retry flag
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_STATUS, NRF24L01_FLAG_MAX_RT);
+    NRF_CE_Low();
+    __NOP();
+    NRF_CE_High();
+}
+
+/**
+* Clear IRQ bit of the STATUS register
+*   reg - NRF24L01_FLAG_RX_DREADY
+*         NRF24L01_FLAG_TX_DSENT
+*         NRF24L01_FLAG_MAX_RT
+*/
+void NRF24L01_ClearIRQFlag(uint8_t reg)
+{
+    NRF24L01_WriteReg(NRF24L01_REG_STATUS, reg);
+}
+
+/**
+* Clear RX_DR, TX_DS and MAX_RT bits of the STATUS register
+*/
+void NRF24L01_ClearIRQFlags(void) 
+{
+    uint8_t reg;
+    reg  = NRF24L01_ReadReg(NRF24L01_REG_STATUS);
+    reg |= NRF24L01_MASK_STATUS_IRQ;
+    NRF24L01_WriteReg(NRF24L01_REG_STATUS, reg);
 }
 
 uint8_t NRF24L01_RxAvailable(uint8_t *pipe_num)
 {
     uint8_t dat, pipe;
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_STATUS);
+    dat = NRF24L01_ReadReg(NRF24L01_CMD_R_REGISTER | NRF24L01_REG_STATUS);
     pipe = (dat >> 1) & 0x07;
     if (pipe > 5)
         return 1;
@@ -92,68 +170,25 @@ uint8_t NRF24L01_RxAvailable(uint8_t *pipe_num)
     return 0;
 }
 
-void NRF24L01_HandelIrqFlag(void)
-{
-    uint8_t dat, tx_ds, max_rt, rx_dr, pipe_num;
-    dat = NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_STATUS, NRF24_FLAG_RX_DREADY|NRF24_FLAG_TX_DSENT|NRF24_FLAG_MAX_RT);
-    tx_ds = dat & NRF24_FLAG_TX_DSENT;
-    max_rt = dat & NRF24_FLAG_MAX_RT;
-    rx_dr = dat & NRF24_FLAG_RX_DREADY;
-    if (NRF24L01_RxAvailable(&pipe_num) == 0) 
-    {
-        NRF24L01_ReadToBuf(NRF24_CMD_R_RX_PAYLOAD, NRF24_PLOAD_WIDTH);
-        NRF24L01_rxsn++;
-        NRF24L01_PrintBuf();
-    }
-    //printf("TxDS:%x MxRT:%x RxDR:%x Pipe:%d\r\n", tx_ds, max_rt, rx_dr, pipe_num);
-}
-
 void NRF24L01_Tx(uint8_t *pBuf)
 {
     NRF_CE_Low();
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_CONFIG, 0x0E);
-    NRF24L01_WriteFromBuf(NRF24_CMD_W_TX_PAYLOAD, pBuf, NRF24_PLOAD_WIDTH);
-    NRF_CE_High();
-    delay1ms(10); // for reliable DS state when SETUP_RETR is 0x13
-    NRF_CE_Low();
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_CONFIG, 0x0F);
+    //NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_CONFIG, 0x0E);
+    NRF24L01_WriteFromBuf(NRF24L01_CMD_W_TX_PAYLOAD, pBuf, NRF24L01_PLOAD_WIDTH);
     NRF_CE_High();
 }
 
-uint8_t NRF24L01_TxFast(const void* pBuf)
+uint8_t NRF24L01_TxFast(void* pBuf)
 {
     uint8_t dat;
     //Blocking only if FIFO is full. This will loop and block until TX is successful or fail
     do
     {
-        dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_STATUS);
-        if (dat & NRF24_FLAG_MAX_RT) return 1;
-    } while (dat & NRF24_FLAG_TX_FULL);
-    NRF24L01_WriteFromBuf(NRF24_CMD_W_TX_PAYLOAD, pBuf, NRF24_PLOAD_WIDTH);
+        dat = NRF24L01_ReadReg(NRF24L01_CMD_R_REGISTER | NRF24L01_REG_STATUS);
+        if (dat & NRF24L01_FLAG_MAX_RT) return 1;
+    } while (dat & NRF24L01_FLAG_TX_FULL);
+    NRF24L01_WriteFromBuf(NRF24L01_CMD_W_TX_PAYLOAD, pBuf, NRF24L01_PLOAD_WIDTH);
     NRF_CE_High();
-    return 0;
-}
-
-void NRF24L01_TxReset(void)
-{
-    //Clear max retry flag
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_STATUS, NRF24_FLAG_MAX_RT);
-    NRF_CE_Low();
-    delay1ms(0);
-    NRF_CE_High();
-}
-
-uint8_t NRF24L01_SPI_Check(void)
-{
-    uint8_t i;
-    const uint8_t *ptr = (const uint8_t *)NRF24_TEST_ADDR;
-    NRF24L01_WriteFromBuf(NRF24_CMD_W_REGISTER | NRF24_REG_TX_ADDR, ptr, NRF24_ADDR_WIDTH);
-    NRF24L01_ReadToBuf(NRF24_CMD_R_REGISTER | NRF24_REG_TX_ADDR, NRF24_ADDR_WIDTH);
-    for (i = 0; i < NRF24_ADDR_WIDTH; i++) {
-        Uart1_TxHexArray(xbuf + i, 1);
-        if (*(xbuf + i) != *ptr++) return 1;
-    }
-    Uart1_TxChar(' ');
     return 0;
 }
 
@@ -163,20 +198,24 @@ uint8_t NRF24L01_SPI_Check(void)
 void NRF24L01_Config(void)
 {
     // RX P0 payload width
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_RX_PW_P0, NRF24_PLOAD_WIDTH);
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_RX_PW_P1, NRF24_PLOAD_WIDTH);
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_RX_PW_P0, NRF24L01_PLOAD_WIDTH);
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_RX_PW_P1, NRF24L01_PLOAD_WIDTH);
     // Enable auto ACK all pipes
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_EN_AA, 0x3f);
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_EN_AA, 0x3f);
     // Enable RX all pipes
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_EN_RXADDR, 0x3f);
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_EN_RXADDR, 0x3f);
     // 0A:delay=250us,count=10, 1A:delay=500us,count=10
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_SETUP_RETR, 0x13);
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_SETUP_RETR, 0x13);
     // RF channel 40 - 2.440GHz = 2.400G  + 0.040G
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_RF_CH, 40);
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_RF_CH, 40);
     // 000+0+[0:1Mbps,1:2Mbps]+[00:-18dbm,01:-12dbm,10:-6dbm,11:0dbm]+[0:LNA_OFF,1:LNA_ON]
     // 01:1Mbps,-18dbm; 03:1Mbps,-12dbm; 05:1Mbps,-6dbm; 07:1Mbps,0dBm
     // 09:2Mbps,-18dbm; 0b:2Mbps,-12dbm; 0d:2Mbps,-6dbm; 0f:2Mbps,0dBm
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_RF_SETUP, 0x07);
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_RF_SETUP, 0x07);
+
+    NRF24L01_WriteFromBuf(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_TX_ADDR, (uint8_t *)NRF24L01_TEST_ADDR, NRF24L01_ADDR_WIDTH);
+    NRF24L01_WriteFromBuf(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_RX_ADDR_P0, (uint8_t *)NRF24L01_TEST_ADDR, NRF24L01_ADDR_WIDTH);
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_RF_CH, 80);
 }
 
 /**
@@ -187,7 +226,7 @@ void NRF24L01_SetRfChannel(uint8_t channel)
 {
     if (channel > 125) channel = 125;
     // channel = 40 -> 2.400  + 0.040 = 2.440GHz
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_RF_CH, channel);
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_RF_CH, channel);
 }
 
 /**
@@ -196,7 +235,7 @@ void NRF24L01_SetRfChannel(uint8_t channel)
 */
 void NRF24L01_SetRfDataRate(uint8_t rate)
 {
-    uint8_t dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RF_SETUP);
+    uint8_t dat = NRF24L01_ReadReg(NRF24L01_CMD_R_REGISTER | NRF24L01_REG_RF_SETUP);
     switch (rate)
     {
     case 0:
@@ -210,7 +249,7 @@ void NRF24L01_SetRfDataRate(uint8_t rate)
         dat = (dat & 0B11010111) | 0B00100000;
         break;
     }
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_RF_SETUP, dat);
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_RF_SETUP, dat);
 }
 
 /**
@@ -219,9 +258,9 @@ void NRF24L01_SetRfDataRate(uint8_t rate)
 */
 void NRF24L01_SetRfPower(uint8_t power)
 {
-    uint8_t dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RF_SETUP);
+    uint8_t dat = NRF24L01_ReadReg(NRF24L01_CMD_R_REGISTER | NRF24L01_REG_RF_SETUP);
     dat = (dat & 0B11111001) | ((power & 0x03) << 1);
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_RF_SETUP, dat);
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_RF_SETUP, dat);
 }
 
 /**
@@ -229,7 +268,7 @@ void NRF24L01_SetRfPower(uint8_t power)
 */
 void NRF24L01_SetTxAddr(uint8_t *txAddr)
 {
-    NRF24L01_WriteFromBuf(NRF24_CMD_W_REGISTER | NRF24_REG_TX_ADDR, txAddr, NRF24_ADDR_WIDTH);
+    NRF24L01_WriteFromBuf(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_TX_ADDR, txAddr, NRF24L01_ADDR_WIDTH);
 }
 
 /**
@@ -237,7 +276,7 @@ void NRF24L01_SetTxAddr(uint8_t *txAddr)
 */
 void NRF24L01_SetRxAddr(uint8_t pipe, uint8_t *rxAddr)
 {
-    NRF24L01_WriteFromBuf(NRF24_CMD_W_REGISTER | (NRF24_REG_RX_ADDR_P0 + pipe), rxAddr, NRF24_ADDR_WIDTH);
+    NRF24L01_WriteFromBuf(NRF24L01_CMD_W_REGISTER | (NRF24L01_REG_RX_ADDR_P0 + pipe), rxAddr, NRF24L01_ADDR_WIDTH);
 }
 
 /**
@@ -245,6 +284,7 @@ void NRF24L01_SetRxAddr(uint8_t pipe, uint8_t *rxAddr)
 */
 void NRF24L01_SetTxMode(void)
 {
+    NRF_CE_Low();
     /**
     REG 0x00:
     0)PRIM_RX     0:TX             1:RX
@@ -256,7 +296,8 @@ void NRF24L01_SetTxMode(void)
     6)MASK_RX_DR  0:IRQ low        1:NO IRQ
     7)Reserved    0
     */
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_CONFIG, 0x0E);
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_CONFIG, 0x0E);
+    NRF_CE_High();
 }
 
 /**
@@ -265,188 +306,158 @@ void NRF24L01_SetTxMode(void)
 void NRF24L01_SetRxMode(void)
 {
     NRF_CE_Low();
-    NRF24L01_WriteReg(NRF24_CMD_W_REGISTER | NRF24_REG_CONFIG, 0x0F);
+    NRF24L01_WriteReg(NRF24L01_CMD_W_REGISTER | NRF24L01_REG_CONFIG, 0x0F);
     NRF_CE_High();
-    NRF24L01_RxFlush();
+    NRF24L01_FlushRX();
 }
 
-/**
- * Dump nRF24L01 configuration for debug
- */
+uint8_t NRF24L01_RX_GetPayloadWidth(void)
+{
+    uint8_t value;
+    NRF_CE_Low();
+    value = NRF24L01_ReadReg(NRF24L01_CMD_R_RX_PL_WID);
+    NRF_CE_High();
+    return value;
+}
+
+uint8_t NRF24L01_RXFIFO_GetStatus(void)
+{
+    uint8_t reg = NRF24L01_ReadReg(NRF24L01_REG_FIFO_STATUS);
+	return (reg & NRF24L01_MASK_RXFIFO);
+}
+
+uint8_t NRF24L01_ReadPayload(uint8_t *pBuf, uint8_t *length, uint8_t dpl)
+{
+    uint8_t status, pipe;
+
+    // Extract a payload pipe number from the STATUS register
+    status = NRF24L01_ReadReg(NRF24L01_REG_STATUS);
+    pipe = (status & NRF24L01_MASK_RX_P_NO) >> 1;
+    // RX FIFO empty?
+    if (pipe < 6)
+    {
+        if (dpl)
+        {
+            // Get payload width
+            *length = NRF24L01_RX_GetPayloadWidth();
+            if (*length > 32)
+            {
+                // Error
+                *length = 0;
+                NRF24L01_FlushRX();
+            }
+        }
+        else
+        {
+            *length = NRF24L01_ReadReg(NRF24L01_REG_RX_PW_P0 + pipe);
+        }
+        // Read a payload from the RX FIFO
+        if (*length)
+        {
+            NRF24L01_ReadToBuf(NRF24L01_CMD_R_RX_PAYLOAD, pBuf, *length);
+        }
+        return pipe;
+    }
+    // pipe value = 110: Not Used, 111: RX FIFO Empty
+    *length = 0;
+    return pipe;
+}
+
 void NRF24L01_DumpConfig(void)
 {
-    uint8_t dat, i, j;
-
-    // CONFIG
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_CONFIG);
-    printf("[0x%02X] 0x%02X MASK:%02X CRC:%02X PWR:%s MODE:%s\r\n",
-           NRF24_REG_CONFIG, dat, dat >> 4, (dat & 0x0c) >> 2,
-           (dat & 0x02) ? "ON" : "OFF",
-           (dat & 0x01) ? "RX" : "TX");
-
-    // EN_AA
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_EN_AA);
-    printf("[0x%02X] 0x%02X ENAA: ", NRF24_REG_EN_AA, dat);
-    for (j = 0; j < 6; j++)
-    {
-        printf("[P%1u%s]%s", j, (dat & (1 << j)) ? "+" : "-", (j == 5) ? "\r\n" : " ");
-    }
-
-    // EN_RXADDR
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_EN_RXADDR);
-    printf("[0x%02X] 0x%02X EN_RXADDR: ", NRF24_REG_EN_RXADDR, dat);
-    for (j = 0; j < 6; j++)
-    {
-        printf("[P%1u%s]%s", j,
-               (dat & (1 << j)) ? "+" : "-",
-               (j == 5) ? "\r\n" : " ");
-    }
-
-    // SETUP_AW
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_SETUP_AW);
-    int8_t ww = (dat & 0x03) + 2;
-    printf("[0x%02X] 0x%02X EN_RXADDR=%03X (address width = %u)\r\n",
-           NRF24_REG_SETUP_AW, dat, dat & 0x03, ww);
-
-    // SETUP_RETR
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_SETUP_RETR);
-    printf("[0x%02X] 0x%02X ARD=%04X ARC=%04X (retr.delay=%uus, count=%u)\r\n",
-           NRF24_REG_SETUP_RETR, dat, dat >> 4, dat & 0x0F, ((dat >> 4) * 250) + 250, dat & 0x0F);
-
-    // RF_CH
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RF_CH);
-    printf("[0x%02X] 0x%02X (%.3uGHz)\r\n", NRF24_REG_RF_CH, dat, 2400 + dat);
-
-    // RF_SETUP
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RF_SETUP);
-    printf("[0x%02X] 0x%02X CONT_WAVE:%s PLL_LOCK:%s DataRate=",
-           NRF24_REG_RF_SETUP, dat,
-           (dat & 0x80) ? "ON" : "OFF",
-           (dat & 0x80) ? "ON" : "OFF");
-    switch ((dat & 0x28) >> 3)
-    {
-    case 0x00:
-        printf("1M");
-        break;
-    case 0x01:
-        printf("2M");
-        break;
-    case 0x04:
-        printf("250k");
-        break;
-    default:
-        printf("???");
-        break;
-    }
-    printf("pbs RF_PWR=");
-    switch ((dat & 0x06) >> 1)
-    {
-    case 0x00:
-        printf("-18");
-        break;
-    case 0x01:
-        printf("-12");
-        break;
-    case 0x02:
-        printf("-6");
-        break;
-    case 0x03:
-        printf("0");
-        break;
-    default:
-        printf("???");
-        break;
-    }
-    printf("dBm\r\n");
+    uint8_t i, aw, buf[5];
 
     // STATUS
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_STATUS);
-    printf("[0x%02X] 0x%02X IRQ:%03X RX_PIPE:%u TX_FULL:%s\r\n",
-           NRF24_REG_STATUS, dat,
-           (dat & 0x70) >> 4,
-           (dat & 0x0E) >> 1,
-           (dat & 0x01) ? "YES" : "NO");
-
+    Uart1_TxString("STATUS:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_STATUS));
+    Uart1_TxString(", ");
+    // CONFIG
+    Uart1_TxString("CONFIG:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_CONFIG));
+    Uart1_TxString(", ");
+    // EN_AA
+    Uart1_TxString("EN_AA:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_EN_AA));
+    Uart1_TxString(", ");
+    // EN_RXADDR
+    Uart1_TxString("EN_RXADDR:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_EN_RXADDR));
+    Uart1_TxString("\r\n");
+    // SETUP_AW
+    Uart1_TxString("SETUP_AW:0x");
+    i = NRF24L01_ReadReg(NRF24L01_REG_SETUP_AW);
+    aw = (i & 0x03) + 2;
+    Uart1_TxHex8Bit(i);
+    Uart1_TxString(", ");
+    // SETUP_RETR
+    Uart1_TxString("SETUP_RETR:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_SETUP_RETR));
+    Uart1_TxString(", ");
+    // RF_CH
+    Uart1_TxString("RF_CH:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RF_CH));
+    Uart1_TxString(", ");
+    // RF_SETUP
+    Uart1_TxString("RF_SETUP:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RF_SETUP));
+    Uart1_TxString("\r\n");
     // OBSERVE_TX
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_OBSERVE_TX);
-    printf("[0x%02X] 0x%02X PLOS_CNT=%u ARC_CNT=%u\r\n",
-           NRF24_REG_OBSERVE_TX, dat, dat >> 4, dat & 0x0F);
-
+    Uart1_TxString("OBSERVE_TX:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_OBSERVE_TX));
+    Uart1_TxString(", ");
     // RPD
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RPD);
-    printf("[0x%02X] 0x%02X RPD=%s\r\n",
-           NRF24_REG_RPD, dat, (dat & 0x01) ? "YES" : "NO");
+    Uart1_TxString("RPD:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RPD));
+    Uart1_TxString("\r\n");
 
-    // RX_ADDR_P0
-    NRF24L01_ReadToBuf(NRF24_REG_RX_ADDR_P0, NRF24_ADDR_WIDTH);
-    printf("[0x%02X] RX_ADDR_P0 \"", NRF24_REG_RX_ADDR_P0);
-    for (i = 0; i < NRF24_ADDR_WIDTH; i++)
-        printf("%X ", xbuf[i]);
-    printf("\"\r\n");
-
-    // RX_ADDR_P1
-    NRF24L01_ReadToBuf(NRF24_REG_RX_ADDR_P1, NRF24_ADDR_WIDTH);
-    printf("[0x%02X] RX_ADDR_P1 \"", NRF24_REG_RX_ADDR_P1);
-    for (i = 0; i < NRF24_ADDR_WIDTH; i++)
-        printf("%X ", xbuf[i]);
-    printf("\"\r\n");
-
-    // RX_ADDR_P2
-    printf("[0x%02X] RX_ADDR_P2 \"", NRF24_REG_RX_ADDR_P2);
-    for (i = 0; i < NRF24_ADDR_WIDTH - 1; i++)
-        printf("%X ", xbuf[i]);
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RX_ADDR_P2);
-    printf("%X\"\r\n", dat);
-
-    // RX_ADDR_P3
-    printf("[0x%02X] RX_ADDR_P3 \"", NRF24_REG_RX_ADDR_P3);
-    for (i = 0; i < NRF24_ADDR_WIDTH - 1; i++)
-        printf("%X ", xbuf[i]);
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RX_ADDR_P3);
-    printf("%X\"\r\n", dat);
-
-    // RX_ADDR_P4
-    printf("[0x%02X] RX_ADDR_P4 \"", NRF24_REG_RX_ADDR_P4);
-    for (i = 0; i < NRF24_ADDR_WIDTH - 1; i++)
-        printf("%X ", xbuf[i]);
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RX_ADDR_P4);
-    printf("%X\"\r\n", dat);
-
-    // RX_ADDR_P5
-    printf("[0x%02X] RX_ADDR_P5 \"", NRF24_REG_RX_ADDR_P5);
-    for (i = 0; i < NRF24_ADDR_WIDTH - 1; i++)
-        printf("%X ", xbuf[i]);
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RX_ADDR_P5);
-    printf("%X\"\r\n", dat);
+    // NRF24L01_REG_FIFO_STATUS
+    Uart1_TxString("FIFO_STATUS:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_FIFO_STATUS));
+    Uart1_TxString(", ");
+    // NRF24L01_REG_DYNPD
+    Uart1_TxString("DYNPD:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_DYNPD));
+    Uart1_TxString(", ");
+    // NRF24L01_REG_FEATURE
+    Uart1_TxString("FEATURE:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_FEATURE));
+    Uart1_TxString("\r\n");
 
     // TX_ADDR
-    NRF24L01_ReadToBuf(NRF24_REG_TX_ADDR, NRF24_ADDR_WIDTH);
-    printf("[0x%02X] TX_ADDR \"", NRF24_REG_TX_ADDR);
-    for (i = 0; i < NRF24_ADDR_WIDTH; i++)
-        printf("%02X ", xbuf[i]);
-    printf("\"\r\n");
+    Uart1_TxString("TX:");
+    NRF24L01_ReadToBuf(NRF24L01_REG_TX_ADDR, buf, aw);
+    Uart1_TxHexArray(buf, aw);
+    Uart1_TxString("\r\n");
+    // RX_ADDR_P0
+    Uart1_TxString("P0:");
+    NRF24L01_ReadToBuf(NRF24L01_REG_RX_ADDR_P0, buf, aw);
+    Uart1_TxHexArray(buf, aw);
+    Uart1_TxString("\r\n");
+    // RX_ADDR_P1
+    Uart1_TxString("P1:");
+    NRF24L01_ReadToBuf(NRF24L01_REG_RX_ADDR_P1, buf, aw);
+    Uart1_TxHexArray(buf, aw);
+    Uart1_TxString("\r\n");
+    // RX_ADDR_P2
+    Uart1_TxString("P2:");
+    Uart1_TxHexArray(buf, aw - 1);
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RX_ADDR_P2));
+    Uart1_TxString("\r\n");
+    // RX_ADDR_P3
+    Uart1_TxString("P3:");
+    Uart1_TxHexArray(buf, aw - 1);
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RX_ADDR_P3));
+    Uart1_TxString("\r\n");
+    // RX_ADDR_P4
+    Uart1_TxString("P4:");
+    Uart1_TxHexArray(buf, aw - 1);
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RX_ADDR_P4));
+    Uart1_TxString("\r\n");
+    // RX_ADDR_P5
+    Uart1_TxString("P5:");
+    Uart1_TxHexArray(buf, aw - 1);
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RX_ADDR_P5));
+    Uart1_TxString("\r\n");
 
-    // RX_PW_P0
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RX_PW_P0);
-    printf("[0x%02X] RX_PW_P0=%u\r\n", NRF24_REG_RX_PW_P0, dat);
 
-    // RX_PW_P1
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RX_PW_P1);
-    printf("[0x%02X] RX_PW_P1=%u\r\n", NRF24_REG_RX_PW_P1, dat);
-
-    // RX_PW_P2
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RX_PW_P2);
-    printf("[0x%02X] RX_PW_P2=%u\r\n", NRF24_REG_RX_PW_P2, dat);
-
-    // RX_PW_P3
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RX_PW_P3);
-    printf("[0x%02X] RX_PW_P3=%u\r\n", NRF24_REG_RX_PW_P3, dat);
-
-    // RX_PW_P4
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RX_PW_P4);
-    printf("[0x%02X] RX_PW_P4=%u\r\n", NRF24_REG_RX_PW_P4, dat);
-
-    // RX_PW_P5
-    dat = NRF24L01_ReadReg(NRF24_CMD_R_REGISTER | NRF24_REG_RX_PW_P5);
-    printf("[0x%02X] RX_PW_P5=%u\r\n", NRF24_REG_RX_PW_P5, dat);
 }

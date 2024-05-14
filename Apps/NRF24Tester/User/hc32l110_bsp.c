@@ -30,6 +30,8 @@ void BSP_GPIO_Init(void)
   Gpio_InitIOExt(3, 5, GpioDirOut, FALSE, FALSE, FALSE, FALSE);
   // NRF24L01 CE
   Gpio_InitIOExt(2, 6, GpioDirOut, TRUE, FALSE, FALSE, FALSE);
+  // NRF24L01 IRQ
+  Gpio_InitIOExt(3, 2, GpioDirIn, TRUE, FALSE, FALSE, FALSE);
 }
 
 void BSP_UART_Init(void)

@@ -16,6 +16,7 @@ typedef enum {
 extern __IO uint8_t uart_rx_flag;
 extern uint8_t uart_rx_buff[RING_BUFFER_SIZE];
 
+uint8_t rx_buff[NRF24L01_PLOAD_WIDTH];
 APP_ModeType_t app_mode, app_mode_next;
 
 
@@ -30,6 +31,7 @@ static void APP_SetTxAddr(uint8_t *data);
 static void APP_SetRfChannel(uint8_t *data);
 static void APP_SetRfRate(uint8_t *data);
 static void APP_SetRfPower(uint8_t *data);
+
 
 int main(void)
 {
@@ -104,6 +106,8 @@ static void APP_ModeSwitchTo(APP_ModeType_t mode)
     DRV_LED_SetPattern(0, DRV_LED_PATTERN_LONG_OFF);
     DRV_LED_SetPattern(1, DRV_LED_PATTERN_FLASH_SLOW);
     NRF24L01_SetRxMode();
+    NRF24L01_ClearIRQFlags();
+    NRF24L01_DumpConfig();
     DRV_Button_ClearState(0);
     break;
 
@@ -114,6 +118,9 @@ static void APP_ModeSwitchTo(APP_ModeType_t mode)
     DRV_LED_SetPattern(0, DRV_LED_PATTERN_FLASH_SLOW);
     DRV_LED_SetPattern(1, DRV_LED_PATTERN_LONG_OFF);
     NRF24L01_SetTxMode();
+    NRF24L01_FlushTX();
+    NRF24L01_ClearIRQFlags();
+    NRF24L01_DumpConfig();
     DRV_Button_ClearState(0);
     break;
   }
@@ -121,6 +128,8 @@ static void APP_ModeSwitchTo(APP_ModeType_t mode)
 
 static APP_ModeType_t APP_RxMode(void)
 {
+  uint8_t pipe, length;
+
   if (DRV_Button_GetPressState(0) == DRV_BUTTON_PRESSED)
   {
     return APP_MODE_TX;
@@ -138,7 +147,21 @@ static APP_ModeType_t APP_RxMode(void)
       return mode;
     }
   }
-  delay1ms(50);
+  // RX
+  pipe = NRF24L01_ReadReg(NRF24L01_REG_STATUS);
+  if (NRF24L01_RXFIFO_GetStatus() != NRF24L01_RXFIFO_STATUS_EMPTY)
+  {
+    pipe = NRF24L01_ReadPayload(rx_buff, &length, 0);
+    Uart1_TxString("P:0x");
+    Uart1_TxHex8Bit(pipe);
+    Uart1_TxString(",L:0x");
+    Uart1_TxHex8Bit(length);
+    Uart1_TxChar(':');
+    Uart1_TxHexArray(rx_buff, length);
+    Uart1_TxString("\r\n");
+  }
+  NRF24L01_ClearIRQFlags();
+  delay1ms(10);
   return app_mode;
 }
 
@@ -160,7 +183,8 @@ static APP_ModeType_t APP_TxMode(void)
       return mode;
     }
   }
-  delay1ms(50);
+
+  delay1ms(100);
   return app_mode;
 }
 
@@ -209,12 +233,20 @@ static APP_ModeType_t APP_HandleCommand(APP_ModeType_t mode, AT_Command_t cmd)
   case AT_Command_GetTxAddr:
     Uart1_TxString("Get TX addr\r\n");
     break;
+  case AT_Command_GetTStatus:
+    NRF24L01_DumpConfig();
+    break;
   case AT_Command_Unknown:
     Uart1_TxString("Unknown command\r\n");
     break;
   case AT_Command_None:
   default:
-    Uart1_TxString("echo\r\n");
+    Uart1_TxString((char *)uart_rx_buff);
+    Uart1_TxString("\r\n");
+    if (mode == APP_MODE_TX)
+    {
+      NRF24L01_Tx(uart_rx_buff);
+    }
     break;
   }
   return mode;

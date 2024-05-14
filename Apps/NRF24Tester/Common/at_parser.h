@@ -14,22 +14,24 @@
 
 #define AT_GET_RX_ADDR      "RXADDR"
 #define AT_GET_TX_ADDR      "TXADDR"
+#define AT_GET_STATUS       "STATUS"
 
 typedef enum
 {
-    AT_Command_None,
-    AT_Command_Unknown,
+  AT_Command_None,
+  AT_Command_Unknown,
 
-    AT_Command_SetRxMode,
-    AT_Command_SetTxMode,
-    AT_Command_SetRxAddr,
-    AT_Command_SetTxAddr,
-    AT_Command_SetRfCh,
-    AT_Command_SetRfRate,
-    AT_Command_SetRfPower,
+  AT_Command_SetRxMode,
+  AT_Command_SetTxMode,
+  AT_Command_SetRxAddr,
+  AT_Command_SetTxAddr,
+  AT_Command_SetRfCh,
+  AT_Command_SetRfRate,
+  AT_Command_SetRfPower,
 
-    AT_Command_GetRxAddr,
-    AT_Command_GetTxAddr,
+  AT_Command_GetTStatus,
+  AT_Command_GetRxAddr,
+  AT_Command_GetTxAddr,
 } AT_Command_t;
 
 #ifdef __cplusplus

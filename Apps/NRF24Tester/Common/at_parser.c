@@ -53,6 +53,10 @@ AT_Command_t AT_Parse(char *argv)
       return AT_Command_SetRfPower;
     }
 
+    else if (strstr(pos, AT_GET_STATUS)) // AT+STATUS
+    {
+      return AT_Command_GetTStatus;
+    }
     else if (strstr(pos, AT_GET_RX_ADDR)) // AT+RXADDR
     {
       return AT_Command_GetRxAddr;
