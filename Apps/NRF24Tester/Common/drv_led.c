@@ -9,7 +9,8 @@ typedef struct {
 } DRV_LED_Pattern_TypeDef_t;
 
 typedef struct {
-  uint8_t state;
+  uint8_t state;    // bit[0]: 0:off, 1:one
+                    // bit[1]: 0:one-off, 1:continuous
   uint16_t counter;
   uint8_t pattern;
   uint8_t pos;
@@ -21,10 +22,11 @@ const DRV_LED_Pattern_TypeDef_t ledpattern[] = {
   {  60, {  1,  10,  21,  30,  41,  50}}, // quick blink
   { 200, {  1,  20,  41,  60,  81, 100}}, // blink
   { 300, {  1, 150,   0,   0,   0,   0}}, // slow blink
-  { 100, { 45,  50,   0,   0,   0,   0}}, // short flash
+  { 100, { 45,  48,   0,   0,   0,   0}}, // short flash
   { 300, {145, 150,   0,   0,   0,   0}}, // long flash
   { 200, {  1,  21,   0,   0,   0,   0}}, // always on
   { 200, {  2,  22,   0,   0,   0,   0}}, // always off
+  {   5, {  1,   2,   0,   0,   0,   0}}, // one flash
 };
 
 DRV_LED_TypeDef_t led[DRV_LED_SIZE];
@@ -33,12 +35,12 @@ DRV_LED_TypeDef_t led[DRV_LED_SIZE];
 /**
  * Initialize the LED object by specifying port and pin
 */
-void DRV_LED_Init(uint8_t index, uint8_t port, uint8_t pin, uint8_t pattern, uint8_t led_on)
+void DRV_LED_Init(uint8_t index, uint8_t port, uint8_t pin, uint8_t pattern, uint8_t continuous, uint8_t enabled)
 {
   led[index].port      = port;
   led[index].pin       = pin;
   led[index].pattern   = pattern;
-  led[index].state     = led_on;
+  led[index].state     = (enabled ? 0x01 : 0) | (continuous ? 0x02 : 0);
   led[index].counter   = 0;
   led[index].pos       = 0;
 }
@@ -47,12 +49,17 @@ void DRV_LED_Tick(void)
 {
   for (uint8_t i = 0; i < DRV_LED_SIZE; i++)
   {
-    if (led[i].state == DRV_LED_OFF) continue;
+    if ((led[i].state & 0x01) == 0) continue;
 
     led[i].counter++;
     if (led[i].counter >= ledpattern[led[i].pattern].period)
     {
       led[i].counter = 0;
+      if ((led[i].state & 0x02) == 0)
+      {
+        // turn off one-off led
+        led[i].state = led[i].state & (~0x01);
+      }
     }
     if (led[i].counter == ledpattern[led[i].pattern].pattern[led[i].pos])
     {
@@ -73,10 +80,10 @@ void DRV_LED_Tick(void)
  * - reset counter and pos
  * - or set pin voltage level to low in case the output is high
 */
-void DRV_LED_SetState(uint8_t index, uint8_t led_state)
+void DRV_LED_SetState(uint8_t index, uint8_t enabled)
 {
-  led[index].state = led_state;
-  if (led_state == DRV_LED_ON)
+  led[index].state = (led[index].state & 0xFE) | (enabled ? 0x01 : 0);
+  if (enabled)
   {
     led[index].counter = 0;
     led[index].pos = 0;

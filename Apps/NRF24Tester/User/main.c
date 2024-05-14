@@ -80,8 +80,6 @@ static APP_ModeType_t APP_Init(void)
   BSP_UART_Init();
   BSP_SPI_Init();
 
-  DRV_LED_Init(0, 3, 4, DRV_LED_PATTERN_LONG_OFF, DRV_LED_ON); // RED
-  DRV_LED_Init(1, 3, 5, DRV_LED_PATTERN_LONG_OFF, DRV_LED_ON); // GREEN
   DRV_Button_Init(0, 3, 3);
 
   Uart1_TxString("SPI Check ...");
@@ -101,9 +99,9 @@ static void APP_ModeSwitchTo(APP_ModeType_t mode)
   switch (mode)
   {
   case APP_MODE_RX:
+    DRV_LED_Init(0, 3, 4, DRV_LED_PATTERN_ONE_FLASH, 0, 1); // RED
+    DRV_LED_Init(1, 3, 5, DRV_LED_PATTERN_FLASH_SLOW, 1, 1); // GREEN
     delay1ms(200);
-    DRV_LED_SetPattern(0, DRV_LED_PATTERN_LONG_OFF);
-    DRV_LED_SetPattern(1, DRV_LED_PATTERN_FLASH_SLOW);
     NRF24L01_SetRxMode();
     NRF24L01_ClearIRQFlags();
     NRF24L01_DumpConfig();
@@ -112,9 +110,9 @@ static void APP_ModeSwitchTo(APP_ModeType_t mode)
 
   case APP_MODE_TX:
   default:
+    DRV_LED_Init(0, 3, 4, DRV_LED_PATTERN_FLASH_SLOW, 1, 1); // RED
+    DRV_LED_Init(1, 3, 5, DRV_LED_PATTERN_ONE_FLASH, 0, 1); // GREEN
     delay1ms(200);
-    DRV_LED_SetPattern(0, DRV_LED_PATTERN_FLASH_SLOW);
-    DRV_LED_SetPattern(1, DRV_LED_PATTERN_LONG_OFF);
     NRF24L01_SetTxMode();
     NRF24L01_FlushTX();
     NRF24L01_ClearIRQFlags();
@@ -149,6 +147,7 @@ static APP_ModeType_t APP_RxMode(void)
   pipe = NRF24L01_ReadReg(NRF24L01_REG_STATUS);
   if (NRF24L01_RXFIFO_GetStatus() != NRF24L01_RXFIFO_STATUS_EMPTY)
   {
+    DRV_LED_SetState(0, 1);
     pipe = NRF24L01_ReadPayload(rx_buff, &length, 0);
     Uart1_TxString("P:0x");
     Uart1_TxHex8Bit(pipe);
