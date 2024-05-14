@@ -1,7 +1,7 @@
 ##### Project #####
 
 PROJECT 		?= nrf24_tester
-# `$(shell pwd)` or `.`, both works
+# path to project root
 TOP				= ../..
 # The path for generated files
 BUILD_DIR 		= Build
