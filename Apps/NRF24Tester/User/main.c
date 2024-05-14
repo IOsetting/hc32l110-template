@@ -101,7 +101,6 @@ static void APP_ModeSwitchTo(APP_ModeType_t mode)
   switch (mode)
   {
   case APP_MODE_RX:
-    Uart1_TxString("RX mode\r\n");
     delay1ms(200);
     DRV_LED_SetPattern(0, DRV_LED_PATTERN_LONG_OFF);
     DRV_LED_SetPattern(1, DRV_LED_PATTERN_FLASH_SLOW);
@@ -113,7 +112,6 @@ static void APP_ModeSwitchTo(APP_ModeType_t mode)
 
   case APP_MODE_TX:
   default:
-    Uart1_TxString("TX mode\r\n");
     delay1ms(200);
     DRV_LED_SetPattern(0, DRV_LED_PATTERN_FLASH_SLOW);
     DRV_LED_SetPattern(1, DRV_LED_PATTERN_LONG_OFF);
@@ -184,7 +182,7 @@ static APP_ModeType_t APP_TxMode(void)
     }
   }
 
-  delay1ms(100);
+  delay1ms(20);
   return app_mode;
 }
 
@@ -241,12 +239,13 @@ static APP_ModeType_t APP_HandleCommand(APP_ModeType_t mode, AT_Command_t cmd)
     break;
   case AT_Command_None:
   default:
-    Uart1_TxString((char *)uart_rx_buff);
-    Uart1_TxString("\r\n");
     if (mode == APP_MODE_TX)
     {
       NRF24L01_Tx(uart_rx_buff);
+      Uart1_TxString("TX: ");
     }
+    Uart1_TxString((char *)uart_rx_buff);
+    Uart1_TxString("\r\n");
     break;
   }
   return mode;

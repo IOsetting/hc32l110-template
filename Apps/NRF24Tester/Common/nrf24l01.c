@@ -367,13 +367,22 @@ void NRF24L01_DumpConfig(void)
 {
     uint8_t i, aw, buf[5];
 
+    i = NRF24L01_ReadReg(NRF24L01_REG_CONFIG);
+    if (i & 0x01)
+    {
+        Uart1_TxString("### RX mode ###\r\n");
+    }
+    else
+    {
+        Uart1_TxString("### TX mode ###\r\n");
+    }
     // STATUS
     Uart1_TxString("STATUS:0x");
     Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_STATUS));
     Uart1_TxString(", ");
     // CONFIG
     Uart1_TxString("CONFIG:0x");
-    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_CONFIG));
+    Uart1_TxHex8Bit(i);
     Uart1_TxString(", ");
     // EN_AA
     Uart1_TxString("EN_AA:0x");
@@ -382,7 +391,20 @@ void NRF24L01_DumpConfig(void)
     // EN_RXADDR
     Uart1_TxString("EN_RXADDR:0x");
     Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_EN_RXADDR));
+    Uart1_TxString(", ");
+    // RPD
+    Uart1_TxString("RPD:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RPD));
     Uart1_TxString("\r\n");
+
+    // RF_CH
+    Uart1_TxString("RF_CH:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RF_CH));
+    Uart1_TxString(", ");
+    // RF_SETUP
+    Uart1_TxString("RF_SETUP:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RF_SETUP));
+    Uart1_TxString(", ");
     // SETUP_AW
     Uart1_TxString("SETUP_AW:0x");
     i = NRF24L01_ReadReg(NRF24L01_REG_SETUP_AW);
@@ -392,27 +414,15 @@ void NRF24L01_DumpConfig(void)
     // SETUP_RETR
     Uart1_TxString("SETUP_RETR:0x");
     Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_SETUP_RETR));
-    Uart1_TxString(", ");
-    // RF_CH
-    Uart1_TxString("RF_CH:0x");
-    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RF_CH));
-    Uart1_TxString(", ");
-    // RF_SETUP
-    Uart1_TxString("RF_SETUP:0x");
-    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RF_SETUP));
-    Uart1_TxString("\r\n");
-    // OBSERVE_TX
-    Uart1_TxString("OBSERVE_TX:0x");
-    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_OBSERVE_TX));
-    Uart1_TxString(", ");
-    // RPD
-    Uart1_TxString("RPD:0x");
-    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RPD));
     Uart1_TxString("\r\n");
 
     // NRF24L01_REG_FIFO_STATUS
     Uart1_TxString("FIFO_STATUS:0x");
     Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_FIFO_STATUS));
+    Uart1_TxString(", ");
+    // OBSERVE_TX
+    Uart1_TxString("OBSERVE_TX:0x");
+    Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_OBSERVE_TX));
     Uart1_TxString(", ");
     // NRF24L01_REG_DYNPD
     Uart1_TxString("DYNPD:0x");
@@ -427,37 +437,31 @@ void NRF24L01_DumpConfig(void)
     Uart1_TxString("TX:");
     NRF24L01_ReadToBuf(NRF24L01_REG_TX_ADDR, buf, aw);
     Uart1_TxHexArray(buf, aw);
-    Uart1_TxString("\r\n");
-    // RX_ADDR_P0
-    Uart1_TxString("P0:");
-    NRF24L01_ReadToBuf(NRF24L01_REG_RX_ADDR_P0, buf, aw);
-    Uart1_TxHexArray(buf, aw);
-    Uart1_TxString("\r\n");
+    Uart1_TxString("  ");
     // RX_ADDR_P1
     Uart1_TxString("P1:");
     NRF24L01_ReadToBuf(NRF24L01_REG_RX_ADDR_P1, buf, aw);
     Uart1_TxHexArray(buf, aw);
     Uart1_TxString("\r\n");
+    // RX_ADDR_P0
+    Uart1_TxString("P0:");
+    NRF24L01_ReadToBuf(NRF24L01_REG_RX_ADDR_P0, buf, aw);
+    Uart1_TxHexArray(buf, aw);
+    Uart1_TxString("  ");
     // RX_ADDR_P2
     Uart1_TxString("P2:");
-    Uart1_TxHexArray(buf, aw - 1);
     Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RX_ADDR_P2));
-    Uart1_TxString("\r\n");
+    Uart1_TxChar(',');
     // RX_ADDR_P3
     Uart1_TxString("P3:");
-    Uart1_TxHexArray(buf, aw - 1);
     Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RX_ADDR_P3));
-    Uart1_TxString("\r\n");
+    Uart1_TxChar(',');
     // RX_ADDR_P4
     Uart1_TxString("P4:");
-    Uart1_TxHexArray(buf, aw - 1);
     Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RX_ADDR_P4));
-    Uart1_TxString("\r\n");
+    Uart1_TxChar(',');
     // RX_ADDR_P5
     Uart1_TxString("P5:");
-    Uart1_TxHexArray(buf, aw - 1);
     Uart1_TxHex8Bit(NRF24L01_ReadReg(NRF24L01_REG_RX_ADDR_P5));
-    Uart1_TxString("\r\n");
-
-
+    Uart1_TxString("\r\n\r\n");
 }
