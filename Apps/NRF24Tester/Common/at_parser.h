@@ -11,6 +11,8 @@
 #define AT_SET_RF_CHAN      "RFCH="
 #define AT_SET_RF_RATE      "RFRATE="
 #define AT_SET_RF_POWER     "RFPOWER="
+#define AT_SET_AUTO_TX      "AUTOTX="
+#define AT_SET_AT_INTV      "ATINTV="
 
 #define AT_GET_RX_ADDR      "RXADDR"
 #define AT_GET_TX_ADDR      "TXADDR"
@@ -28,6 +30,8 @@ typedef enum
   AT_Command_SetRfCh,
   AT_Command_SetRfRate,
   AT_Command_SetRfPower,
+  AT_Command_SetAutoTx,
+  AT_Command_SetAutoTxInterval,
 
   AT_Command_GetTStatus,
   AT_Command_GetRxAddr,

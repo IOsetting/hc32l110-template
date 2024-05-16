@@ -4,8 +4,10 @@
 
 void AT_HandleAddr(char *argv, char *val);
 void AT_HandleUint8(char *argv, char *val);
+void AT_HandleUint16(char *argv, char *val);
 
 void str_to_ints(const char *str, uint32_t *ints, uint16_t size);
+void str_shift_left(char *str, uint32_t i);
 
 AT_Command_t AT_Parse(char *argv)
 {
@@ -51,6 +53,18 @@ AT_Command_t AT_Parse(char *argv)
       pos += strlen(AT_SET_RF_POWER);
       AT_HandleUint8(argv, pos);
       return AT_Command_SetRfPower;
+    }
+    else if (strstr(pos, AT_SET_AUTO_TX)) // AT+AUTOTX=
+    {
+      pos += strlen(AT_SET_AUTO_TX);
+      AT_HandleUint8(argv, pos);
+      return AT_Command_SetAutoTx;
+    }
+    else if (strstr(pos, AT_SET_AT_INTV)) // AT+ATINTV=
+    {
+      pos += strlen(AT_SET_AT_INTV);
+      AT_HandleUint16(argv, pos);
+      return AT_Command_SetAutoTxInterval;
     }
 
     else if (strstr(pos, AT_GET_STATUS)) // AT+STATUS
@@ -101,6 +115,23 @@ void AT_HandleUint8(char *argv, char *val)
     val++;
   }
   *argv = int_val;
+}
+
+void AT_HandleUint16(char *argv, char *val)
+{
+  uint16_t int_val = 0, idx = 0;
+
+  while(*val != 0 && idx < 5)
+  {
+    if (*val >= '0' && *val <= '9')
+    {
+      int_val = int_val * 10 + (*val - '0');
+      idx++;
+    }
+    val++;
+  }
+  *argv = int_val & 0xFF;
+  *(argv + 1) = int_val >> 8;
 }
 
 

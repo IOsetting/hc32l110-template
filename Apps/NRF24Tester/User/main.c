@@ -16,7 +16,8 @@ typedef enum {
 extern __IO uint8_t uart_rx_flag;
 extern uint8_t uart_rx_buff[RING_BUFFER_SIZE];
 
-uint8_t rx_buff[NRF24L01_PLOAD_WIDTH];
+uint16_t auto_tx_enabled = 1, auto_tx_counter = 0, auto_tx_interval = 50;
+uint8_t nrf_rx_buff[NRF24L01_PLOAD_WIDTH];
 APP_ModeType_t app_mode, app_mode_next;
 
 
@@ -25,12 +26,15 @@ static void APP_ModeSwitchTo(APP_ModeType_t mode);
 static APP_ModeType_t APP_RxMode(void);
 static APP_ModeType_t APP_TxMode(void);
 static APP_ModeType_t APP_HandleCommand(APP_ModeType_t mode, AT_Command_t cmd);
+static void APP_NRF24_Tx(uint8_t *data);
 
 static void APP_SetRxAddr(uint8_t *data);
 static void APP_SetTxAddr(uint8_t *data);
 static void APP_SetRfChannel(uint8_t *data);
 static void APP_SetRfRate(uint8_t *data);
 static void APP_SetRfPower(uint8_t *data);
+static void APP_SetAutoTx(uint8_t *data);
+static void APP_SetAutoTxInterval(uint8_t *data);
 
 
 int main(void)
@@ -148,13 +152,13 @@ static APP_ModeType_t APP_RxMode(void)
   if (NRF24L01_RXFIFO_GetStatus() != NRF24L01_RXFIFO_STATUS_EMPTY)
   {
     DRV_LED_SetState(0, 1);
-    pipe = NRF24L01_ReadPayload(rx_buff, &length, 0);
+    pipe = NRF24L01_ReadPayload(nrf_rx_buff, &length, 0);
     Uart1_TxString("P:0x");
     Uart1_TxHex8Bit(pipe);
     Uart1_TxString(",L:0x");
     Uart1_TxHex8Bit(length);
     Uart1_TxChar(':');
-    Uart1_TxHexArray(rx_buff, length);
+    Uart1_TxHexArray(nrf_rx_buff, length);
     Uart1_TxString("\r\n");
   }
   NRF24L01_ClearIRQFlags();
@@ -178,6 +182,15 @@ static APP_ModeType_t APP_TxMode(void)
     if (mode != app_mode)
     {
       return mode;
+    }
+  }
+  if (auto_tx_enabled)
+  {
+    auto_tx_counter++;
+    if (auto_tx_counter == auto_tx_interval)
+    {
+      auto_tx_counter = 0;
+      APP_NRF24_Tx(uart_rx_buff);
     }
   }
 
@@ -224,6 +237,12 @@ static APP_ModeType_t APP_HandleCommand(APP_ModeType_t mode, AT_Command_t cmd)
   case AT_Command_SetRfPower:
     APP_SetRfPower(uart_rx_buff);
     break;
+  case AT_Command_SetAutoTx:
+    APP_SetAutoTx(uart_rx_buff);
+    break;
+  case AT_Command_SetAutoTxInterval:
+    APP_SetAutoTxInterval(uart_rx_buff);
+    break;
   case AT_Command_GetRxAddr:
     Uart1_TxString("Get RX addr\r\n");
     break;
@@ -240,11 +259,13 @@ static APP_ModeType_t APP_HandleCommand(APP_ModeType_t mode, AT_Command_t cmd)
   default:
     if (mode == APP_MODE_TX)
     {
-      NRF24L01_Tx(uart_rx_buff);
-      Uart1_TxString("TX: ");
+      APP_NRF24_Tx(uart_rx_buff);
     }
-    Uart1_TxString((char *)uart_rx_buff);
-    Uart1_TxString("\r\n");
+    else
+    {
+      Uart1_TxString((char *)uart_rx_buff);
+      Uart1_TxString("\r\n");
+    }
     break;
   }
   return mode;
@@ -326,4 +347,51 @@ static void APP_SetRfPower(uint8_t *data)
       Uart1_TxString("0dBm\r\n");
       break;
   }
+}
+
+static void APP_SetAutoTx(uint8_t *data)
+{
+  if (*uart_rx_buff == 1)
+  {
+    if (auto_tx_enabled == 1)
+    {
+      Uart1_TxString("Auto TX already started\r\n");
+    }
+    else
+    {
+      Uart1_TxString("Auto TX started\r\n");
+      auto_tx_enabled = 1;
+    }
+  }
+  else 
+  {
+    if (auto_tx_enabled == 0)
+    {
+      Uart1_TxString("Auto TX already stopped\r\n");
+    }
+    else
+    {
+      Uart1_TxString("Auto TX stopped\r\n");
+      auto_tx_enabled = 0;
+    }
+  }
+  auto_tx_counter = 0;
+}
+
+static void APP_SetAutoTxInterval(uint8_t *data)
+{
+  Uart1_TxString("Set Auto TX interval = 0x");
+  Uart1_TxHexArrayRevert(data, 2);
+  Uart1_TxString("\r\n");
+  auto_tx_interval = *((uint16_t *)data);
+  auto_tx_counter = 0;
+}
+
+static void APP_NRF24_Tx(uint8_t *data)
+{
+  DRV_LED_SetState(1, 1);
+  NRF24L01_Tx(data);
+  Uart1_TxString("TX: ");
+  Uart1_TxString((char *)data);
+  Uart1_TxString("\r\n");
 }
