@@ -301,6 +301,9 @@ void Uart1_TxHex8Bit(uint8_t hex);
 void Uart0_TxHexArray(uint8_t *hex, uint8_t len);
 void Uart1_TxHexArray(uint8_t *hex, uint8_t len);
 
+void Uart0_TxHexArrayRevert(uint8_t *hex, uint8_t len);
+void Uart1_TxHexArrayRevert(uint8_t *hex, uint8_t len);
+
 void Uart0_TxString(char *str);
 void Uart1_TxString(char *str);
 

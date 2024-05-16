@@ -819,12 +819,30 @@ void Uart0_TxHexArray(uint8_t *hex, uint8_t len)
     }
 }
 
+void Uart0_TxHexArrayRevert(uint8_t *hex, uint8_t len)
+{
+    while (len--)
+    {
+        Uart0_TxChar(HEX_TABLE[*(hex + len) >> 4 & 0xF]);
+        Uart0_TxChar(HEX_TABLE[*(hex + len) & 0xF]);
+    }
+}
+
 void Uart1_TxHexArray(uint8_t *hex, uint8_t len)
 {
     while (len--)
     {
         Uart1_TxChar(HEX_TABLE[*(hex) >> 4 & 0xF]);
         Uart1_TxChar(HEX_TABLE[*(hex++) & 0xF]);
+    }
+}
+
+void Uart1_TxHexArrayRevert(uint8_t *hex, uint8_t len)
+{
+    while (len--)
+    {
+        Uart1_TxChar(HEX_TABLE[*(hex + len) >> 4 & 0xF]);
+        Uart1_TxChar(HEX_TABLE[*(hex + len) & 0xF]);
     }
 }
 
