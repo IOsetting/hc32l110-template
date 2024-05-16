@@ -384,6 +384,10 @@ static void APP_SetAutoTxInterval(uint8_t *data)
   Uart1_TxHexArrayRevert(data, 2);
   Uart1_TxString("\r\n");
   auto_tx_interval = *((uint16_t *)data);
+  if (auto_tx_interval == 0)
+  {
+    auto_tx_interval = 1;
+  }
   auto_tx_counter = 0;
 }
 
