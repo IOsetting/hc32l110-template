@@ -306,8 +306,8 @@ en_result_t Clk_Init(en_clk_freq_t clkFreq, en_clk_div_t hclkDiv, en_clk_div_t p
     Clk_SwitchTo(ClkRCL); // Switch to internal low speed clock source
     Clk_SetRCHFreq(clkFreq);
     Clk_SwitchTo(ClkRCH);
-    Clk_SetHClkDiv(ClkDiv1);
-    Clk_SetPClkDiv(ClkDiv1);
+    Clk_SetHClkDiv(hclkDiv);
+    Clk_SetPClkDiv(pclkDiv);
     return Ok;
 }
 
